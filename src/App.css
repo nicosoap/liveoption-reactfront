@@ -1,24 +1,137 @@
-.App {
-  text-align: center;
+
+@import url("https://fonts.googleapis.com/css?family=Droid+Sans|Karla|Montserrat|Muli|Poppins|Quicksand|Roboto");
+
+
+
+:root {
+    --main-bg-color: rgba(251,246,240,1);
+    --main-font-color: rgba(109,122,142,1);
+    --component-bg-color: rgba(215,215,215,1);
+    --component-font-color: rgba(76,76,76,1);
+    --component-alt-bg-color:rgba(136,136,136,1);
+    --component-alt-font-color:rgba(204,132,47,1);
+    --component-alt-2-font-color:rgba(255,160,15,1);
+    --main-alt-0-font-family: 'Montserrat', sans-serif;
+    --main-alt-1-font-family: 'Roboto', sans-serif;
+    --main-alt-2-font-family: 'Droid Sans', sans-serif;
+    --main-alt-3-font-family: 'Muli', sans-serif;
+    --main-alt-4-font-family: 'Poppins', sans-serif;
+    --main-alt-5-font-family: 'Karla', sans-serif;
+    --main-alt-6-font-family: 'Quicksand', sans-serif;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+body {
+    background: var(--main-bg-color);
+    color: var(--main-font-color);
+    font-family: var(--main-alt-1-font-family);
+    font-size: 40px;
+    -webkit-font-smoothing: antialiased;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.hidden {
+    visibility: hidden;
 }
 
-.App-intro {
-  font-size: large;
+.carved {
+    color: var(--main-font-color);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.12),inset 0 1px 2px rgba(0,0,0,0.24);
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.card {
+    background: var(--component-bg-color);
+    color: var(--component-font-color);
+    border-radius: 2px;
+    display: inline-block;
+    height: 300px;
+    margin: 1rem;
+    position: relative;
+    width: 300px;
+}
+
+.card-1 {
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.card-1:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.card-2 {
+    z-index: 200;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.card-3 {
+    z-index: 300;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.card-4 {
+    z-index: 400;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.card-5 {
+    z-index: 500;
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+}
+
+.floating {
+    z-index: 500;
+    margin: 15px;
+    position: relative;
+    float: left;
+    display: inline-flex;
+}
+
+.material-icons {
+    font-size: 42px;
+    line-height: 42px;
+}
+
+.read {
+}
+
+.unread {
+    color: var(--component-alt-2-font-color);
+    transition: pulse;
+    transition-delay: 200ms;
+    animation-name: pulse;
+    animation-duration: 200ms;
+}
+
+.notif {
+    text-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    width: 100%;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        -webkit-animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1); /* Chrome, Safari, Opera */
+        animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+    40% {
+        transform: scale(1.2);
+        text-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+        -webkit-animation-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1); /* Chrome, Safari, Opera */
+        animation-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
+    }
+    100% {
+        transform: scale(1);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        -webkit-animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1); /* Chrome, Safari, Opera */
+        animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
 }
