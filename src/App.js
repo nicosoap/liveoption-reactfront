@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import ReactGA from 'react-ga'
-import './App.css';
+import './App.css'
+import './menu.css'
 import Notifications from './notifications'
 
 ReactGA.initialize('UA-85246703-1')
-
 
 class Lol extends Component {
   state = {
@@ -30,32 +30,15 @@ class Lol extends Component {
   }
 }
 
-class Pop extends Component {
-    render() {
-        return (
-            <div>
-            </div>
-        )
-    }
-}
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-          <div className="top-bar">
-              <Notifications/>
+                          <div className="top-bar">
+                              <Notifications/>
+                          </div>
           </div>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <Pop />
-          <br/>
-          <Lol/>
-      </div>
     );
   }
 }

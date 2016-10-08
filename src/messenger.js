@@ -4,24 +4,32 @@
 import React, { Component } from 'react'
 
 export default class Messenger extends Component {
-    state = { messages: []} ///This requires the messages API
+    state = { messages: [], newMessage: '', unread: 'read'} ///This requires the messages API
 
     componentWillReceiveProps = (newProps) => {
         this.socket = newProps.socket
         this.socket.on('message', message => {
-            this.setState({messages: [message, ...this.state.messages]})
+            this.setState({messages: [message, ...this.state.messages], newMessage: 'newMessage', unread: 'unread'})
+            setTimeout(() => this.setState({ newMessage: '' }), 250)
+            this.forceUpdate()
         })
     }
 
     render () {
         let isUR = (unit) => (unit.read === true) ? '':unit
+        const { newMessage, unread } = this.state;
         const messagesNb = this.state.messages.length
         const messagesUR = this.state.messages.map(isUR).filter(p => p !== '')
-        console.log("messages :",messagesUR)
-
-        const messages = messagesNb !== 0 ? <div id="messages" className="floating notif">
-            <i className={messagesUR.length !== 0 ? "material-icons unread":"material-icons read"}>chat</i>
-        </div> : ''
+        const messagesURL = messagesUR.length > 9 ? "9+" : messagesUR.length
+        const messages = messagesNb !== 0 ?
+            <div id="messages" className="floating">
+                <a href="#">
+                    <div className="notif">
+                            <div className={`material-icons  ${newMessage} ${unread}`} >chat</div>
+                    </div>
+                </a>
+                <div className="lo-badge">{messagesURL}</div>
+            </div> : ''
         return (
             <div>
                 {messages}

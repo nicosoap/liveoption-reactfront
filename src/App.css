@@ -9,8 +9,10 @@
     --component-bg-color: rgba(215,215,215,1);
     --component-font-color: rgba(76,76,76,1);
     --component-alt-bg-color:rgba(136,136,136,1);
+    --component-alt-2-bg-color: #526179;
     --component-alt-font-color:rgba(204,132,47,1);
     --component-alt-2-font-color:rgba(255,160,15,1);
+    --badge-font-color: rgba(210,215,235,1);
     --main-alt-0-font-family: 'Montserrat', sans-serif;
     --main-alt-1-font-family: 'Roboto', sans-serif;
     --main-alt-2-font-family: 'Droid Sans', sans-serif;
@@ -26,6 +28,15 @@ body {
     font-family: var(--main-alt-1-font-family);
     font-size: 40px;
     -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+}
+
+a {
+    color: var(--main-font-color);
+    font-family: var(--main-alt-1-font-family);
+    font-size: 40px;
+    -webkit-font-smoothing: antialiased;
+    text-decoration: none;
 }
 
 .hidden {
@@ -80,10 +91,29 @@ body {
 
 .floating {
     z-index: 500;
-    margin: 15px;
+    margin: 15px 5px 10px 15px;
     position: relative;
     float: left;
     display: inline-flex;
+}
+
+.lo-badge {
+    background-color: var(--component-alt-2-bg-color);
+    color: var(--badge-font-color);
+    font-size: 14px;
+    text-rendering: geometricPrecision;
+    text-align: center;
+    line-height: 22px;
+    border-radius: 50%;
+    padding: 0 0px;
+    height: 22px;
+    min-width:22px;
+    z-index: 300;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    margin: -11px 0 25px -22px;
+}
+.closer {
+    margin-left: -25px;
 }
 
 .material-icons {
@@ -96,14 +126,33 @@ body {
 
 .unread {
     color: var(--component-alt-2-font-color);
+    margin-right: 15px;
+}
+
+.newMessage {
     transition: pulse;
     transition-delay: 200ms;
-    animation-name: pulse;
-    animation-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    animation: pulse 200ms;
+    -webkit-animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1); /* Chrome, Safari, Opera */
+    animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .notif {
     text-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.notif:hover {
+    z-index: 200;
+    text-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    transform: scale(1.05);
+    transition-delay: 50ms;
+}
+.notif:active {
+    z-index: 200;
+    text-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    transform: scale(1.05);
+    transition-delay: 50ms;
 }
 
 .top-bar {
@@ -113,25 +162,21 @@ body {
     right: 0;
     margin: 0;
     width: 100%;
+    padding: 0 5px 0 5px;
 }
 
 @keyframes pulse {
     0% {
         transform: scale(1);
         text-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-        -webkit-animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1); /* Chrome, Safari, Opera */
-        animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
     }
-    40% {
+    60% {
         transform: scale(1.2);
+        z-index: 300;
         text-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-        -webkit-animation-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1); /* Chrome, Safari, Opera */
-        animation-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
     }
     100% {
         transform: scale(1);
-        text-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-        -webkit-animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1); /* Chrome, Safari, Opera */
-        animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
 }

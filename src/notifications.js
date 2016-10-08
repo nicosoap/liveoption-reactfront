@@ -26,9 +26,11 @@ export default class Notifications extends Component {
         console.log(this.state.socket)
         return (
             <div>
-                <div id="notifications" className="floating notif">
+                <a href="#" >
+                    <div id="notifications" className="floating notif">
                     <i className="material-icons">menu</i>
                 </div>
+                </a>
                 <Messenger socket={this.state.socket} name={"chat"} />
                 <Interactions socket={this.state.socket} name={"notifications"} />
             </div>
