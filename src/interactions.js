@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 
 export default class Interactions extends Component {
-    state = {matches: [], likes: [], visits: [], newMessage: '', unread: 'read'} ///This requires the Interactions API
+    state = {matches: [{read: true, body: "Ceci est un vieux match", from: "olivier"}], likes: [], visits: [], newMessage: '', unread: 'read'} ///This requires the Interactions API
     componentWillReceiveProps = (newProps) => {
         this.socket = newProps.socket
         this.socket.on('match', match => {

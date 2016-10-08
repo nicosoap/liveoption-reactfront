@@ -22,11 +22,25 @@ export default class Notifications extends Component {
         this.setState({socket : this.socket})
     }
 
+    openDrawer = () => {
+        if (document.getElementById('drawer').classList.contains('stored')) {
+            document.getElementById('drawer').classList.remove('stored')
+            document.getElementById('drawer').classList.add('expanded')
+            document.getElementById('pusher').classList.remove('stalled')
+            document.getElementById('pusher').classList.add('pushed')
+        } else {
+            document.getElementById('drawer').classList.add('stored')
+            document.getElementById('drawer').classList.remove('expanded')
+            document.getElementById('pusher').classList.add('stalled')
+            document.getElementById('pusher').classList.remove('pushed')
+        }
+    }
+
     render () {
         console.log(this.state.socket)
         return (
             <div>
-                <a href="#" >
+                <a href="#" onClick={this.openDrawer}>
                     <div id="notifications" className="floating notif">
                     <i className="material-icons">menu</i>
                 </div>

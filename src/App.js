@@ -34,11 +34,23 @@ class Lol extends Component {
 class App extends Component {
   render() {
     return (
-      <div className="App">
-                          <div className="top-bar">
-                              <Notifications/>
-                          </div>
-          </div>
+        <div className="App">
+            <div id="drawer" className="push-menu-menu stored">
+                <ul>
+                    <a href="#"><li className="card-1"><i className="material-icons">near_me</i>Around me</li></a>
+                    <a href="#"><li className="card-1"><i className="material-icons">search</i>Search</li></a>
+                    <a href="#"><li className="card-1"><i className="material-icons">bubble_chart</i>Live options</li></a>
+                    <a href="#"><li className="card-1"><i className="material-icons">weekend</i>Netflix & chill</li></a>
+                    <a href="#"><li className="card-1"><i className="material-icons">location_searching</i>Geolocation</li></a>
+                    <a href="#"><li className="card-1"><i className="material-icons">edit</i>My profile</li></a>
+                </ul>
+            </div>
+            <div id="pusher" className="push-menu-main stalled">
+                <div className="top-bar">
+                    <Notifications/>
+                </div>
+            </div>
+        </div>
     );
   }
 }
