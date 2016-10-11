@@ -6,21 +6,22 @@ import React, { Component } from 'react'
 export default class Interactions extends Component {
     state = {matches: [{read: true, body: "Ceci est un vieux match", from: "olivier"}], likes: [], visits: [], newMessage: '', unread: 'read'} ///This requires the Interactions API
     componentWillReceiveProps = (newProps) => {
+        if (this.socket) return (null);
         this.socket = newProps.socket
         this.socket.on('match', match => {
             this.setState({matches: [match, ...this.state.matches], newMessage: 'newMessage', unread: 'unread'})
+            this.props.newNotif(match);
             setTimeout(() => this.setState({ newMessage: '' }), 250)
-            this.forceUpdate()
         })
         this.socket.on('like', like => {
             this.setState({likes: [like, ...this.state.likes], newMessage: 'newMessage', unread: 'unread'})
+            this.props.newNotif(like);
             setTimeout(() => this.setState({ newMessage: '' }), 250)
-            this.forceUpdate()
         })
         this.socket.on('visit', visit => {
             this.setState({visits: [visit, ...this.state.visits], newMessage: 'newMessage', unread: 'unread'})
+            this.props.newNotif(visit);
             setTimeout(() => this.setState({ newMessage: '' }), 250)
-            this.forceUpdate()
         })
     }
 
