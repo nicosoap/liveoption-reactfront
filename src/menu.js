@@ -2,6 +2,9 @@
  * Created by opichou on 10/10/16.
  */
 import React, { Component } from 'react'
+import cx from 'classnames'
+import { Notifications, MenuButton } from './notifications'
+
 
 class MenuItem extends Component {
     render() {
@@ -13,7 +16,8 @@ class MenuItem extends Component {
     }
 }
 
-export default class Menu extends Component {
+
+class MenuContent extends Component {
     state = {
         menuItems: [
             {
@@ -67,4 +71,36 @@ export default class Menu extends Component {
             </div>
         )
     }
+}
+
+export default class Menu extends Component {
+    state = { isShown: false }
+
+    toggleMenu = () => this.setState({isShown: !this.state.isShown})
+
+    render() {
+        return (
+            <div>
+                <div className={cx({
+                    'push-menu-menu': true,
+                    'carved': true,
+                    'stored': !this.state.isShown,
+                    'expanded': !!this.state.isShown
+                })}>
+                    <MenuContent />
+                </div>
+                <div className={cx({
+                    'push-menu-main': true,
+                    'stalled': !this.state.isShown,
+                    'pushed': !!this.state.isShown
+                })}>
+                    <div className="top-bar">
+                        <MenuButton toggleMenu={ this.toggleMenu } />
+                        <Notifications />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
 }

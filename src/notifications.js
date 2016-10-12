@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import io from 'socket.io-client'
+import cx from 'classnames'
 import Messenger from './messenger'
 import Interactions from './interactions'
 import Notif from './notif'
@@ -13,7 +14,18 @@ if ( !my_jwt) {
     console.log(my_jwt)
 }
 
-export default class Notifications extends Component {
+export class MenuButton extends Component {
+render(){
+    return(
+
+        <div className="floating notif" onClick={this.props.toggleMenu}>
+            <i className="material-icons">menu</i>
+        </div>
+    )
+}
+}
+
+export class Notifications extends Component {
 
     state = {
         socket: null,
@@ -27,25 +39,9 @@ export default class Notifications extends Component {
         this.setState({socket : this.socket})
     }
 
-    openDrawer = (e) => {
-        e.preventDefault()
-        if (document.getElementById('drawer').classList.contains('stored')) {
-            document.getElementById('drawer').classList.remove('stored')
-            document.getElementById('drawer').classList.add('expanded')
-            document.getElementById('pusher').classList.remove('stalled')
-            document.getElementById('pusher').classList.add('pushed')
-        } else {
-            document.getElementById('drawer').classList.add('stored')
-            document.getElementById('drawer').classList.remove('expanded')
-            document.getElementById('pusher').classList.add('stalled')
-            document.getElementById('pusher').classList.remove('pushed')
-        }
-    }
-
     newNotif = async (notification) => {
         await this.setState({ notifications: [...this.state.notifications, notification] })
         console.log(this.state.notifications)
-        chrome.notifications.create(notification.id, {type: "basic", } , function callback)
     }
 
 
@@ -70,11 +66,6 @@ export default class Notifications extends Component {
         const notificationsItem = this.popNotifications(notifications)
         return (
             <div>
-                <a href="#" onClick={this.openDrawer} >
-                    <div id="notifications" className="floating notif">
-                    <i className="material-icons">menu</i>
-                </div>
-                </a>
                 <Messenger socket={this.state.socket} name={"chat"} newNotif={this.newNotif}/>
                 <Interactions socket={this.state.socket} name={"notifications"} newNotif={this.newNotif}/>
                 <div className="notif-colon" id="notifications" >
