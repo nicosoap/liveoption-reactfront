@@ -2,6 +2,7 @@
  * Created by opichou on 10/10/16.
  */
 import React, { Component } from 'react'
+import { Link } from 'react-router'
 import cx from 'classnames'
 import { Notifications, MenuButton } from './notifications'
 
@@ -10,7 +11,7 @@ class MenuItem extends Component {
     render() {
         return (
             <div>
-                <a href={ this.props.rel }><li><i className="material-icons">{ this.props.icon }</i>{ this.props.name }</li></a>
+                <Link to={ this.props.rel }><li><i className="material-icons">{ this.props.icon }</i>{ this.props.name }</li></Link>
             </div>
         )
     }
@@ -74,9 +75,37 @@ class MenuContent extends Component {
 }
 
 export default class Menu extends Component {
-    state = { isShown: false }
+    state = {
+        isShown: false,
+        messages: {
+            newMessage: false,
+            unread: false,
+            messages: [{
+                read: true,
+                body: "Ceci est un vieux match",
+                from: "olivier"
+            }],
+        },
+        notifications: {
+            newMessage: false,
+            unread: false,
+            matches: [{
+                read: true,
+                body: "Ceci est un vieux match",
+                from: "olivier"
+            }],
+            likes: [],
+            visits: [],
+        }
+    }
 
     toggleMenu = () => this.setState({isShown: !this.state.isShown})
+
+    componentWillReceiveProps = (newProps) => this.setState({
+        notifications: newProps.notifications,
+        messages: newProps.messages
+    })
+
 
     render() {
         return (
@@ -96,7 +125,10 @@ export default class Menu extends Component {
                 })}>
                     <div className="top-bar">
                         <MenuButton toggleMenu={ this.toggleMenu } />
-                        <Notifications />
+                        <Notifications notifications={this.state.notifications} messages={this.state.messages} />
+                    </div >
+                    <div className="App">
+                        { this.props.children }
                     </div>
                 </div>
             </div>

@@ -1,18 +1,7 @@
 import React, { Component } from 'react';
 
-import io from 'socket.io-client'
-import cx from 'classnames'
-import Messenger from './messenger'
-import Interactions from './interactions'
+import {Interactions} from './interactions'
 import Notif from './notif'
-
-let my_jwt = localStorage.jwt | "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9saXZpZXIiLCJpYXQiOjE0NzUxNjU5NTN9.JBOsAaNdqn4ypElvMXiQzZdjNPPk3ooQlez8oc0XyX4"
-if ( !my_jwt) {
-    console.log("Navigator not supported")
-    localStorage.jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9saXZpZXIiLCJpYXQiOjE0NzUxNjU5NTN9.JBOsAaNdqn4ypElvMXiQzZdjNPPk3ooQlez8oc0XyX4"
-    my_jwt = localStorage.jwt
-    console.log(my_jwt)
-}
 
 export class MenuButton extends Component {
 render(){
@@ -28,25 +17,39 @@ render(){
 export class Notifications extends Component {
 
     state = {
-        socket: null,
-        notifications: []
+        messages: {
+            newMessage: false,
+            unread: false,
+            messages: [{
+                read: true,
+                body: "Ceci est un vieux match",
+                from: "olivier"
+            }],
+        },
+        notifications: {
+            newMessage: false,
+            unread: false,
+            matches: [{
+                read: true,
+                body: "Ceci est un vieux match",
+                from: "olivier"
+            }],
+            likes: [],
+            visits: [],
+        }
     }
 
-    componentDidMount() {
-        this.socket = io('localhost:3001/', {
-            'query' : 'token=' + my_jwt
-        })
-        this.setState({socket : this.socket})
-    }
+    componentWillReceiveProps = (newProps) => this.setState({
+        notifications: newProps.notifications,
+        messages: newProps.messages
+    })
 
-    newNotif = async (notification) => {
-        await this.setState({ notifications: [...this.state.notifications, notification] })
-        console.log(this.state.notifications)
+    newNotif = (notification) => {
+        console.log(notification)
     }
-
 
     removeNotif = (i) => {
-        this.setState({notifications: this.state.notifications.splice(this.state.notifications.indexOf(i), 1)})
+        console.log(i)
     }
 
     popNotifications = (arr) => {
@@ -63,13 +66,10 @@ export class Notifications extends Component {
 
     render () {
         const { notifications } = this.state
-        const notificationsItem = this.popNotifications(notifications)
         return (
             <div>
-                <Messenger socket={this.state.socket} name={"chat"} newNotif={this.newNotif}/>
-                <Interactions socket={this.state.socket} name={"notifications"} newNotif={this.newNotif}/>
+                <Interactions notifications={this.state.notifications} messages={this.state.messages} newNotif={this.newNotif}/>
                 <div className="notif-colon" id="notifications" >
-                    { notificationsItem }
                 </div>
             </div>
         )

@@ -2,7 +2,6 @@
  * Created by opichou on 10/12/16.
  */
 import React, { Component } from 'react'
-import ReactGA from 'react-ga'
 import './App.css'
 
 class Lol extends Component {
