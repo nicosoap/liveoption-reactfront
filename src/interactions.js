@@ -13,7 +13,6 @@ export class InfoNotice extends Component {
     }
 
     render() {
-        console.log("rendered final state", this.state)
         const tmpBadge = this.state.badge > 9 ? "9+" : this.state.badge
 
         return (
@@ -26,13 +25,14 @@ export class InfoNotice extends Component {
                         'material-icons': true,
                         'newMessage': !!this.state.newMessage,
                         'unread': this.state.badge !== 0
-                    })}>{this.state.icon}
+                    })}>
+                        {this.state.icon}
                     </div>
                 </div>
                 <div className={cx({
                     "lo-badge": true,
                     "closer": !!this.state.isNarrow,
-                    "hidden": this.state.badge == 0
+                    "hidden": this.state.badge === 0
                 })}> { tmpBadge } </div>
             </div>
         )
@@ -41,15 +41,6 @@ export class InfoNotice extends Component {
 export class Interactions extends Component {
 
     state = {
-        messages: {
-            newMessage: false,
-            unread: false,
-            messages: [{
-                read: true,
-                body: "Ceci est un vieux match",
-                from: "olivier"
-            }],
-        },
         notifications: {
             newMessage: false,
             unread: false,
@@ -60,6 +51,15 @@ export class Interactions extends Component {
             }],
             likes: [],
             visits: [],
+        },
+        messages: {
+            newMessage: false,
+            unread: false,
+            messages: [{
+                read: true,
+                body: "Ceci est un vieux match",
+                from: "olivier"
+            }],
         }
     } ///This requires the Interactions API
 
@@ -77,7 +77,6 @@ export class Interactions extends Component {
             + this.state.notifications.likes.length
             + this.state.notifications.visits.length
         const notifsUR = this.state.notifications.matches.concat(this.state.notifications.likes, this.state.notifications.visits).map(isUR).filter(p => p !== '')
-        console.log("notifsNb",notifsNb,"notifsUR",notifsUR.length)
         const notifications = {
             'icon': 'notifications',
             'visible': notifsNb > 0,
@@ -94,10 +93,6 @@ export class Interactions extends Component {
             'newMessage': this.state.messages.newMessage,
             'isNarrow': true
         }
-
-        console.log("messages", messages)
-        console.log("notifications", notifications)
-
         return (
             <div>
                 <InfoNotice notification={notifications}/>

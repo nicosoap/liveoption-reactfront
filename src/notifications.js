@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-
+import React, { Component } from 'react'
 import {Interactions} from './interactions'
 import Notif from './notif'
 
@@ -36,40 +35,32 @@ export class Notifications extends Component {
             }],
             likes: [],
             visits: [],
+        },
+        info: {
+            messages: []
         }
     }
 
-    componentWillReceiveProps = (newProps) => this.setState({
-        notifications: newProps.notifications,
-        messages: newProps.messages
-    })
+    componentWillReceiveProps = (newProps) => {
+        this.setState({
+            notifications: newProps.notifications,
+            messages: newProps.messages,
+            info: newProps.info,
+        })
 
-    newNotif = (notification) => {
-        console.log(notification)
-    }
-
-    removeNotif = (i) => {
-        console.log(i)
-    }
-
-    popNotifications = (arr) => {
-        return (arr.map((notification, i) => {
-            return (
-                <Notif
-                    notification={ notification }
-                    removeNotif={this.removeNotif}
-                    key={notification.id}
-                />
-            )
-        }))
+        console.log(newProps.info)
     }
 
     render () {
-        const { notifications } = this.state
+
+        const { notifications, messages, info} = this.state
+        const infos = info.messages.map((notification, i) => < Notif notification={notification} key={i} /> )
+
         return (
             <div>
-                <Interactions notifications={this.state.notifications} messages={this.state.messages} newNotif={this.newNotif}/>
+                <Interactions notifications={notifications} messages={messages} />
                 <div className="notif-colon" id="notifications" >
+                    {infos}
                 </div>
             </div>
         )

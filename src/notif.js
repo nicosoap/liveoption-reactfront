@@ -3,12 +3,13 @@
  */
 import React, { Component } from 'react'
 import cx from 'classnames'
+import { Link } from 'react-router'
 
 export default class Notif extends Component {
     state = {
         notification: null,
         isClosed: false,
-        key: null
+        hidden: false
     }
 
     // componentDidMount = () => {
@@ -16,19 +17,22 @@ export default class Notif extends Component {
     // }
 
     dismiss = (e) => {
-        console.log(e.target)
-        // console.log('will be removed : ', this.state.key)
         this.setState({isClosed: !this.state.isClosed})
-        setTimeout(() => this.props.removeNotif(this.state.notification.id), 250)
+        //setTimeout(() => this.props.removeNotif(this.state.notification.id), 250)
     }
 
     componentWillReceiveProps = (newProps) => {
         console.log('props received', newProps.ket)
-        this.setState({notification: newProps.notification })
+        this.setState({notification: newProps.notification})
+    }
+
+    componentDidMount() {
+        setTimeout(() => this.setState({isClosed: true}), 3000)
+        setTimeout(() => this.setState({hidden: true}), 3200)
     }
 
     render() {
-        const { notification, isClosed } = this.state
+        const {notification, isClosed, hidden} = this.state
 
         if (!this.state.notification) return (<div className={cx({
             'notif-card': true,
@@ -38,22 +42,25 @@ export default class Notif extends Component {
 
         const {body, image, link} = notification
 
-        return(
-        <div className={cx({
+        return (
+            <div className={cx({
                 'notif-card': true,
                 'card-3': true,
                 'on-screen': !isClosed,
-                'off-screen': isClosed
+                'off-screen': isClosed,
+                'hidden': hidden
             })}>
-                <a href={ link }>
-                    <div className="notification-image" onClick={this.dismiss}>
+                <Link to={ link }>
+                    <div className="notification-image">
                         { image }
                     </div>
                     <div className="body">
                         { body }
                     </div>
-                </a>
-                <i className="material-icons" onClick={this.dismiss}>close</i>
+                </Link>
+                <div onClick={this.dismiss}>
+                    <i className="material-icons">close</i>
+                </div>
             </div>
         )
     }

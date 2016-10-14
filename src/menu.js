@@ -5,6 +5,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router'
 import cx from 'classnames'
 import { Notifications, MenuButton } from './notifications'
+import Search from './search'
 
 
 class MenuItem extends Component {
@@ -96,6 +97,9 @@ export default class Menu extends Component {
             }],
             likes: [],
             visits: [],
+        },
+        info:{
+            messages: []
         }
     }
 
@@ -103,11 +107,13 @@ export default class Menu extends Component {
 
     componentWillReceiveProps = (newProps) => this.setState({
         notifications: newProps.notifications,
-        messages: newProps.messages
+        messages: newProps.messages,
+        info: newProps.info
     })
 
 
     render() {
+        const {notifications, messages, info } = this.state
         return (
             <div>
                 <div className={cx({
@@ -125,7 +131,7 @@ export default class Menu extends Component {
                 })}>
                     <div className="top-bar">
                         <MenuButton toggleMenu={ this.toggleMenu } />
-                        <Notifications notifications={this.state.notifications} messages={this.state.messages} />
+                        <Notifications notifications={notifications} messages={messages} info={info} />
                     </div >
                     <div className="App">
                         { this.props.children }

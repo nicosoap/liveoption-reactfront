@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import ReactGA from 'react-ga'
 import io from 'socket.io-client'
-import Notifications from './notifications'
 import './App.css'
 import  Menu from './menu'
+import Search from './search'
 
 ReactGA.initialize('UA-85246703-1')
 
@@ -13,29 +13,23 @@ class App extends Component {
         messages: {
             newMessage: false,
             unread: false,
-            messages: [{
-                read: true,
-                body: "Ceci est un vieux match",
-                from: "olivier"
-            }],
+            messages: [],
         },
         notifications: {
             newMessage: false,
             unread: false,
-            matches: [{
-                read: true,
-                body: "Ceci est un vieux match",
-                from: "olivier"
-            }],
+            matches: [],
             likes: [],
             visits: [],
+        },
+        info:{
+            messages: []
         }
     }
 
     componentDidMount = () => {
-        console.log(localStorage.jwt || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9saXZpZXIiLCJpYXQiOjE0NzUxNjU5NTN9.JBOsAaNdqn4ypElvMXiQzZdjNPPk3ooQlez8oc0XyX4")
         let my_jwt = localStorage.jwt
-        if ( !my_jwt) {
+        if (!my_jwt) {
             console.log("Navigator not supported")
         }
 
@@ -45,62 +39,115 @@ class App extends Component {
         this.setState({socket: this.socket})
         this.socket.on('message', message => {
             this.setState({
+                notifications: {
+                    matches: this.state.notifications.matches,
+                    likes: this.state.notifications.likes,
+                    visits: this.state.notifications.visits,
+                    unread: 'unread',
+                    newMessage: this.state.notifications.newMessage
+                },
                 messages: {
                     messages: [message, ...this.state.messages.messages],
                     newMessage: true,
                     unread: 'unread'
+                },
+                info: {
+                    messages: [...this.state.info.messages, message]
                 }
             })
-            console.log("SOCKET",this.state.messages.messages)
-            setTimeout(() => this.setState({messages: {newMessage: false}}), 250)
+
+
+            setTimeout(() => this.setState({
+                messages: {
+                    messages: this.state.messages.messages,
+                    unread: this.state.messages.unread,
+                    newMessage: false
+                }
+            }), 250)
         })
         this.socket.on('match', match => {
             this.setState({
                 notifications: {
                     matches: [match, ...this.state.notifications.matches],
+                    likes: this.state.notifications.likes,
+                    visits: this.state.notifications.visits,
                     unread: 'unread',
                     newMessage: true
+                },
+                messages: {
+                    messages: this.state.messages.messages,
+                    newMessage: this.state.messages.newMessage,
+                    unread: 'unread'
+                },
+                info: {
+                    messages: [...this.state.info.messages, match]
                 }
             })
-            console.log("MATCHES",this.state.notifications.matches)
+
             setTimeout(() => this.setState({
-                notifications: {newMessage: false}
+                notifications: {
+                    matches: this.state.notifications.matches,
+                    likes: this.state.notifications.likes,
+                    visits: this.state.notifications.visits,
+                    unread: this.state.messages.unread,
+                    newMessage: false
+                }
             }), 250)
         })
         this.socket.on('like', like => {
             this.setState({
                 notifications: {
                     likes: [like, ...this.state.notifications.likes],
+                    visits: this.state.notifications.visits,
+                    matches: this.state.notifications.matches,
                     unread: 'unread',
                     newMessage: true
+                },
+                info: {
+                    messages: [...this.state.info.messages, like]
                 }
             })
-            console.log("LIKES",this.state.notifications.likes)
             setTimeout(() => this.setState({
-                notifications: {newMessage: false}
+                notifications: {
+                    matches: this.state.notifications.matches,
+                    likes: this.state.notifications.likes,
+                    visits: this.state.notifications.visits,
+                    unread: this.state.messages.unread,
+                    newMessage: false
+                }
             }), 250)
         })
         this.socket.on('visit', visit => {
             this.setState({
                 notifications: {
                     visits: [visit, ...this.state.notifications.visits],
+                    likes: this.state.notifications.likes,
+                    matches: this.state.notifications.matches,
                     unread: 'unread',
                     newMessage: true
+                },
+                info: {
+                    messages: [...this.state.info.messages, visit]
                 }
             })
-            console.log("VISITS",this.state.notifications.visits)
             setTimeout(() => this.setState({
-                notifications: {newMessage: false}
+                notifications: {
+                    matches: this.state.notifications.matches,
+                    likes: this.state.notifications.likes,
+                    visits: this.state.notifications.visits,
+                    unread: this.state.messages.unread,
+                    newMessage: false
+                }
             }), 250)
         })
     }
 
   render() {
-      const { notifications, messages } = this.state
+      const { notifications, messages, info } = this.state
     return (
-        <Menu notifications={ notifications } messages={ messages } >
-            <div >
-                LOL
+        <Menu notifications={ notifications } messages={ messages } info={info} >
+            <div className="main-content">
+                <Search socket={this.socket}/>
             </div>
         </Menu>
 
