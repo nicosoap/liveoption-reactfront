@@ -27,8 +27,8 @@ export default class Notif extends Component {
     }
 
     componentDidMount() {
-        setTimeout(() => this.setState({isClosed: true}), 3000)
-        setTimeout(() => this.setState({hidden: true}), 3200)
+        setTimeout(() => this.setState({isClosed: true}), 8000)
+        setTimeout(() => this.setState({hidden: true}), 8300)
     }
 
     render() {

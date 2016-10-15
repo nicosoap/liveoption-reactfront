@@ -6,7 +6,6 @@ import cx from 'classnames'
 
 export class InfoNotice extends Component {
     state = {icon: 'not interested', visible: false, badge: 0, newMessage: false, isNarrow: false}
-
     componentWillReceiveProps = (newProps) => {
         const notifications = newProps.notification
         this.setState(notifications)
@@ -38,6 +37,7 @@ export class InfoNotice extends Component {
         )
     }
 }
+
 export class Interactions extends Component {
 
     state = {

@@ -8,7 +8,7 @@ class SearchBar extends Component {
     render() {
         return(
             <div className="search-form">
-                <div className="material-icons search-label">search</div>
+                <div className="material-icons notif search-label">search</div>
                 <input className="search-input" type="search" name="search" id="search" />
             </div>
         )

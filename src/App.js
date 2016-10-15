@@ -3,7 +3,6 @@ import ReactGA from 'react-ga'
 import io from 'socket.io-client'
 import './App.css'
 import  Menu from './menu'
-import Search from './search'
 
 ReactGA.initialize('UA-85246703-1')
 
@@ -147,7 +146,6 @@ class App extends Component {
     return (
         <Menu notifications={ notifications } messages={ messages } info={info} >
             <div className="main-content">
-                <Search socket={this.socket}/>
             </div>
         </Menu>
 

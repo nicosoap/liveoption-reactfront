@@ -2,16 +2,16 @@
  * Created by opichou on 10/10/16.
  */
 import React, { Component } from 'react'
-import { Link } from 'react-router'
-import cx from 'classnames'
-import { Notifications, MenuButton } from './notifications'
 import Search from './search'
+import cx from 'classnames'
+import { Link } from 'react-router'
+import { Notifications, MenuButton } from './notifications'
 
 
 class MenuItem extends Component {
     render() {
         return (
-            <div>
+            <div className="menu-div">
                 <Link to={ this.props.rel }><li><i className="material-icons">{ this.props.icon }</i>{ this.props.name }</li></Link>
             </div>
         )
@@ -44,7 +44,7 @@ class MenuContent extends Component {
             },
             {
                 name: "My profile",
-                icon: "edit",
+                icon: "settings_applications",
                 rel: "#"
             }
         ]
@@ -131,7 +131,10 @@ export default class Menu extends Component {
                 })}>
                     <div className="top-bar">
                         <MenuButton toggleMenu={ this.toggleMenu } />
-                        <Notifications notifications={notifications} messages={messages} info={info} />
+                        <div className="float-right">
+                            <Search socket={this.socket}/>
+                            <Notifications notifications={notifications} messages={messages} info={info}/>
+                        </div>
                     </div >
                     <div className="App">
                         { this.props.children }
