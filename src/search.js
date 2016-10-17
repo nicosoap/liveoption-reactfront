@@ -2,26 +2,29 @@
  * Created by opichou on 10/14/16.
  */
 import React, { Component } from 'react'
-import cx from 'classnames'
-
-class SearchBar extends Component {
-    render() {
-        return(
-            <div className="search-form">
-                <div className="material-icons notif search-label">search</div>
-                <input className="search-input" type="search" name="search" id="search" />
-            </div>
-        )
-    }
-
-}
 
 export default class Search extends Component {
+    simpleSearch = e => {
+        e.preventDefault()
+        const body = e.target.value
+        if (e.keyCode === 13 && body) {
+            // this.props.simpleSearch(body)
+        }
+    }
+
+    searchSubmit = e => {
+        const body = e.target.value
+        //this.props.simpleSearch(body)
+    }
 
     render() {
         return(
-            <div className="floating">
-                <SearchBar />
+            <div className="floating search-form">
+                <form name="searchForm" onSubmit={this.searchSubmit}>
+                    <input className="search-input" type="search" name="search" id="search" placeholder="Search..."
+                           onKeyUp={this.simpleSearch}/>
+                    <button className="search-input" type="submit" name="submit" ><i className="material-icons icon-small">search</i></button>
+                </form>
             </div>
         )
     }

@@ -7,7 +7,7 @@ render(){
     return(
 
         <div className="floating notif" onClick={this.props.toggleMenu}>
-            <i className="material-icons">menu</i>
+            <i className="material-icons icon-large">menu</i>
         </div>
     )
 }
@@ -57,7 +57,7 @@ export class Notifications extends Component {
         const infos = info.messages.map((notification, i) => < Notif notification={notification} key={i} /> )
 
         return (
-            <div>
+            <div className="floating">
                 <Interactions notifications={notifications} messages={messages} />
                 <div className="notif-colon" id="notifications" >
                     {infos}

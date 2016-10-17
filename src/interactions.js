@@ -22,6 +22,7 @@ export class InfoNotice extends Component {
                 <div className="notif">
                     <div className={cx({
                         'material-icons': true,
+                        'icon-large': true,
                         'newMessage': !!this.state.newMessage,
                         'unread': this.state.badge !== 0
                     })}>

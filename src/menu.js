@@ -131,10 +131,8 @@ export default class Menu extends Component {
                 })}>
                     <div className="top-bar">
                         <MenuButton toggleMenu={ this.toggleMenu } />
-                        <div className="float-right">
-                            <Search socket={this.socket}/>
-                            <Notifications notifications={notifications} messages={messages} info={info}/>
-                        </div>
+                        <Search socket={this.socket}/>
+                        <Notifications notifications={notifications} messages={messages} info={info}/>
                     </div >
                     <div className="App">
                         { this.props.children }
