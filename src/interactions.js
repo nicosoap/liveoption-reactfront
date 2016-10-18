@@ -45,22 +45,14 @@ export class Interactions extends Component {
         notifications: {
             newMessage: false,
             unread: false,
-            matches: [{
-                read: true,
-                body: "Ceci est un vieux match",
-                from: "olivier"
-            }],
+            matches: [],
             likes: [],
             visits: [],
         },
         messages: {
             newMessage: false,
             unread: false,
-            messages: [{
-                read: true,
-                body: "Ceci est un vieux match",
-                from: "olivier"
-            }],
+            messages: [],
         }
     } ///This requires the Interactions API
 
@@ -77,6 +69,7 @@ export class Interactions extends Component {
         const notifsNb = this.state.notifications.matches.length
             + this.state.notifications.likes.length
             + this.state.notifications.visits.length
+        console.log(notifsNb)
         const notifsUR = this.state.notifications.matches.concat(this.state.notifications.likes, this.state.notifications.visits).map(isUR).filter(p => p !== '')
         const notifications = {
             'icon': 'notifications',
@@ -86,6 +79,7 @@ export class Interactions extends Component {
             'isNarrow': true
         }
         const messagesNb = this.state.messages.messages.length
+        console.log(messagesNb)
         const messagesUR = this.state.messages.messages.map(isUR).filter(p => p !== '')
         const messages = {
             'icon': 'chat',

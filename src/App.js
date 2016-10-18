@@ -3,6 +3,7 @@ import ReactGA from 'react-ga'
 import io from 'socket.io-client'
 import './App.css'
 import  Menu from './menu'
+import {ExtendedSearch} from './search'
 
 ReactGA.initialize('UA-85246703-1')
 
@@ -12,12 +13,12 @@ class App extends Component {
         messages: {
             newMessage: false,
             unread: false,
-            messages: [],
+            messages: [{body: "lol", from: "olivier", read: true}],
         },
         notifications: {
             newMessage: false,
             unread: false,
-            matches: [],
+            matches: [{body: "lol", from: "olivier", read: true}],
             likes: [],
             visits: [],
         },
@@ -146,6 +147,7 @@ class App extends Component {
     return (
         <Menu notifications={ notifications } messages={ messages } info={info} >
             <div className="main-content">
+                <ExtendedSearch />
             </div>
         </Menu>
 

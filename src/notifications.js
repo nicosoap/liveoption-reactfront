@@ -19,20 +19,12 @@ export class Notifications extends Component {
         messages: {
             newMessage: false,
             unread: false,
-            messages: [{
-                read: true,
-                body: "Ceci est un vieux match",
-                from: "olivier"
-            }],
+            messages: [],
         },
         notifications: {
             newMessage: false,
             unread: false,
-            matches: [{
-                read: true,
-                body: "Ceci est un vieux match",
-                from: "olivier"
-            }],
+            matches: [],
             likes: [],
             visits: [],
         },
