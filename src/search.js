@@ -123,6 +123,7 @@ export class ExtendedSearch extends Component {
                     >
                         Matching those tags:
                     </label>
+                    <textarea id="textarea" class="example" rows="1"name="tags" id="tags" value={this.state.tags} onChange={this.handleChange}></textarea>
                     <input
                         type="text"
                         name="tags" id="tags" value={this.state.tags} onChange={this.handleChange}/>
