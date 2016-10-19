@@ -22,7 +22,6 @@ export default class Notif extends Component {
     }
 
     componentWillReceiveProps = (newProps) => {
-        console.log('props received', newProps.ket)
         this.setState({notification: newProps.notification})
     }
 

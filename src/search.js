@@ -6,6 +6,7 @@ import InputRange from 'react-input-range'
 import cx from 'classnames'
 import 'react-input-range/dist/react-input-range.css'
 import PlacesAutocomplete, {geocodeByAddress} from 'react-places-autocomplete'
+import TagInput from './taginput'
 
 export default class Search extends Component {
     state = {
@@ -107,6 +108,7 @@ export class ExtendedSearch extends Component {
                 this.props.updateSearch(this.state))
         })
     }
+    updateTags = tags => this.setState({tags})
 
     openMenu = () => this.setState({menuOpen: !this.state.menuOpen})
 
@@ -157,16 +159,7 @@ export class ExtendedSearch extends Component {
                             value={this.state.address}
                             onChange={this.handleAddressChange}
                         />
-                        <label
-                            htmlFor="tags"
-                        >
-                            Matching those tags:
-                        </label>
-                        <textarea className="example" rows="1" name="tags" id="tags" value={this.state.tags}
-                                  onChange={this.handleTagsChange}>exemple</textarea>
-                        <input
-                            type="text"
-                            name="tags" id="tags" value={this.state.tags} onChange={this.handleChange}/>
+                        <TagInput id="tags" changeTags={this.updateTags} />
 
 
                             <div className="extended-search-checkboxes">
@@ -183,7 +176,7 @@ export class ExtendedSearch extends Component {
                                 >
                                     Who owns a Netflix account
                                 </label>
-                                    </span>
+                                </span>
                             < br/>
                              <span>
                                 <input
