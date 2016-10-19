@@ -3,31 +3,48 @@
  */
 import React, {Component} from 'react'
 import InputRange from 'react-input-range'
+import cx from 'classnames'
 import 'react-input-range/dist/react-input-range.css'
-import PlacesAutocomplete, { geocodeByAddress } from 'react-places-autocomplete'
+import PlacesAutocomplete, {geocodeByAddress} from 'react-places-autocomplete'
 
 export default class Search extends Component {
+    state = {
+        searchString: ''
+    }
+
+    componentWillReceiveProps = (newProps) => this.setState({searchString: newProps.searchString})
+
     simpleSearch = e => {
-        e.preventDefault()
         const body = e.target.value
         if (e.keyCode === 13 && body) {
-            // this.props.simpleSearch(body)
+            this.props.simpleSearch(body)
         }
     }
 
+    handleChange = e => this.setState({searchString: e.target.value})
+
     searchSubmit = e => {
         e.preventDefault()
-        const body = e.target.value
-        //this.props.simpleSearch(body)
+        const body = this.state.searchString
+        if (body) {
+            this.props.simpleSearch(body)
+        }
     }
 
     render() {
         return (
             <div className="floating search-form">
                 <form name="searchForm" onSubmit={this.searchSubmit}>
-                    <input className="search-input" type="search" name="search" id="search"
-                           placeholder="I'm looking for someone like..."
-                           onKeyUp={this.simpleSearch}/>
+                    <input
+                        className="search-input"
+                            type="search"
+                            name="search"
+                            id="search"
+                            placeholder="I'm looking for someone like..."
+                            value={this.state.searchString}
+                            onChange={this.handleChange}
+                            onKeyUp={this.simpleSearch}
+                    />
                     <button className="search-input" type="submit" name="submit"><i
                         className="material-icons icon-small">search</i></button>
                 </form>
@@ -38,6 +55,7 @@ export default class Search extends Component {
 
 export class ExtendedSearch extends Component {
     state = {
+        menuOpen: false,
         ageRange: {
             min: 18,
             max: 77,
@@ -48,116 +66,144 @@ export class ExtendedSearch extends Component {
         },
         address: "",
         geocode: {
-            lat:0,
-            lng:0,
+            lat: 0,
+            lng: 0,
         },
         tags: "",
-        netflix: "false",
-        rightNow: "false"
+        netflix: false,
+        rightNow: false
     }
     extendedSearch = e => {
         e.preventDefault()
-        const body = e.target.value
-        //this.props.extendedSearch(body)
+        this.props.extendedSearch()
     }
-    handleChange = e => {
-        this.setState({[e.target.name]: e.target.value})
+
+    handleNetflixChange = () => {
+        this.setState({netflix: !this.state.netflix},
+            () => this.props.updateSearch(this.state))
     }
-    handleValuesChange = (component, values) => {
-        this.setState({
+    handleRightNowChange = () => {
+        this.setState({rightNow: !this.state.rightNow},
+            () => this.props.updateSearch(this.state))
+    }
+    handleTagsChange = e => this.setState({tags: e.target.value},
+            () => this.props.updateSearch(this.state))
+    handleValuesChange = (component, values) => this.setState({
             ageRange: values,
-        });
-    }
-    handlePopularChange = (component, values) => {
+        },
+            () => this.props.updateSearch(this.state))
+    handlePopularChange = (component, values) =>
         this.setState({
             popularRange: values,
-        });
-    }
+        },
+        this.props.updateSearch(this.state))
     handleAddressChange = address => {
         this.setState({address})
-        geocodeByAddress(address,  (err, { lat, lng }) => {
+        geocodeByAddress(address, (err, {lat, lng}) => {
             if (err) {
-                console.log('Oh no!', err)
+                console.error(err)
             }
-            this.setState({geocode: {lat, lng}})
-            console.log(this.state.geocode, this.state.address)
+            this.setState({geocode: {lat, lng}}, () =>
+                this.props.updateSearch(this.state))
         })
     }
 
+    openMenu = () => this.setState({menuOpen: !this.state.menuOpen})
+
     render() {
         return (
-            <div className="card-2 extended-search" id="extended-search">
-                <form
-                    name="extended-search"
-                    onSubmit={this.extendedSearch}
-                    onChange={this.handleChange}
+            <div className="">
+                <div className={cx({
+                    "extended-search-button": true,
+                    'openedExtendedSearch': this.state.menuOpen
+                })} onClick={this.openMenu}
                 >
-                    <label>Older than {this.state.ageRange.min} and younger than {this.state.ageRange.max}</label>
-                    <InputRange
-                        maxValue={77}
-                        minValue={18}
-                        value={this.state.ageRange}
-                        onChange={this.handleValuesChange.bind(this)}
-                    />
-                    <label>With more than {this.state.popularRange.min} popularity rate, yet less than {this.state.popularRange.max}</label>
-                    <InputRange
-                        maxValue={100}
-                        minValue={0}
-                        value={this.state.popularRange}
-                        onChange={this.handlePopularChange.bind(this)}
-                    />
-                    <label
-                        htmlFor="around-me"
+                    <i className="material-icons">{this.state.menuOpen ? 'expand_less' : 'expand_more' }</i>
+                    <span>Advanced search</span>
+                </div>
+                <div className={cx({
+                    "card-2": this.state.menuOpen,
+                    'extended-search-closed': !this.state.menuOpen,
+                    'extended-search-open': this.state.menuOpen,
+                    'extended-search': true
+                })} id="extended-search">
+                    <form
+                        name="extended-search"
+                        onSubmit={this.extendedSearch}
                     >
-                        Around:
-                    </label>
-                    <PlacesAutocomplete
-                        type="text"
-                        name="address"
-                        id="around-me"
-                        value={this.state.address}
-                        onChange={this.handleAddressChange}
-                    />
-                    <label
-                        htmlFor="tags"
-                    >
-                        Matching those tags:
-                    </label>
-                    <textarea id="textarea" class="example" rows="1"name="tags" id="tags" value={this.state.tags} onChange={this.handleChange}></textarea>
-                    <input
-                        type="text"
-                        name="tags" id="tags" value={this.state.tags} onChange={this.handleChange}/>
+                        <label>Older than {this.state.ageRange.min} and younger than {this.state.ageRange.max}</label>
+                        <InputRange
+                            maxValue={77}
+                            minValue={18}
+                            value={this.state.ageRange}
+                            onChange={this.handleValuesChange.bind(this)}
+                        />
+                        <label>With more than {this.state.popularRange.min} popularity rate, yet less
+                            than {this.state.popularRange.max}</label>
+                        <InputRange
+                            maxValue={100}
+                            minValue={0}
+                            value={this.state.popularRange}
+                            onChange={this.handlePopularChange.bind(this)}
+                        />
+                        <label htmlFor="around-me">
+                            Around location:
+                        </label>
+                        <PlacesAutocomplete
+                            type="text"
+                            name="address"
+                            id="around-me"
+                            hideLabel
+                            value={this.state.address}
+                            onChange={this.handleAddressChange}
+                        />
+                        <label
+                            htmlFor="tags"
+                        >
+                            Matching those tags:
+                        </label>
+                        <textarea className="example" rows="1" name="tags" id="tags" value={this.state.tags}
+                                  onChange={this.handleTagsChange}>exemple</textarea>
+                        <input
+                            type="text"
+                            name="tags" id="tags" value={this.state.tags} onChange={this.handleChange}/>
 
-                    <span>
-                        <input
-                            type="checkbox"
-                            name="netflix"
-                            id="netflix"
-                            value={this.state.netflix}
-                            onChange={this.handleChange}
-                        />
-                        <label
-                            htmlFor="netflix"
-                        >
-                            Who owns a Netflix account
-                        </label>
-                    </span>
-                < br/>
-                    <span>
-                        <input
-                            type="checkbox"
-                            name="rightNow"
-                            id="right-now"
-                            value={this.state.rightNow}
-                            onChange={this.handleChange}
-                        />
-                        <label
-                            htmlFor="right-nom"
-                        >
-                            Looking for right now
-                        </label>
-                    </span>
-                </form>
+
+                            <div className="extended-search-checkboxes">
+                                <span>
+                                    <input
+                                    type="checkbox"
+                                    name="netflix"
+                                    id="netflix"
+                                    checked={this.state.netflix}
+                                    onChange={this.handleNetflixChange}
+                                />
+                                <label
+                                    htmlFor="netflix"
+                                >
+                                    Who owns a Netflix account
+                                </label>
+                                    </span>
+                            < br/>
+                             <span>
+                                <input
+                                    type="checkbox"
+                                    name="rightNow"
+                                    id="right-now"
+                                    checked={this.state.rightNow}
+                                    onChange={this.handleRightNowChange}
+                                />
+                                <label
+                                    htmlFor="right-now"
+                                >
+                                    Looking for right now
+                                </label>
+                            </span></div>
+                        <div className="extended-search-submit">
+                            <input type="submit" value="Search"/>
+                        </div>
+                    </form>
+                </div>
             </div>
         )
     }

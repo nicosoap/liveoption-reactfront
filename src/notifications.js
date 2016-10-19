@@ -39,8 +39,6 @@ export class Notifications extends Component {
             messages: newProps.messages,
             info: newProps.info,
         })
-
-        console.log(newProps.info)
     }
 
     render () {

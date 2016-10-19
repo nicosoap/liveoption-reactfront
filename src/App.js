@@ -3,10 +3,21 @@ import ReactGA from 'react-ga'
 import io from 'socket.io-client'
 import './App.css'
 import  Menu from './menu'
+import axios from 'axios'
 import {ExtendedSearch} from './search'
 
 ReactGA.initialize('UA-85246703-1')
 
+localStorage.jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9waWNob3UiLCJpYXQiOjE0NzUxNTk3OTJ9.Lcu-GyJVfBxU4H4esKkWntQS55niL8qaGnWRJu2dPeI'
+
+let my_jwt = localStorage.jwt
+if (!my_jwt) {
+    console.log("Navigator not supported")
+}
+
+axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.headers.common['Authorization'] = 'Bearer ' + my_jwt;
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 class App extends Component {
     state = {
@@ -24,15 +35,11 @@ class App extends Component {
         },
         info:{
             messages: []
-        }
+        },
+        searchString: ''
     }
 
     componentDidMount = () => {
-        let my_jwt = localStorage.jwt
-        if (!my_jwt) {
-            console.log("Navigator not supported")
-        }
-
         this.socket = io('localhost:3001/', {
             'query': 'token=' + my_jwt
         })
@@ -142,12 +149,75 @@ class App extends Component {
         })
     }
 
+    updateSearch = (payload) => {
+        let geocode = '',
+            tags = '',
+            netflix = '',
+            rightNow = '',
+            ageRange = '',
+            popularRange = ''
+
+        if (payload.geocode.lat !== 0 || payload.geocode.lng !== 0) {
+            geocode = ' around-lat=' + payload.geocode.lat +
+                ' around-lng=' + payload.geocode.lng
+        }
+        if (payload.tags !== '') {
+            tags = ' ' + payload.tags + ' '
+        }
+        if (payload.netflix === true) {
+            netflix = ' netflix'
+        }
+        if (payload.rightNow === true) {
+            rightNow = ' rightnow'
+        }
+        if (payload.popularRange.min !== 0 || payload.popularRange.max !== 100) {
+            popularRange = ' popularity-from=' + payload.popularRange.min +
+                ' popularity-to=' + payload.popularRange.max
+        }
+        if (payload.ageRange.min !== 18 || payload.ageRange.max !== 77) {
+            ageRange = ' age-from=' + payload.ageRange.min +
+            ' age-to=' + payload.ageRange.max
+        }
+        const searchString = tags +
+            netflix +
+            rightNow +
+            ageRange +
+            popularRange +
+            geocode
+        this.setState({searchString})
+    }
+
+    simpleSearch = query => {
+        console.log('simple query: ',query)
+        this.search(query)
+    }
+
+    extendedSearch = () => {
+        console.log('extended search', this.state.searchString)
+        this.search(this.state.searchString)
+    }
+
+    search = (query) => {
+        axios.get('/user', {
+            query: query
+        })
+            .then(response => console.log(response))
+    }
+
   render() {
-      const { notifications, messages, info } = this.state
+      const { notifications, messages, info, searchString } = this.state
     return (
-        <Menu notifications={ notifications } messages={ messages } info={info} >
+        <Menu notifications={ notifications }
+              messages={ messages }
+              info={info}
+              searchString={searchString}
+              simpleSearch={this.simpleSearch}
+        >
             <div className="main-content">
-                <ExtendedSearch />
+                <ExtendedSearch
+                    updateSearch={this.updateSearch}
+                    extendedSearch={this.extendedSearch}
+                />
             </div>
         </Menu>
 

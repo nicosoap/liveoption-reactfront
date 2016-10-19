@@ -92,7 +92,9 @@ export default class Menu extends Component {
         },
         info:{
             messages: []
-        }
+        },
+        searchString: '',
+        simpleSearch: null
     }
 
     toggleMenu = () => this.setState({isShown: !this.state.isShown})
@@ -100,7 +102,9 @@ export default class Menu extends Component {
     componentWillReceiveProps = (newProps) => this.setState({
         notifications: newProps.notifications,
         messages: newProps.messages,
-        info: newProps.info
+        info: newProps.info,
+        searchString: newProps.searchString,
+        simpleSearch: newProps.simpleSearch
     })
 
 
@@ -123,7 +127,7 @@ export default class Menu extends Component {
                 })}>
                     <div className="top-bar">
                         <MenuButton toggleMenu={ this.toggleMenu } />
-                        <Search socket={this.socket}/>
+                        <Search socket={this.socket} searchString={this.state.searchString} simpleSearch={this.state.simpleSearch} />
                         <Notifications notifications={notifications} messages={messages} info={info}/>
                     </div >
                     <div className="App">
