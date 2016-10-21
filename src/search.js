@@ -25,6 +25,7 @@ export default class Search extends Component {
     handleChange = e => this.setState({searchString: e.target.value})
 
     searchSubmit = e => {
+        e.preventDefault()
         const body = this.state.searchString
         if (body) {
             this.props.simpleSearch(body)
@@ -74,6 +75,7 @@ export class ExtendedSearch extends Component {
         rightNow: false
     }
     extendedSearch = e => {
+        e.preventDefault()
         this.props.extendedSearch()
     }
 
@@ -106,7 +108,7 @@ export class ExtendedSearch extends Component {
                 this.props.updateSearch(this.state))
         })
     }
-    updateTags = tags => this.setState({tags})
+    updateTags = tags => this.setState({tags}, () => this.props.updateSearch(this.state))
 
     openMenu = () => this.setState({menuOpen: !this.state.menuOpen})
 
@@ -131,6 +133,17 @@ export class ExtendedSearch extends Component {
                         name="extended-search"
                         onSubmit={this.extendedSearch}
                     >
+                        <label htmlFor="around-me">
+                            Around location:
+                        </label>
+                        <PlacesAutocomplete
+                            type="text"
+                            name="address"
+                            id="around-me"
+                            hideLabel
+                            value={this.state.address}
+                            onChange={this.handleAddressChange}
+                        />
                         <label>Older than {this.state.ageRange.min} and younger than {this.state.ageRange.max}</label>
                         <InputRange
                             maxValue={77}
@@ -146,17 +159,7 @@ export class ExtendedSearch extends Component {
                             value={this.state.popularRange}
                             onChange={this.handlePopularChange.bind(this)}
                         />
-                        <label htmlFor="around-me">
-                            Around location:
-                        </label>
-                        <PlacesAutocomplete
-                            type="text"
-                            name="address"
-                            id="around-me"
-                            hideLabel
-                            value={this.state.address}
-                            onChange={this.handleAddressChange}
-                        />
+
                         <TagInput id="tags" changeTags={this.updateTags} />
 
 

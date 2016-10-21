@@ -5,16 +5,15 @@ import React, { Component } from 'react'
 
 export default class TagInput extends Component {
     state = {
-        tags:['lol', 'lil', 'lal']
+        tags:[]
     }
 
     addTag = e => {
         e.preventDefault()
         if ((e.keyCode === 32 || e.keyCode === 13) && /^#{0,1}([A-Za-z0-9]*) {0,1}$/.test(e.target.value)) {
             const tag = /^#{0,1}([A-Za-z0-9]*) {0,1}$/.exec(e.target.value)[1] || ''
-            console.log(tag)
-            if (this.state.tags.indexOf(tag) === -1) {
-                this.setState({tags: [...this.state.tags, tag]})
+            if (this.state.tags.indexOf(tag) === -1 && tag !== ' ') {
+                this.setState({tags: [...this.state.tags, tag]}, () => this.props.changeTags(this.state.tags))
             }
             e.target.value = ''
         }
@@ -22,8 +21,9 @@ export default class TagInput extends Component {
 
     removeTag = e => {
         const tmp = this.state.tags
-        tmp.splice(this.state.tags.indexOf(e.target.attributes.value.value), 1)
-        this.setState({tags: tmp})
+        const targetted = e.target.attributes.value || e.target.parentNode.attributes.value
+        tmp.splice(this.state.tags.indexOf(targetted.value), 1)
+        this.setState({tags: tmp}, this.props.changeTags(this.state.tags))
     }
 
     render() {
@@ -32,11 +32,11 @@ export default class TagInput extends Component {
                 {this.state.tags.map((tag, i) => {
                     return(
                         <span className="input-tag" key={i} value={tag} onClick={this.removeTag}>
-                        {'#' + tag + ' '}<i className="material-icons icon-small lower">remove_circle</i>
+                        {'#' + tag + ' '}<div className="material-icons icon-small lower card-1-level">remove_circle</div>
                     </span>
                     )
                 })}
-                <input className="input-tags-search" type="search" onKeyUp={this.addTag} />
+                <input className="input-tags-search" type="search" onKeyUp={this.addTag} placeholder="Tags"/>
             </div>
         )
     }

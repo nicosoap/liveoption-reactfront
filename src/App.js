@@ -161,8 +161,11 @@ class App extends Component {
             geocode = ' around-lat=' + payload.geocode.lat +
                 ' around-lng=' + payload.geocode.lng
         }
-        if (payload.tags !== '') {
-            tags = ' ' + payload.tags + ' '
+        if (payload.tags[0]) {
+            payload.tags.map(e =>{
+            tags += ' #' + e
+            return null}
+        )
         }
         if (payload.netflix === true) {
             netflix = ' netflix'
@@ -197,7 +200,8 @@ class App extends Component {
                 query: query
             }
         })
-            .then(response => console.log("response: ",response.message))
+            .then((response) => {console.log("response: ",response.data)})
+            .catch(error => console.log(error))
     }
 
   render() {
