@@ -351,6 +351,8 @@ a {
     box-sizing: border-box;
     padding: 4px 4px;
     height: 52px;
+    white-space: nowrap;
+    overflow:hidden;
 }
 .input-tag {
     border: solid 1px rgba(120,120,120,0.5);
@@ -360,9 +362,10 @@ a {
     display: inline-block;
     height: 40px;
     line-height: 40px;
+    cursor: pointer;
 }
 .input-tags-search {
-    width: auto;
+    width: 100%;
     position: relative;
     right: 0;
     left: 0;

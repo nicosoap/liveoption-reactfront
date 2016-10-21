@@ -25,7 +25,6 @@ export default class Search extends Component {
     handleChange = e => this.setState({searchString: e.target.value})
 
     searchSubmit = e => {
-        e.preventDefault()
         const body = this.state.searchString
         if (body) {
             this.props.simpleSearch(body)
@@ -75,7 +74,6 @@ export class ExtendedSearch extends Component {
         rightNow: false
     }
     extendedSearch = e => {
-        e.preventDefault()
         this.props.extendedSearch()
     }
 

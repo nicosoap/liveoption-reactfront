@@ -189,10 +189,7 @@ class App extends Component {
 
     simpleSearch = query => this.search(query)
 
-    extendedSearch = () => {
-        console.log('extended search', this.state.searchString)
-        this.search(this.state.searchString)
-    }
+    extendedSearch = () => this.search(this.state.searchString)
 
     search = (query) => {
         axios.get('/user', {
@@ -200,7 +197,7 @@ class App extends Component {
                 query: query
             }
         })
-            .then(response => console.log("response: ",response))
+            .then(response => console.log("response: ",response.message))
     }
 
   render() {
