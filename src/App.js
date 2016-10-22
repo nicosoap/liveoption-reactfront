@@ -4,7 +4,9 @@ import io from 'socket.io-client'
 import './App.css'
 import  Menu from './menu'
 import axios from 'axios'
+import {User} from './user'
 import {ExtendedSearch} from './search'
+import {PhotoInput} from "./photo"
 
 ReactGA.initialize('UA-85246703-1')
 
@@ -36,7 +38,8 @@ class App extends Component {
         info:{
             messages: []
         },
-        searchString: ''
+        searchString: '',
+        users: {}
     }
 
     componentDidMount = () => {
@@ -200,7 +203,9 @@ class App extends Component {
                 query: query
             }
         })
-            .then((response) => {console.log("response: ",response.data)})
+            .then((response) => {
+                console.log("response: ",response.data)
+                this.setState({users: response.users})})
             .catch(error => console.log(error))
     }
 
@@ -218,6 +223,8 @@ class App extends Component {
                     updateSearch={this.updateSearch}
                     extendedSearch={this.extendedSearch}
                 />
+                <User />
+                <PhotoInput />
             </div>
         </Menu>
 
@@ -225,4 +232,3 @@ class App extends Component {
   }
 }
 export default App;
-

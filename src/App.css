@@ -120,6 +120,39 @@ a {
     text-align: left;
     width: 100%;
 }
+/* ========================= */
+/* =====  FORMS  =========== */
+/* ========================= */
+
+/* ======= Profile forms ====== */
+
+/* ------------ Photo Upload ------------ */
+
+.photoInput .box {
+    width:500px;
+    height: 500px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.photoInput .box__dragndrop,
+.photoInput .box__uploading,
+.photoInput .box__success,
+.photoInput .box__error {
+    display: none;
+}
+.photoInput .box.has-advanced-upload {
+    background-color: white;
+    outline: 2px dashed black;
+    outline-offset: -10px;
+}
+.photoInput .box.has-advanced-upload .box__dragndrop {
+    display: inline;
+}
+.photoInput .box.is-dragover {
+    background-color: grey;
+}
+
 /* ----- SEARCH ----- */
 
 /*----- Search Form -----*/
@@ -441,6 +474,9 @@ a {
 .icon-large {
     font-size: 42px;
     line-height: 42px;
+}
+.icon-huge {
+    font-size: 9em;
 }
 
 .read {
