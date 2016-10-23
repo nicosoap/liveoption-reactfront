@@ -13,7 +13,7 @@ export default class TagInput extends Component {
         if ((e.keyCode === 32 || e.keyCode === 13) && /^#{0,1}([A-Za-z0-9]*) {0,1}$/.test(e.target.value)) {
             const tag = /^#{0,1}([A-Za-z0-9]*) {0,1}$/.exec(e.target.value)[1] || ''
             if (this.state.tags.indexOf(tag) === -1 && tag !== ' ') {
-                this.setState({tags: [...this.state.tags, tag]}, () => this.props.changeTags(this.state.tags))
+                this.setState({tags: [...this.state.tags, tag]}, () => this.props.save(this.state.tags))
             }
             e.target.value = ''
         }
@@ -23,7 +23,7 @@ export default class TagInput extends Component {
         const tmp = this.state.tags
         const targetted = e.target.attributes.value || e.target.parentNode.attributes.value
         tmp.splice(this.state.tags.indexOf(targetted.value), 1)
-        this.setState({tags: tmp}, this.props.changeTags(this.state.tags))
+        this.setState({tags: tmp}, this.props.save(this.state.tags))
     }
 
     render() {

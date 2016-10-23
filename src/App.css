@@ -26,6 +26,7 @@
     --main-alt-4-bg-color: rgb(204, 106, 32);
     --main-alt-5-bg-color: rgb(204, 106, 32);
     --light-grey: rgba(109, 122, 142, 0.74);
+    --user-z: 100;
 }
 
 body {
@@ -113,12 +114,13 @@ a {
 
 .main-content {
     top: 62px;
+    left: 0;
+    right: 0;
     float: left;
     clear: both;
     padding: 30px;
     position: relative;
-    text-align: left;
-    width: 100%;
+    text-align: center;
 }
 /* ========================= */
 /* =====  FORMS  =========== */
@@ -237,6 +239,7 @@ a {
 .extended-search-button {
     color: var(--light-grey);
     vertical-align: text-bottom;
+    text-align: left;
     font-size: 18px;
     line-height: 28px;
     padding: 0 52px 12px 52px;
@@ -276,6 +279,7 @@ a {
     transition: all 300ms;
     transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
     overflow: hidden;
+    margin-bottom: 20px;
 }
 .extended-search {
     font-family: Roboto, sans-serif;
@@ -358,12 +362,12 @@ a {
     color: var(--component-alt-2-font-color);
 }
 .extended-search-checkboxes {
-    width: calc(50%);
+    width: calc(100%);
     text-align:left;
     display: inline-block;
 }
 .extended-search-submit {
-    width:calc(50%);
+    width:calc(0%);
     text-align: right;
     display: inline-block;
 }
@@ -666,7 +670,81 @@ a {
     transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
+/*  --------  USERS  ------  */
+/* ---      usercard form search results     --- */
 
+.users {
+    margin: 0;
+    padding: 0;
+    border:none;
+    position: relative;
+}
+.user {
+    color: var(--component-alt-2-font-color);
+    margin: 0 20px 20px 0;
+    min-width: 300px;
+    width: calc(50% - 10px);
+    max-width: 550px;
+    height: 320px;
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    z-index: calc(var(--user-z));
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    cursor: pointer;
+    box-sizing: content-box;
+}
+.user:nth-child(even) {
+    margin-right: 0;
+}
+.user:hover {
+    z-index: 300;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.user .profile-picture{
+    text-align: center;
+    opacity: .8;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height:100%;
+    width: 100%;
+    overflow:hidden;
+    z-index: calc(var(--user-z) - 1);
+    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.user .profile-picture:hover {
+    filter: blur(3px);
+    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.user img {
+    height: 320px;
+    min-width: 100%;
+    order: 100;
+
+}
+.user .user-details {
+    box-sizing: border-box;
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 20%;
+    text-align: end;
+    z-index: calc(var(--user-z) + 1);
+    vertical-align: baseline;
+    clear: both;
+    padding: 5px 12px 0 0;
+}
+.user .user-description {
+    font-size: 18px;
+}
+.user .user-spacer {
+    height:60%;
+}
 /*----- Animations -----*/
 @keyframes appear-from-under {
     0% {

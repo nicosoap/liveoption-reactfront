@@ -1,10 +1,25 @@
 /**
  * Created by opichou on 10/15/16.
  */
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import axios from 'axios'
+import TagInput from './taginput'
 import {PhotoInput} from './photo'
-import {CheckboxInput, DateInput, EmailInput, HiddenInput, PasswordInput, RadioInput, TextAreaInput, TextInput } from './inputs'
+import {
+    CheckboxInput,
+    DateInput,
+    EmailInput,
+    HiddenInput,
+    PasswordInput,
+    RadioInput,
+    TextAreaInput,
+    TextInput
+} from './inputs'
+
+// Clever lier, fooling us all, never thought I'd work it out
+// How could I have known it was ever about you boy?
+// Now there's nothing to say, there's no words and we're not talking anyhow
+// You must have known I was never to doubt you boy
 
 let my_jwt = localStorage.jwt
 if (!my_jwt) {
@@ -16,7 +31,10 @@ axios.defaults.headers.common['Authorization'] = 'Bearer ' + my_jwt;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 export class FullForm extends Component {
-    state = {userForm:{}}
+    state = {
+        userForm: [],
+        user: {}
+    }
 
     updateUser = pl => this.setState(pl)
 
@@ -26,39 +44,69 @@ export class FullForm extends Component {
     }
 
     render() {
-        this.state.userForm.map((e, i) => {
-            switch (e.type) {
-                case 'text':
-                    break
-                case 'checkbox':
-                    break
-                case 'textArea':
-                    break
-                case 'radio':
-                    break
-                case 'photo':
-                    break
-                case 'date':
-                    break
-                case 'radio':
-                    break
-                default:
-                    break
 
-            }
-        })
         return (
             <div className="userForm card-2">
                 <div className="section-1">
-                    <CheckboxInput/>
-                    <DateInput/>
-                    <EmailInput/>
-                    <HiddenInput/>
-                    <PasswordInput/>
-                    <RadioInput/>
-                    <TextAreaInput/>
-                    <TextInput/>
-                    <PhotoInput save={this.updateUser()}/>
+                    { this.state.userForm.map((e, i) => {
+                        switch (e.type) {
+                            case 'checkbox':
+                                return (
+                                    <CheckboxInput params={e} key={i} save={this.updateUser()}/>
+                                )
+                                break
+                            case 'date':
+                                return (
+                                    <DateInput params={e} key={i} save={this.updateUser()}/>
+                                )
+                                break
+                            case 'email':
+                                return (
+                                    <EmailInput params={e} key={i} save={this.updateUser()}/>
+                                )
+                                break
+                            case 'hidden':
+                                return (
+                                    <HiddenInput params={e} key={i} save={this.updateUser()}/>
+                                )
+                                break
+                            case 'password':
+                                return (
+                                    <PasswordInput params={e} key={i} save={this.updateUser()}/>
+                                )
+                                break
+                            case 'radio':
+                                return (
+                                    <RadioInput params={e} key={i} save={this.updateUser()}/>
+                                )
+                                break
+                            case 'textArea':
+                                return (
+                                    <TextAreaInput params={e} key={i} save={this.updateUser()}/>
+                                )
+                                break
+                            case 'text':
+                                return (
+                                    <TagInput params={e} key={i} save={this.updateUser()}/>
+                                )
+                                break
+                            case 'photo':
+                                return (
+                                    <PhotoInput params={e} key={i} save={this.updateUser()}/>
+                                )
+                                break
+                            case 'tagInput':
+                                return (
+                                    <TagInput params={e} key={i} save={this.updateUser()}/>
+                                )
+                            default:
+                                return (
+                                    <div className="hidden">I'm always learning things the hardest way</div>
+                                )
+                                break
+                        }
+
+                    })}
                 </div>
             </div>
         )

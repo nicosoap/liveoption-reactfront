@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
 
+// If it was so fine, it was so good, oh you're unbelievable
+// All this time I've been living without you boy, not your lying
+// It felt so good, the world don't know, now they'll never find out
+// All these years she must've been beside you boy
+
 export class PhotoInput extends Component {
     state = {
         id:'',
@@ -18,7 +23,8 @@ export class PhotoInput extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        this.setState({newProps})
+        const {id, name, type, placeholder, value, autocomplete, required, accept} = newProps
+        this.setState({id, name, type, placeholder, value, autocomplete, required, accept})
     }
 
     handleDragOver = e => {
@@ -36,12 +42,16 @@ export class PhotoInput extends Component {
         e.preventDefault();
         e.stopPropagation();
         this.handleDragLeave(e)
-        this.setState({photo: e.dataTransfer.files[0], imageSource: URL.createObjectURL(e.dataTransfer.files[0])})
+        if (/^image\/.*$/i.test(e.dataTransfer.files[0].type)) {
+            this.setState({photo: e.dataTransfer.files[0], imageSource: URL.createObjectURL(e.dataTransfer.files[0])})
+        } else {
+            console.log('invalid image format')
+        }
     }
 
 
     render() {
-        const {id, name, type, placeholder, value, autocomplete, required, photo, imageSource, accept, isDragover, uploadSupport} = this.state
+        const {imageSource, accept, isDragover, uploadSupport} = this.state
 
         return(
             <div className="photoInput">
@@ -67,7 +77,7 @@ export class PhotoInput extends Component {
                 <div className="box__error">Error!</div>
             </form>
 
-                <img src={imageSource}/>
+                <img src={imageSource} role="presentation"/>
                 </div>
         )
     }

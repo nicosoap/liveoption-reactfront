@@ -160,7 +160,7 @@ export class ExtendedSearch extends Component {
                             onChange={this.handlePopularChange.bind(this)}
                         />
 
-                        <TagInput id="tags" changeTags={this.updateTags} />
+                        <TagInput id="tags" save={this.updateTags} />
 
 
                             <div className="extended-search-checkboxes">

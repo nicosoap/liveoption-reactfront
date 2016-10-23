@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 
-
 export class CheckboxInput extends Component {
     state = {
         id:'',
@@ -13,7 +12,8 @@ export class CheckboxInput extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        this.setState({newProps})
+        const {id, name, type, placeholder, value, autocomplete, required} = newProps
+        this.setState({id, name, type, placeholder, value, autocomplete, required})
     }
 
     render() {
@@ -48,7 +48,8 @@ export class DateInput extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        this.setState({newProps})
+        const {id, name, type, placeholder, value, autocomplete, required} = newProps
+        this.setState({id, name, type, placeholder, value, autocomplete, required})
     }
 
     render() {
@@ -79,7 +80,8 @@ export class EmailInput extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        this.setState({newProps})
+        const {id, name, type, placeholder, value, autocomplete, required} = newProps
+        this.setState({id, name, type, placeholder, value, autocomplete, required})
     }
 
     render() {
@@ -108,7 +110,8 @@ export class HiddenInput extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        this.setState({newProps})
+        const {id, name, type, value, required} = newProps
+        this.setState({id, name, type, value, required})
     }
 
     render() {
@@ -136,7 +139,8 @@ export class PasswordInput extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        this.setState({newProps})
+        const {id, name, type, placeholder, value, autocomplete, required} = newProps
+        this.setState({id, name, type, placeholder, value, autocomplete, required})
     }
 
     render() {
@@ -167,7 +171,8 @@ export class RadioInput extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        this.setState({newProps})
+        const {id, name, type, placeholder, value, autocomplete, required} = newProps
+        this.setState({id, name, type, placeholder, value, autocomplete, required})
     }
 
     render() {
@@ -207,7 +212,8 @@ export class TextAreaInput extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        this.setState({newProps})
+        const {id, name, type, placeholder, value, required} = newProps
+        this.setState({id, name, type, placeholder, value, required})
     }
 
     render() {
@@ -240,7 +246,8 @@ export class TextInput extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        this.setState({newProps})
+        const {id, name, type, placeholder, value, autocomplete, required} = newProps
+        this.setState({id, name, type, placeholder, value, autocomplete, required})
     }
 
     render() {
