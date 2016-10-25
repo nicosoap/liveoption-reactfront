@@ -44,7 +44,7 @@ export class UserCard extends Component {
         photo: ['girl.jpg'],
         username:'Anat78',
         bio:"Anat78 est un garçon sensible qui ratisse la pelouse de sa maman le dimanche et lit des livre de cuisine pour se détendre lorsqu'il est tendu. Anat78 est un garçon sensible qui ratisse la pelouse de sa maman le dimanche et lit des livre de cuisine pour se détendre lorsqu'il est tendu",
-        id: 0,
+        id: 'olivier',
         liked: false,
         chat: false,
         chatNb: 0,
@@ -84,9 +84,9 @@ export class UserCard extends Component {
 
     block = () => {
         console.log("block")
-        axios.put('/block/'+ this.state.id)
+        axios.get('/block/'+ this.state.id)
             .then((response) => {
-            console.log("response: ",response.data)
+            console.log("response: ",response.data.success)
             if (response.data.success) {
                 this.setState({blocked: !this.state.liked})
             }})
@@ -96,13 +96,15 @@ export class UserCard extends Component {
 
     like = () => {
         console.log("like")
-        axios.put('/like/'+ this.state.id)
-        .then((response) => {
+        axios.get('/like/'+ this.state.id)
+        .then(response => {
+            console.log("response")
             console.log("response: ",response.data)
             if (response.data.success) {
                 this.setState({liked: !this.state.liked})
             }})
         .catch(error => console.log(error))
+        console.log("endlike")
     }
 
 
