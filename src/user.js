@@ -98,13 +98,27 @@ export class UserCard extends Component {
         console.log("like")
         axios.get('/like/'+ this.state.id)
         .then(response => {
-            console.log("response")
-            console.log("response: ",response.data)
-            if (response.data.success) {
+            if (response.data.success && response.data.match) {
+                this.setState({
+                    liked: !this.state.liked, match: true})
+            } else if (response.date.success){
                 this.setState({liked: !this.state.liked})
             }})
         .catch(error => console.log(error))
-        console.log("endlike")
+    }
+
+    dislike = () => {
+        console.log("dislike")
+        axios.get('/dislike/'+ this.state.id)
+            .then(response => {
+                if (response.data.success && this.state.match) {
+                    this.setState({liked: !this.state.liked,
+                    match: false})
+                } else if (response.data.success){
+                    this.setState({liked: !this.state.liked})
+                }})
+            .catch(error => console.log(error))
+        console.log("enddislike")
     }
 
 
@@ -125,10 +139,11 @@ export class UserCard extends Component {
                 <div className="user-container-1">
                     <div className="user-interactions">
                         <div className="small-container">
-                            {match ? <div onClick={this.like}>
+                            {match ? <div onClick={this.dislike}>
                                 <i className={
                                     cx({
                                         'fa fa-heart-o': true,
+                                        'user-unlike': true,
                                         'icon-active': liked,
                                         'icon-match': match
                                     })
