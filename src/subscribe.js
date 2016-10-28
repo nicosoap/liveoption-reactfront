@@ -33,18 +33,24 @@ export class Form extends Component {
         user: {}
     }
 
-    updateUser = pl => this.setState(pl)
-
     componentDidMount() {
         axios.get('/admin/userform', {
             params: {
                 form: this.props.form
             }
-        })
-            .then(response => {
-                console.log(response)
-                this.setState({userForm: response.data})
+        }).then(response => {
+        console.log(response)
+        this.setState({userForm: response.data})
+    })
+    }
 
+    handleSubmit = () => {
+        axios.post('/user/new', this.state.user)
+            .then(response => {if (response.data.success){
+            //si success à la creation du compte
+        } else {
+            //si erreurs
+            }
             })
     }
 
@@ -57,52 +63,52 @@ export class Form extends Component {
                         switch (e.type) {
                             case 'checkbox':
                                 return (
-                                    <CheckboxInput params={e} key={i} save={this.updateUser}/>
+                                    <CheckboxInput params={e} key={i} update={this.props.update}/>
                                 )
                                 break
                             case 'date':
                                 return (
-                                    <DateInput params={e} key={i} save={this.updateUser}/>
+                                    <DateInput params={e} key={i} update={this.props.update}/>
                                 )
                                 break
                             case 'email':
                                 return (
-                                    <EmailInput params={e} key={i} save={this.updateUser}/>
+                                    <EmailInput params={e} key={i} update={this.props.update}/>
                                 )
                                 break
                             case 'hidden':
                                 return (
-                                    <HiddenInput params={e} key={i} save={this.updateUser}/>
+                                    <HiddenInput params={e} key={i} update={this.props.update}/>
                                 )
                                 break
                             case 'password':
                                 return (
-                                    <PasswordInput params={e} key={i} save={this.updateUser}/>
+                                    <PasswordInput params={e} key={i} update={this.props.update}/>
                                 )
                                 break
                             case 'radio':
                                 return (
-                                    <RadioInput params={e} key={i} save={this.updateUser}/>
+                                    <RadioInput params={e} key={i} update={this.props.update}/>
                                 )
                                 break
                             case 'textArea':
                                 return (
-                                    <TextAreaInput params={e} key={i} save={this.updateUser}/>
+                                    <TextAreaInput params={e} key={i} update={this.props.update}/>
                                 )
                                 break
                             case 'text':
                                 return (
-                                    <TextInput params={e} key={i} save={this.updateUser}/>
+                                    <TextInput params={e} key={i} update={this.props.update}/>
                                 )
                                 break
                             case 'photo':
                                 return (
-                                    <PhotoInput params={e} key={i} save={this.updateUser}/>
+                                    <PhotoInput params={e} key={i} update={this.props.update}/>
                                 )
                                 break
                             case 'tagInput':
                                 return (
-                                    <TagInput params={e} key={i} save={this.updateUser}/>
+                                    <TagInput params={e} key={i} update={this.props.update}/>
                                 )
                             default:
                                 return (
@@ -111,6 +117,7 @@ export class Form extends Component {
                                 break
                         }
                     })}
+                    <button className="submit-btn" onClick={this.props.submit}>{this.props.submitName}</button>
                 </div>
             </div>
         )
@@ -128,7 +135,7 @@ export class Subscribe extends Component {
     render() {
         const before = ''
         return(
-            <Form form={'shortForm'} update={this.updateUser} submit={this.handleSubmit} before={before}/>
+            <Form form={'shortForm'} update={this.updateUser} submit={this.handleSubmit} before={before} submitName={"Sign-up"}/>
         )
     }
 }
@@ -138,11 +145,21 @@ export class FullForm extends Component {
         result: {}
     }
 
-    updateUser = pl => this.setState({result: pl})
+    updateUser = e => {
+        this.setState({[e.target.name]:e.target.value})
+    }
+
+    handleSubmit = () => {
+        axios.post('/user/update', this.state.user)
+            .then(response => {
+                if (response.data.success == true){
+
+        }})
+    }
 
     render() {
         return (
-            <Form form={'fullForm'} update={this.updateUser} submit={this.handleSubmit}/>
+            <Form form={'fullForm'} update={this.updateUser} submit={this.handleSubmit} submitName={"Update profile"}/>
         )
     }
 }

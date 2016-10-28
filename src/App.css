@@ -883,22 +883,32 @@ a {
 /* ------------- FORMS --------------- */
 /* ----------------------------------- */
 
-/* ----          shortForm ----------- */
+/* -------  shortForm + login -------- */
 
-.shortForm {
-    width: 100wv;
+.shortForm,
+.login {
+    width: 100vw;
     height: 100vh;
     background: var(--component-alt-2-bg-color);
 }
 .shortForm .section-1 {
     width: 400px;
-    height: 440px;
+    height: 550px;
     margin: -300px -200px;
     position: absolute;
     top: 50%;
     left: 50%;
 }
-.shortForm .section-1 .before-form {
+.login .section-1 {
+    width: 400px;
+    height: 450px;
+    margin: -250px -200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.shortForm .section-1 .before-form,
+.login .section-1 .before-form{
 
     background: rgba(255,255,255, 0.24);
     mask: url(http://localhost:3000/images/lo.svg) center / contain no-repeat;
@@ -906,33 +916,87 @@ a {
     height: 300px;
     font-size: 200px;
     line-height: 200px;
+    animation: 4500ms ease-in-out 0s infinite normal heartbeat;
 }
-.shortForm .section-1 input {
+.shortForm .section-1 input,
+.login .section-1 input {
+    cursor: pointer;
     color: rgba(255, 255, 255, 0.38);
     height:50px;
-    width:400px;
-    /*background: none;*/
+    width:350px;
+    background: none;
     border: none;
     font-size: 20px;
     padding: 0 25px;
     border-radius: 25px;
+    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
-.shortForm .section-1 input:hover {
-    background: rgba(255, 255, 255, 0.24)
-}
-.shortForm .section-1 input:active {
-    background: rgba(255, 255, 255, 0.14)
+.shortForm .section-1 button,
+.login .section-1 button {
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.38);
+    height:50px;
+    width:400px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    padding: 0 25px;
+    border-radius: 25px;
+    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
-.shortForm .section-1 input  {
+.shortForm .section-1 input:hover,
+.login .section-1 input:hover,
+.shortForm .section-1 button:hover,
+.login .section-1 button:hover{
+    background: rgba(255, 255, 255, 0.24);
+}
+.shortForm .section-1 input:active,
+.login .section-1 input:active,
+.shortForm .section-1 button:active,
+.login .section-1 button:active {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.shortForm .section-1 input .validating,
+.login .section-1 input .validating {
     background: url(http://localhost:3000/images/loading.svg) no-repeat right;
 }
-.shortForm .section-1 input .valid {
-    background: linear-gradient(-90deg, rgba(60, 220, 100, 0.45), rgba(82, 97, 121, 0) 14%);
+.shortForm .section-1 input:hover .validating,
+.login .section-1 input:hover .validating {
+    background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/loading.svg) no-repeat right;
 }
-.shortForm .section-1 input .error {
-    background: linear-gradient(-90deg, rgba(220, 60, 100, 0.45), rgba(82, 97, 121, 0) 14%);
+.shortForm .section-1 input:active .validating,
+.login .section-1 input:active .validating {
+    background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/loading.svg) no-repeat right;
 }
+
+.shortForm .section-1 input .valid,
+.login .section-1 input .valid {
+    background: url(http://localhost:3000/images/checkmark.svg) no-repeat right;
+}
+.shortForm .section-1 input:hover .valid,
+.login .section-1 input:hover .valid {
+    background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
+}
+.shortForm .section-1 input:active .valid,
+.login .section-1 input:active .valid {
+    background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
+}
+
+.shortForm .section-1 input .error,
+.login .section-1 input .error {
+    background: url(http://localhost:3000/images/error.svg) no-repeat right;
+}
+.shortForm .section-1 input:hover .error,
+.login .section-1 input:hover .error {
+    background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/error.svg) no-repeat right;
+}
+.shortForm .section-1 input:active .error,
+.login .section-1 input:active .error{
+    background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/error.svg) no-repeat right;
+}
+
 
 
 
@@ -976,4 +1040,23 @@ a {
     100% {
         transform: translateX(0px);
     }
+}
+
+@keyframes heartbeat {
+    0% {
+        background:rgba(255,255,255, 0.18);
+    }
+    40%{
+        background:rgba(255,255,255, 0.62);
+    }
+    50% {
+        background:rgba(255,255,255, 0.22);
+    }
+    60%{
+        background:rgba(255,255,255, 0.62);
+    }
+    100% {
+         background:rgba(255,255,255, 0.18);
+     }
+
 }

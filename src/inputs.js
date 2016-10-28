@@ -197,7 +197,7 @@ export class TextInput extends Component {
                         'validating': validating,
                         'valid': valid,
                         'error': error !== ''})
-                    } />
+                    } onChange={this.props.update}/>
         )
     }
 }
