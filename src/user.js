@@ -24,7 +24,7 @@ export class User extends Component {
 
     componentDidMount() {
         axios.get('/admin/userForm')
-            .then(response => this.setState({userForm: response.data}, console.log(this.state)))
+            .then(response => this.setState({userForm: response.data}))
     }
 
     render() {
@@ -41,10 +41,9 @@ export class User extends Component {
 
 export class UserCard extends Component {
     state = {
-        photo: ['girl.jpg'],
-        username:'Anat78',
+        photo: [{filename: 'Aerial01', ext: '.jpg'}],
         bio:"Anat78 est un garçon sensible qui ratisse la pelouse de sa maman le dimanche et lit des livre de cuisine pour se détendre lorsqu'il est tendu. Anat78 est un garçon sensible qui ratisse la pelouse de sa maman le dimanche et lit des livre de cuisine pour se détendre lorsqu'il est tendu",
-        id: 'olivier',
+        login: 'olivier',
         liked: false,
         chat: false,
         chatNb: 0,
@@ -54,12 +53,21 @@ export class UserCard extends Component {
         height: 187,
         weight: 88,
         Kg: false,
-        M: false
+        M: false,
+        appConfig: {}
     }
 
-    conponentWillReceiveProps = newProps => {
-        const user = newProps.user
-        this.setState({user})
+    componentWillMount = () => {
+        axios.get('/admin/appConfig').then(response => {
+            console.log(response)
+            this.setState({appConfig: response.data})
+
+    })}
+
+    componentWillReceiveProps = newProps => {
+        console.log("NEWPROPS: ",newProps)
+        const {photo, bio, login, liked, chat, match, blocked, message} = newProps.user
+        this.setState({photo, login, bio})
     }
 
     kToLbs = (pK) => {
@@ -84,11 +92,10 @@ export class UserCard extends Component {
 
     block = () => {
         console.log("block")
-        axios.get('/block/'+ this.state.id)
+        axios.get('/block/'+ this.state.login)
             .then((response) => {
-            console.log("response: ",response.data.success)
             if (response.data.success) {
-                this.setState({blocked: !this.state.liked})
+                this.setState({blocked: !this.state.blocked})
             }})
             .catch(error => console.log(error))
     }
@@ -96,29 +103,25 @@ export class UserCard extends Component {
 
     like = () => {
         console.log("like")
-        axios.get('/like/'+ this.state.id)
+        axios.get('/like/'+ this.state.login)
         .then(response => {
             if (response.data.success && response.data.match) {
                 this.setState({
-                    liked: !this.state.liked, match: true})
-            } else if (response.date.success){
-                this.setState({liked: !this.state.liked})
+                    liked: true, match: true})
+            } else if (response.data.success){
+                this.setState({liked: true, match: false})
             }})
         .catch(error => console.log(error))
     }
 
     dislike = () => {
-        console.log("dislike")
-        axios.get('/dislike/'+ this.state.id)
+        axios.get('/dislike/'+ this.state.login)
             .then(response => {
-                if (response.data.success && this.state.match) {
+                if (response.data.success) {
                     this.setState({liked: !this.state.liked,
                     match: false})
-                } else if (response.data.success){
-                    this.setState({liked: !this.state.liked})
                 }})
             .catch(error => console.log(error))
-        console.log("enddislike")
     }
 
 
@@ -128,13 +131,16 @@ export class UserCard extends Component {
 
 
     render() {
-        const {photo, username, bio, id, liked, match, blocked, message, Kg, M, weight, height} = this.state
+        const {photo, bio, login, liked, match, blocked, message, Kg, M, weight, height, appConfig} = this.state
         const weight_formated = Kg?weight + ' Kg':this.kToLbs(weight).pounds + ' Lbs ' + this.kToLbs(weight).onces + ' oz'
         const height_formated = M?height + 'cm':this.cmToFeetInch(height).feet + 'ft. ' + this.cmToFeetInch(height).inches + 'in.'
+        const image = !!photo.filter(e => e.front)[0] ? photo.filter(e => e.front)[0] : (!!photo[0] ? photo[0] : '')
         return (
-            <div className="user" id={id} onClick={console.log("user")}>
-                <div className="profile-picture" style={{backgroundImage: `url('images/${photo[0]}')`}}>
-                    {/*<img src={"images/" + photo[0]} role="presentation"/>*/}
+            <div className={cx({
+                "user": true,
+                "hidden": blocked})}
+                 id={login} >
+                <div className="profile-picture" style={{backgroundImage: `url('${appConfig.baseURL}/images/${image.filename}')`}}>
                 </div>
                 <div className="user-container-1">
                     <div className="user-interactions">
@@ -154,7 +160,7 @@ export class UserCard extends Component {
                                     'material-icons': true,
                                     'icon-alarm': blocked
                                 })
-                            }>do_not_disturb</i></div>
+                            } >do_not_disturb</i></div>
                         </div>
                         {match ? <div className="user_pop_messenger" onClick={this.chat}><i className={
                             cx({
@@ -162,7 +168,7 @@ export class UserCard extends Component {
                                 'icon-middle': true,
                                 'icon-active': message
                             })
-                        }>message</i></div>:<div className="user_pop_messenger" onClick={this.like} ><i className={
+                        } >message</i></div>:<div className="user_pop_messenger" onClick={this.like} ><i className={
                             cx({
                                 'material-icons': true,
                                 'icon-middle': true,
@@ -171,8 +177,8 @@ export class UserCard extends Component {
                             })
                         }>thumb_up</i></div>}
                     </div>
-                    <Link to={`/user/${id}`}><div className="user-content-container">
-                        <div className="user-details">{username}</div>
+                    <Link to={`/user/${login}`}><div className="user-content-container">
+                        <div className="user-details">{login}</div>
                         <div className="user-details user-description hidden">
                             <p>height: {height_formated} &nbsp;
                             weight: {weight_formated}</p>
@@ -191,29 +197,24 @@ export class Users extends Component {
         users: []
     }
 
-    componentWillReceiveProps = newProps => this.setState({users: newProps.users})
+    componentWillReceiveProps = newProps => {
+        console.log("USERS newProps: ", newProps)
+        this.setState({users: newProps.users})
+    }
 
     render() {
-        const user = {user:{photo:['']}}
+        console.log(this.state.users.length)
+        let users = ''
+        if (this.state.users.length > 0) {users = this.state.users.map((e, i) => {
+            return (
+                <UserCard user={e} key={i}/>
+            )})} else {users = ''}
         return (
             <div id="users">
-                { this.state.users.map((e, i) => {
-                    return (
-                        <UserCard user={e} key={i}/>
-                    )
-                })}
-                <UserCard />
-                <UserCard />
-                <UserCard />
-                <UserCard />
-                <UserCard />
-                <UserCard />
-                <UserCard />
-                <UserCard />
-                <UserCard />
-                <UserCard />
+                { users}
             </div>
         )
     }
 }
+
 

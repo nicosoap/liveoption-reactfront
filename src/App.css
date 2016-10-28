@@ -36,7 +36,7 @@ body {
     -webkit-font-smoothing: antialiased;
     text-rendering: geometricPrecision;
     width: 100%;
-    margin: 0;
+    margin: 0 0 -200px 0;
     overflow-x: hidden;
 }
 
@@ -285,7 +285,7 @@ a {
 .extended-search {
     font-family: Roboto, sans-serif;
     box-sizing: border-box;
-    width: calc(100% - 60px);
+    width: calc(100%);
     position: relative;
     float: left;
     display: flex;
@@ -551,6 +551,8 @@ a {
     width: 15vw;
 }
 
+
+
 .notif-card {
     background-color: var(--component-bg-color);
     display: flex;
@@ -560,12 +562,43 @@ a {
     width: 15vw;
     height: 120px;
     margin: 10px 0;
-    padding: 14px;
     border-radius: 4px;
 }
+.notif-card .notification-image.visible {
+    height: 100%;
+    width:25%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    float: left;
+}
 
-.notif-card .body {
-    font-size: 18px;
+.notif-card .notification-image.hidden {
+     height: 100%;
+     width:0%;
+     background-size: cover;
+     background-repeat: no-repeat;
+     background-position: center;
+     display: inline-block;
+     float: left;
+ }
+
+.notif-card .body.illustrated {
+    width: 75%;
+    font-size: 16px;
+    display: inline-block;
+    float: left;
+    padding: 14px;
+    vertical-align: bottom;
+}
+
+.notif-card .body.full {
+    width: 100%;
+    font-size: 16px;
+    display: inline-block;
+    float: left;
+    padding: 14px;
 }
 
 .on-screen {
@@ -648,6 +681,7 @@ a {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     top: 0;
     width: 100%;
+    margin-bottom: -1600px;
 }
 
 .stored { /*this should be in device specific rule*/
@@ -687,13 +721,13 @@ a {
 .user {
     color: var(--component-alt-2-font-color);
     margin: 0 20px 20px 0;
-    min-width: 300px;
+    min-width: 550px;
     width: calc(50% - 10px);
     max-width: 550px;
     height: 320px;
     position: relative;
     display: inline-flex;
-    flex-direction: column;
+    /*flex-direction: column;*/
     text-align: right;
     z-index: calc(var(--user-z));
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -815,7 +849,7 @@ a {
 .user .user-content-container {
     width: 70%;
     z-index: calc(var(--user-z) + 1);
-    display: inline !important;
+    display: inline-block !important;
     margin:0;
 }
 .user:hover .user-content-container:hover {

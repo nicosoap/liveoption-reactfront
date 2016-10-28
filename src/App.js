@@ -37,10 +37,12 @@ class App extends Component {
             messages: []
         },
         searchString: '',
-        users: {}
+        users: {},
+        appConfig: null
     }
 
     componentDidMount = () => {
+
         this.socket = io('localhost:3001/', {
             'query': 'token=' + my_jwt
         })
@@ -203,12 +205,17 @@ class App extends Component {
         })
             .then((response) => {
                 console.log("response: ",response.data)
-                this.setState({users: response.users})})
+                this.setState({users: response.data.users})})
             .catch(error => console.log(error))
     }
 
   render() {
-      const { notifications, messages, info, searchString } = this.state
+      const { notifications, messages, info, searchString, users } = this.state
+      const childrenWithProps = React.Children.map(this.props.children,
+          (child) => React.cloneElement(child, {
+              users
+          })
+      );
     return (
         <Menu notifications={ notifications }
               messages={ messages }
@@ -221,11 +228,12 @@ class App extends Component {
                     updateSearch={this.updateSearch}
                     extendedSearch={this.extendedSearch}
                 />
-                {this.props.children}
+                {childrenWithProps}
             </div>
         </Menu>
 
     )
   }
 }
+
 export default App;

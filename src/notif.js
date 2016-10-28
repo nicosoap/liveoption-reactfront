@@ -3,13 +3,15 @@
  */
 import React, { Component } from 'react'
 import cx from 'classnames'
+import axios from 'axios'
 import { Link } from 'react-router'
 
 export default class Notif extends Component {
     state = {
         notification: null,
         isClosed: false,
-        hidden: false
+        hidden: false,
+        appConfig: {}
     }
 
     // componentDidMount = () => {
@@ -21,6 +23,13 @@ export default class Notif extends Component {
         //setTimeout(() => this.props.removeNotif(this.state.notification.id), 250)
     }
 
+    componentWillMount = () => {
+        axios.get('/admin/appConfig').then(response => {
+            console.log(response)
+            this.setState({appConfig: response.data})
+
+        })}
+
     componentWillReceiveProps = (newProps) => {
         this.setState({notification: newProps.notification})
     }
@@ -31,7 +40,7 @@ export default class Notif extends Component {
     }
 
     render() {
-        const {notification, isClosed, hidden} = this.state
+        const {notification, isClosed, hidden, appConfig} = this.state
 
         if (!this.state.notification) return (<div className={cx({
             'notif-card': true,
@@ -50,10 +59,19 @@ export default class Notif extends Component {
                 'hidden': hidden
             })}>
                 <Link to={ link }>
-                    <div className="notification-image">
-                        { image }
+                    <div className={cx({
+                        "notification-image": true,
+                        "visible": image !== '',
+                        "hidden": image === ''})}
+                        style={{backgroundImage: `url('${appConfig.baseURL}/images/${image}')`}}>
+
                     </div>
-                    <div className="body">
+                    <div className={cx({
+                        'body': true,
+                        'illustrated': image !== '',
+                        'full': image === ''
+                    })
+                        }>
                         { body }
                     </div>
                 </Link>
