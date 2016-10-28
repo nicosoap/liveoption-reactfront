@@ -25,7 +25,6 @@ export default class Notif extends Component {
 
     componentWillMount = () => {
         axios.get('/admin/appConfig').then(response => {
-            console.log(response)
             this.setState({appConfig: response.data})
 
         })}
@@ -61,9 +60,9 @@ export default class Notif extends Component {
                 <Link to={ link }>
                     <div className={cx({
                         "notification-image": true,
-                        "visible": image !== '',
-                        "hidden": image === ''})}
-                        style={{backgroundImage: `url('${appConfig.baseURL}/images/${image}')`}}>
+                        "visible": !!image,
+                        "hidden": !image})}
+                        style={{backgroundImage: `url('${appConfig.baseURL}/images/${!!image?image:'pixel.gif'}')`}}>
 
                     </div>
                     <div className={cx({

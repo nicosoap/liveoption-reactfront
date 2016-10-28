@@ -681,7 +681,7 @@ a {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     top: 0;
     width: 100%;
-    margin-bottom: -1600px;
+    height: 100vh;
 }
 
 .stored { /*this should be in device specific rule*/
@@ -878,6 +878,65 @@ a {
 .user .user-block {
     cursor: pointer;
 }
+
+/* ----------------------------------- */
+/* ------------- FORMS --------------- */
+/* ----------------------------------- */
+
+/* ----          shortForm ----------- */
+
+.shortForm {
+    width: 100wv;
+    height: 100vh;
+    background: var(--component-alt-2-bg-color);
+}
+.shortForm .section-1 {
+    width: 400px;
+    height: 440px;
+    margin: -300px -200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.shortForm .section-1 .before-form {
+
+    background: rgba(255,255,255, 0.24);
+    mask: url(http://localhost:3000/images/lo.svg) center / contain no-repeat;
+    text-align: center;
+    height: 300px;
+    font-size: 200px;
+    line-height: 200px;
+}
+.shortForm .section-1 input {
+    color: rgba(255, 255, 255, 0.38);
+    height:50px;
+    width:400px;
+    /*background: none;*/
+    border: none;
+    font-size: 20px;
+    padding: 0 25px;
+    border-radius: 25px;
+}
+.shortForm .section-1 input:hover {
+    background: rgba(255, 255, 255, 0.24)
+}
+.shortForm .section-1 input:active {
+    background: rgba(255, 255, 255, 0.14)
+}
+
+.shortForm .section-1 input  {
+    background: url(http://localhost:3000/images/loading.svg) no-repeat right;
+}
+.shortForm .section-1 input .valid {
+    background: linear-gradient(-90deg, rgba(60, 220, 100, 0.45), rgba(82, 97, 121, 0) 14%);
+}
+.shortForm .section-1 input .error {
+    background: linear-gradient(-90deg, rgba(220, 60, 100, 0.45), rgba(82, 97, 121, 0) 14%);
+}
+
+
+
+
 
 /*----- Animations -----*/
 @keyframes appear-from-under {

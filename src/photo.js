@@ -23,7 +23,7 @@ export class PhotoInput extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        const {id, name, type, placeholder, value, autocomplete, required, accept} = newProps
+        const {id, name, type, placeholder, value, autocomplete, required, accept} = newProps.params
         this.setState({id, name, type, placeholder, value, autocomplete, required, accept})
     }
 
@@ -52,7 +52,6 @@ export class PhotoInput extends Component {
 
     render() {
         const {imageSource, accept, isDragover, uploadSupport} = this.state
-
         return(
             <div className="photoInput">
             <form className={cx({

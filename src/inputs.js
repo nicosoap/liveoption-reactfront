@@ -1,23 +1,14 @@
 import React, { Component } from 'react'
+import cx from 'classnames'
 
 export class CheckboxInput extends Component {
     state = {
-        id:'',
-        name:'',
-        type:'checkbox',
-        placeholder:'',
-        value:'',
-        autocomplete:'',
-        required:''
+        value:''
     }
 
-    componentWillReceiveProps = newProps => {
-        const {id, name, type, placeholder, value, autocomplete, required} = newProps
-        this.setState({id, name, type, placeholder, value, autocomplete, required})
-    }
 
     render() {
-        const {id, name, type, placeholder, value, autocomplete, required} = this.state
+        const {id, name, type, placeholder, value, autocomplete, required} = this.props.params
         return(
             <span className="checkboxInput">
                 <input
@@ -38,22 +29,11 @@ export class CheckboxInput extends Component {
 
 export class DateInput extends Component {
     state = {
-        id:'',
-        name:'',
-        type:'date',
-        placeholder:'',
-        value:'',
-        autocomplete:'',
-        required:''
-    }
-
-    componentWillReceiveProps = newProps => {
-        const {id, name, type, placeholder, value, autocomplete, required} = newProps
-        this.setState({id, name, type, placeholder, value, autocomplete, required})
+        value:''
     }
 
     render() {
-        const {id, name, type, placeholder, value, autocomplete, required} = this.state
+        const {id, name, type, placeholder, value, autocomplete, required} = this.props.params
         return(
             <input
                 id={id}
@@ -70,22 +50,12 @@ export class DateInput extends Component {
 
 export class EmailInput extends Component {
     state = {
-        id:'',
-        name:'',
-        type:'email',
-        placeholder:'',
-        value:'',
-        autocomplete:'',
-        required:''
+        value:''
     }
 
-    componentWillReceiveProps = newProps => {
-        const {id, name, type, placeholder, value, autocomplete, required} = newProps
-        this.setState({id, name, type, placeholder, value, autocomplete, required})
-    }
 
     render() {
-        const {id, name, type, placeholder, value, autocomplete, required} = this.state
+        const {id, name, type, placeholder, value, autocomplete, required, valid, validating, error} = this.props.params
         return(
             <input
                 id={id}
@@ -95,27 +65,24 @@ export class EmailInput extends Component {
                 placeholder={placeholder}
                 autoComplete={autocomplete}
                 required={required}
-                className="emailInput" />
+                className={cx({
+                    'emailInput': true,
+                        'validating': validating,
+                        'valid': valid,
+                        'error': error !== ''})
+                    } />
         )
     }
 }
 
 export class HiddenInput extends Component {
     state = {
-        id:'',
-        name:'',
-        type:'hidden',
-        value:'',
-        required:''
+        value:''
     }
 
-    componentWillReceiveProps = newProps => {
-        const {id, name, type, value, required} = newProps
-        this.setState({id, name, type, value, required})
-    }
 
     render() {
-        const {id, name, type, value, required} = this.state
+        const {id, name, type, value, required} = this.props.params
         return(
             <input
                 id={id}
@@ -129,22 +96,11 @@ export class HiddenInput extends Component {
 
 export class PasswordInput extends Component {
     state = {
-        id:'',
-        name:'',
-        type:'password',
-        placeholder:'',
-        value:'',
-        autocomplete:'',
-        required:''
-    }
-
-    componentWillReceiveProps = newProps => {
-        const {id, name, type, placeholder, value, autocomplete, required} = newProps
-        this.setState({id, name, type, placeholder, value, autocomplete, required})
+        value:''
     }
 
     render() {
-        const {id, name, type, placeholder, value, autocomplete, required} = this.state
+        const {id, name, type, placeholder, value, autocomplete, required, valid, validating, error} = this.props.params
         return(
             <input
                 id={id}
@@ -154,29 +110,23 @@ export class PasswordInput extends Component {
                 placeholder={placeholder}
                 autoComplete={autocomplete}
                 required={required}
-                className="passwordInput" />
+                className={cx({
+                    'passwordInput': true,
+                    'validating': validating,
+                    'valid': valid,
+                    'error': error !== ''})
+                } />
         )
     }
 }
 
 export class RadioInput extends Component {
     state = {
-        id:'',
-        name:'',
-        type:'radio',
-        placeholder:'',
-        value:[],
-        autocomplete:'',
-        required:''
-    }
-
-    componentWillReceiveProps = newProps => {
-        const {id, name, type, placeholder, value, autocomplete, required} = newProps
-        this.setState({id, name, type, placeholder, value, autocomplete, required})
+        value:''
     }
 
     render() {
-        const {name, value, required} = this.state
+        const {name, value, required} = this.props.params
         return (
             <radiogroup name={name} className="radiogroupInput" required={required}>
                 {value.map((e, i) => {
@@ -203,21 +153,12 @@ export class RadioInput extends Component {
 
 export class TextAreaInput extends Component {
     state = {
-        id:'',
-        name:'',
-        type:'textArea',
-        placeholder:'',
-        value:'',
-        required:''
-    }
-
-    componentWillReceiveProps = newProps => {
-        const {id, name, type, placeholder, value, required} = newProps
-        this.setState({id, name, type, placeholder, value, required})
+        value:''
     }
 
     render() {
-        const {id, name, type, placeholder, value, required} = this.state
+        const {id, name, type, placeholder, required} = this.props.params
+        const value = this.state.value
         return(
             <textarea
                 id={id}
@@ -229,29 +170,19 @@ export class TextAreaInput extends Component {
                 className="textAreaInput"
                 rows="8"
                 maxlength="2500"
-            ></textarea>
+            > </textarea>
         )
     }
 }
 
 export class TextInput extends Component {
     state = {
-        id:'',
-        name:'',
-        type:'text',
-        placeholder:'',
-        value:'',
-        autocomplete:'',
-        required:''
-    }
-
-    componentWillReceiveProps = newProps => {
-        const {id, name, type, placeholder, value, autocomplete, required} = newProps
-        this.setState({id, name, type, placeholder, value, autocomplete, required})
+        value:''
     }
 
     render() {
-        const {id, name, type, placeholder, value, autocomplete, required} = this.state
+        const {id, name, type, placeholder, autocomplete, required, valid, validating, error} = this.props.params
+        const value = this.state.value
         return(
             <input
                 id={id}
@@ -261,7 +192,12 @@ export class TextInput extends Component {
                 placeholder={placeholder}
                 autoComplete={autocomplete}
                 required={required}
-                className="textInput" />
+                className={cx({
+                    'textInput': true,
+                        'validating': validating,
+                        'valid': valid,
+                        'error': error !== ''})
+                    } />
         )
     }
 }

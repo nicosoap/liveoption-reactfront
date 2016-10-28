@@ -12,7 +12,7 @@ localStorage.jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9waWN
 
 let my_jwt = localStorage.jwt
 if (!my_jwt) {
-    console.log("Navigator not supported")
+    console.error("Navigator not supported")
 }
 
 axios.defaults.baseURL = 'http://localhost:3001';
@@ -24,12 +24,12 @@ class App extends Component {
         messages: {
             newMessage: false,
             unread: false,
-            messages: [{body: "lol", from: "olivier", read: true}],
+            messages: [],
         },
         notifications: {
             newMessage: false,
             unread: false,
-            matches: [{body: "lol", from: "olivier", read: true}],
+            matches: [],
             likes: [],
             visits: [],
         },
@@ -37,12 +37,13 @@ class App extends Component {
             messages: []
         },
         searchString: '',
-        users: {},
+        users: [{photo:[{filename:'anonymous.jpg', front: true}], bio: "Loading...", login: "Loading..."}],
         appConfig: null
     }
+    
 
     componentDidMount = () => {
-
+        this.search('')
         this.socket = io('localhost:3001/', {
             'query': 'token=' + my_jwt
         })
@@ -150,6 +151,7 @@ class App extends Component {
                 }
             }), 250)
         })
+
     }
 
     updateSearch = (payload) => {
@@ -204,9 +206,8 @@ class App extends Component {
             }
         })
             .then((response) => {
-                console.log("response: ",response.data)
                 this.setState({users: response.data.users})})
-            .catch(error => console.log(error))
+            .catch(error => console.error(error))
     }
 
   render() {

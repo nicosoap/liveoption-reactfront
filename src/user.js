@@ -41,9 +41,9 @@ export class User extends Component {
 
 export class UserCard extends Component {
     state = {
-        photo: [{filename: 'Aerial01', ext: '.jpg'}],
-        bio:"Anat78 est un garçon sensible qui ratisse la pelouse de sa maman le dimanche et lit des livre de cuisine pour se détendre lorsqu'il est tendu. Anat78 est un garçon sensible qui ratisse la pelouse de sa maman le dimanche et lit des livre de cuisine pour se détendre lorsqu'il est tendu",
-        login: 'olivier',
+        photo: [{filename: 'anonymous.jpg', front: true}],
+        bio:"Loading...",
+        login: 'Loading...',
         liked: false,
         chat: false,
         chatNb: 0,
@@ -59,13 +59,11 @@ export class UserCard extends Component {
 
     componentWillMount = () => {
         axios.get('/admin/appConfig').then(response => {
-            console.log(response)
             this.setState({appConfig: response.data})
 
     })}
 
     componentWillReceiveProps = newProps => {
-        console.log("NEWPROPS: ",newProps)
         const {photo, bio, login, liked, chat, match, blocked, message} = newProps.user
         this.setState({photo, login, bio})
     }
@@ -97,7 +95,7 @@ export class UserCard extends Component {
             if (response.data.success) {
                 this.setState({blocked: !this.state.blocked})
             }})
-            .catch(error => console.log(error))
+            .catch(error => console.error(error))
     }
 
 
@@ -111,7 +109,7 @@ export class UserCard extends Component {
             } else if (response.data.success){
                 this.setState({liked: true, match: false})
             }})
-        .catch(error => console.log(error))
+        .catch(error => console.error(error))
     }
 
     dislike = () => {
@@ -121,7 +119,7 @@ export class UserCard extends Component {
                     this.setState({liked: !this.state.liked,
                     match: false})
                 }})
-            .catch(error => console.log(error))
+            .catch(error => console.error(error))
     }
 
 
@@ -134,7 +132,12 @@ export class UserCard extends Component {
         const {photo, bio, login, liked, match, blocked, message, Kg, M, weight, height, appConfig} = this.state
         const weight_formated = Kg?weight + ' Kg':this.kToLbs(weight).pounds + ' Lbs ' + this.kToLbs(weight).onces + ' oz'
         const height_formated = M?height + 'cm':this.cmToFeetInch(height).feet + 'ft. ' + this.cmToFeetInch(height).inches + 'in.'
-        const image = !!photo.filter(e => e.front)[0] ? photo.filter(e => e.front)[0] : (!!photo[0] ? photo[0] : '')
+        let image = {filename: 'anonymous.jpg'}
+        if (!!photo && photo.filter(e => e.front).length > 0) {
+            image = photo.filter(e => e.front)[0]
+        } else if (!!photo) {
+            image = photo[0]
+        }
         return (
             <div className={cx({
                 "user": true,
@@ -198,20 +201,19 @@ export class Users extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        console.log("USERS newProps: ", newProps)
-        this.setState({users: newProps.users})
+        const users = newProps.users
+        this.setState({users})
     }
 
     render() {
-        console.log(this.state.users.length)
         let users = ''
         if (this.state.users.length > 0) {users = this.state.users.map((e, i) => {
             return (
                 <UserCard user={e} key={i}/>
-            )})} else {users = ''}
+            )})}
         return (
             <div id="users">
-                { users}
+                {users}
             </div>
         )
     }
