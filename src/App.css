@@ -47,6 +47,12 @@ a {
     text-decoration: none;
 }
 
+h3 {
+    text-align: center !important;
+    padding: 12px;
+    margin: 0;
+}
+
 :focus {outline:none;}
 ::-moz-focus-inner {border:0;}
 
@@ -890,6 +896,7 @@ a {
     width: 100vw;
     height: 100vh;
     background: var(--component-alt-2-bg-color);
+    transition: all 2500ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 {
     width: 400px;
@@ -908,99 +915,292 @@ a {
     left: 50%;
 }
 .shortForm .section-1 .before-form,
-.login .section-1 .before-form{
+.login .section-1 .before-form,
+.thankyou .section-1 .before-form {
 
     background: rgba(255,255,255, 0.24);
-    mask: url(http://localhost:3000/images/lo.svg) center / contain no-repeat;
+    mask: url(http://localhost:3000/images/lo.svg) center / contain no-repeat !important;
     text-align: center;
     height: 300px;
     font-size: 200px;
     line-height: 200px;
-    animation: 4500ms ease-in-out 0s infinite normal heartbeat;
+    animation: heartbeat ease-in-out 3500ms 0s infinite normal;
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.shortForm .section-1 div,
+.login .section-1 div {
+    position: relative;
+    height: 50px;
+    margin: 0;
+    padding: 0;
+    clear: both;
+    width: 400px;
 }
 .shortForm .section-1 input,
 .login .section-1 input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    box-sizing: border-box;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.38);
     height:50px;
-    width:350px;
-    background: none;
+    width:100%;
+    background: none  no-repeat right;
     border: none;
     font-size: 20px;
-    padding: 0 25px;
+    padding: 0 32px;
     border-radius: 25px;
-    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    animation: appear 1300ms;
 }
+
 .shortForm .section-1 button,
 .login .section-1 button {
+    z-index: 100;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.38);
     height:50px;
-    width:400px;
-    background: none;
+    width:100%;
+    top: 42px;
+    background: none no-repeat right;
     border: none;
     font-size: 20px;
-    padding: 0 25px;
     border-radius: 25px;
-    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    animation: appear 1400ms;
+    align-items: center;
 }
 
 .shortForm .section-1 input:hover,
 .login .section-1 input:hover,
 .shortForm .section-1 button:hover,
 .login .section-1 button:hover{
-    background: rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.24)  no-repeat right;
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:active,
 .login .section-1 input:active,
 .shortForm .section-1 button:active,
 .login .section-1 button:active {
-    background: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.14)  no-repeat right;
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
-.shortForm .section-1 input .validating,
-.login .section-1 input .validating {
-    background: url(http://localhost:3000/images/loading.svg) no-repeat right;
-}
-.shortForm .section-1 input:hover .validating,
-.login .section-1 input:hover .validating {
-    background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/loading.svg) no-repeat right;
-}
-.shortForm .section-1 input:active .validating,
-.login .section-1 input:active .validating {
-    background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/loading.svg) no-repeat right;
-}
-
-.shortForm .section-1 input .valid,
-.login .section-1 input .valid {
+.shortForm .section-1 input.valid,
+.login .section-1 input.valid {
     background: url(http://localhost:3000/images/checkmark.svg) no-repeat right;
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
-.shortForm .section-1 input:hover .valid,
-.login .section-1 input:hover .valid {
+.shortForm .section-1 input:hover.valid,
+.login .section-1 input:hover.valid {
     background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:active .valid,
 .login .section-1 input:active .valid {
     background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
-.shortForm .section-1 input .error,
-.login .section-1 input .error {
+.shortForm .section-1 input.error,
+.login .section-1 input.error {
     background: url(http://localhost:3000/images/error.svg) no-repeat right;
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
-.shortForm .section-1 input:hover .error,
-.login .section-1 input:hover .error {
+.shortForm .section-1 input:hover.error,
+.login .section-1 input:hover.error {
     background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/error.svg) no-repeat right;
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
-.shortForm .section-1 input:active .error,
-.login .section-1 input:active .error{
+.shortForm .section-1 input:active.error,
+.login .section-1 input:active.error{
+    background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/error.svg) no-repeat right;
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.shortForm .section-1 .error-message,
+.login .section-1 .error-message {
+    z-index: 0;
+    height: 12px;
+    margin:0;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    line-height: 12px;
+    overflow: hidden;
+    padding-left: 32px;
+    font-size: 12px;
+    color: rgba(255,120,120,0.42);
+}
+
+
+/*------------- MODAL --------------*/
+
+.md-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 630px;
+    height: 50vh;
+    z-index: 2000;
+    visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.md-show {
+    visibility: visible;
+}
+
+.md-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    opacity: 0;
+    background: rgba(255,255,255,0.5);
+    transition: all 0.3s;
+}
+
+.md-show ~ .md-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.md-content {
+    background: rgba(255,255,255,0.52);
+    padding: 15px 0 0 15px;
+}
+
+.terms-conditions {
+    height: 400px;
+    font-size: 11px;
+    overflow-y: scroll;
+}
+
+.terms-conditions button {
+    color: rgba(100,105,110,0.94);
+    right: 15%;
+    left: 15%;
+    cursor: pointer;
+    height: 50px;
+    width: 70%;
+    text-align: center;
+    margin: 22px 22px 22px 52px;
+    background: rgba(255,255,255,0.48) no-repeat right;
+    border: none;
+    font-size: 20px;
+    border-radius: 25px;
+    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    animation: appear 1400ms;
+    align-items: center;
+}
+.terms-conditions button:hover {
+    background: rgba(255,255,255,1) no-repeat right;
+}
+.terms-conditions .error {
     background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/error.svg) no-repeat right;
 }
 
+.terms-conditions .valid {
+    background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
+}
+
+.ty {
+    width: 100vw;
+    height: 100vh;
+    background: var(--component-alt-2-bg-color);
+}
+.thankyou {
+    position: absolute;
+    text-align: center;
+    width: 50%;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.thankyou .section-1 p {
+    width: 100%;
+    text-align: left;
+}
+/*----- Loading --------*/
+
+
+.input {
+    position: relative;
+}
+
+.input .loading.validating {
+    visibility: visible;
+}
+.input .loading {
+    visibility: hidden;
+    position: absolute;
+    right: 0;
+    top: 12px;
+}
+.input .loading .double-bounce1,
+.input .loading .double-bounce2 {
+    position: absolute;
+    right: 0;
+    top: 22px;
+    width: 44px;
+    height: 44px;
+    border: solid 2px rgba(255,255,255,0.6);
+    border-radius: 50%;
+    animation: rippley 1800ms infinite ease-in-out;
+}
+.input .loading .double-bounce2 {
+    animation-delay: 900ms;
+}
 
 
 
 
+.button {
+    position: relative;
+}
+
+.button .loading.validating {
+    visibility: visible;
+}
+.button .loading {
+    visibility: hidden;
+     position: absolute;
+     right: 75px;
+     top: 0;
+}
+.button .loading .double-bounce1,
+.button .loading .double-bounce2 {
+    position: absolute;
+    right: 0;
+    top: 22px;
+    width: 44px;
+    height: 44px;
+    border: solid 2px white;
+    border-radius: 50%;
+    animation: rippley 1800ms infinite cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.button .loading .double-bounce2 {
+    animation-delay: 900ms;
+}
+
+@keyframes rippley {
+    0% {
+        transform: scale(0.05,0.05);
+        opacity: 1;
+    }
+    100% {
+         transform: scale(1.00,1.00);
+         opacity: 0;
+    }
+}
 
 /*----- Animations -----*/
 @keyframes appear-from-under {
@@ -1046,17 +1246,26 @@ a {
     0% {
         background:rgba(255,255,255, 0.18);
     }
-    40%{
+    35%{
         background:rgba(255,255,255, 0.62);
     }
     50% {
-        background:rgba(255,255,255, 0.22);
+        background:rgba(255,255,255, 0.32);
     }
-    60%{
+    65%{
         background:rgba(255,255,255, 0.62);
     }
     100% {
          background:rgba(255,255,255, 0.18);
      }
 
+}
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }

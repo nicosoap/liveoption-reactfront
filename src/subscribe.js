@@ -2,9 +2,12 @@
  * Created by opichou on 10/15/16.
  */
 import React, {Component} from 'react'
+import * as _ from 'lodash-node'
 import axios from 'axios'
 import TagInput from './taginput'
 import {PhotoInput} from './photo'
+import cx from 'classnames'
+import {Terms} from './terms'
 import {
     CheckboxInput,
     DateInput,
@@ -13,8 +16,10 @@ import {
     PasswordInput,
     RadioInput,
     TextAreaInput,
-    TextInput
+    TextInput,
+    ButtonInput
 } from './inputs'
+import { browserHistory } from 'react-router'
 
 // Clever lier, fooling us all, never thought I'd work it out
 // How could I have known it was ever about you boy?
@@ -30,7 +35,8 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 export class Form extends Component {
     state = {
         userForm: [],
-        user: {}
+        user: {},
+        special: false
     }
 
     componentDidMount() {
@@ -39,85 +45,166 @@ export class Form extends Component {
                 form: this.props.form
             }
         }).then(response => {
-        console.log(response)
         this.setState({userForm: response.data})
     })
     }
 
+
+    handleEnter = e => {
+        if (e.keyCode === 13) {this.handleSubmit()}
+    }
+
     handleSubmit = () => {
-        axios.post('/user/new', this.state.user)
-            .then(response => {if (response.data.success){
-            //si success à la creation du compte
-        } else {
-            //si erreurs
+        let userForm = this.state.userForm,
+            master_error = [0]
+        master_error = userForm.map((e ,i ) => {
+            if (e.required === "true" && (this.state.user[e.name] === ('' || undefined) || e.error !== "")) {
+                userForm[i].error = e.error === '' ? "This value must be provided" : e.error
+                return (+1)
+            } else return +0})
+        this.setState({userForm: userForm})
+        master_error = master_error.reduce((a, b) => (parseInt(a, 10) + parseInt(b, 10)), 0)
+        if (master_error === 0) {
+            this.props.submit(this.state.user)
+        }
+    }
+
+    handleChange = async (id, name, value, e) => {
+
+        const userForm = this.state.userForm,
+            element = _.find(this.state.userForm, {'id': id}),
+            element_id = this.state.userForm.indexOf(element),
+            validator_type = element.validator_type,
+            validator = element.validator,
+            update = () => {
+                userForm.splice(element_id, 1, element)
+                this.setState({userForm})
+            },
+            regex_val = {
+            _1 : /^.{8,48}$/,
+            __1 : "Password must be 8 characters long.",
+            _2 : /^(?=.*[a-z])(?=.*[A-Z][0-9]).{8,48}$/,
+            __2 : "Password must be 8 characters min with CAPS or numbers.",
+            _3 : /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,48}$/,
+            __3 : "Password must be 8 characters min with CAPS and numbers."},
+            user = this.state.user
+        user[name]=value
+        this.setState({user:user})
+
+        if (value === '') {
+            element.validating = false
+            element.valid = false
+            element.error = ''
+            update()
+            return
+        }
+
+        element.validating = true
+        update()
+        element.validating = false
+
+        if (validator_type === "password") {
+            if (regex_val['_' + validator].test(value)) {
+                element.valid = true
+                element.error = ''
+
+            } else {
+                element.valid = false
+                element.error = regex_val["__" + validator]
             }
-            })
+        }
+
+        else if (validator_type === "echo") {
+            if (value === user[validator]) {
+                element.valid = true
+                element.error = ''
+            } else {
+                element.valid = false
+                element.error = 'Passwords must be the same'
+
+            }
+        }
+
+        else if (validator_type === "http") {
+            let response = await axios.get(validator + value)
+
+            if (response.data.valid) {
+                element.valid = true
+                element.error = ''
+
+            } else if (response.data) {
+                element.valid = false
+                element.error = response.data.message
+            }
+        }
+
+        else {
+            element.error = ''
+        }
+
+        update()
+
+        this.props.update(id, name, value)
     }
 
     render() {
         return (
-            <div className={this.props.form}>
+            <div className={this.props.form} onKeyUp={this.handleEnter}>
                 <div className="section-1">
                     <div className="before-form">{this.props.before}</div>
                     {this.state.userForm.map((e, i) => {
                         switch (e.type) {
                             case 'checkbox':
                                 return (
-                                    <CheckboxInput params={e} key={i} update={this.props.update}/>
+                                    <CheckboxInput params={e} key={i} update={this.handleChange}/>
                                 )
-                                break
                             case 'date':
                                 return (
-                                    <DateInput params={e} key={i} update={this.props.update}/>
+                                    <DateInput params={e} key={i} update={this.handleChange}/>
                                 )
-                                break
                             case 'email':
                                 return (
-                                    <EmailInput params={e} key={i} update={this.props.update}/>
+                                    <EmailInput params={e} key={i} update={this.handleChange}/>
                                 )
-                                break
                             case 'hidden':
                                 return (
-                                    <HiddenInput params={e} key={i} update={this.props.update}/>
+                                    <HiddenInput params={e} key={i} update={this.handleChange}/>
                                 )
-                                break
                             case 'password':
                                 return (
-                                    <PasswordInput params={e} key={i} update={this.props.update}/>
+                                    <PasswordInput params={e} key={i} update={this.handleChange}/>
                                 )
-                                break
                             case 'radio':
                                 return (
-                                    <RadioInput params={e} key={i} update={this.props.update}/>
+                                    <RadioInput params={e} key={i} update={this.handleChange}/>
                                 )
-                                break
                             case 'textArea':
                                 return (
-                                    <TextAreaInput params={e} key={i} update={this.props.update}/>
+                                    <TextAreaInput params={e} key={i} update={this.handleChange}/>
                                 )
-                                break
                             case 'text':
                                 return (
-                                    <TextInput params={e} key={i} update={this.props.update}/>
+                                    <TextInput params={e} key={i} update={this.handleChange}/>
                                 )
-                                break
                             case 'photo':
                                 return (
-                                    <PhotoInput params={e} key={i} update={this.props.update}/>
+                                    <PhotoInput params={e} key={i} update={this.handleChange}/>
                                 )
-                                break
                             case 'tagInput':
                                 return (
-                                    <TagInput params={e} key={i} update={this.props.update}/>
+                                    <TagInput params={e} key={i} update={this.handleChange}/>
                                 )
                             default:
                                 return (
                                     <div className="hidden">I'm always learning things the hardest way</div>
                                 )
-                                break
                         }
                     })}
-                    <button className="submit-btn" onClick={this.props.submit}>{this.props.submitName}</button>
+
+                    <ButtonInput
+                                 submit={this.handleSubmit}
+                                 submitName={this.props.submitName}
+                    />
                 </div>
             </div>
         )
@@ -127,15 +214,72 @@ export class Form extends Component {
 
 export class Subscribe extends Component {
     state = {
-        result: {}
+        result: {},
+        special: false,
+        validating: false,
+        error: false
+        }
+
+
+    updateUser = (_, name, value) => {
+        this.setState({result:{[name]:value}})
     }
 
-    updateUser = pl => this.setState({result: pl})
+    handleSubmit = (user) => {
+        console.log(user)
+        this.setState({result: user, special: true})
+    }
+
+    handleAgree = async () => {
+        this.setState({validating: true})
+        console.log(this.state.result)
+        axios.post('/user/new', {
+            login: this.state.result.username,
+            email: this.state.result.email,
+            password: this.state.result.password,
+            password2: this.state.result.password2
+        }).then(response => {
+                console.log(response)
+                if (response.data.success){
+                    sessionStorage.setItem('email' , this.state.result.email)
+                    browserHistory.push('/thank-you')
+                this.setState({validating: false, error: false})
+            } else {
+                this.setState({validating: false, error: true, special: false})
+            }
+            })
+    }
+
+    handleClear = () => this.setState({special: false})
+
+
 
     render() {
         const before = ''
+        const {validating, error, special} = this.state
         return(
-            <Form form={'shortForm'} update={this.updateUser} submit={this.handleSubmit} before={before} submitName={"Sign-up"}/>
+            <div>
+                <div className={cx({
+                    'md-modal': true,
+                    'md-effect-1': true,
+                    'md-show': special
+                })} id="modal-1">
+                    <div className="md-content">
+                        <h3>Terms & Conditions</h3>
+                        <div className="terms-conditions">
+                                <Terms />
+                            <ButtonInput validating={validating}
+                                         error={error}
+                                         submit={this.handleAgree}
+                                            submitName={"I Accept the Terms and Conditions"}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className="md-overlay" onClick={this.handleClear}></div>
+                <Form form={'shortForm'} update={this.updateUser} submit={this.handleSubmit} before={before}
+                      submitName={"Sign-up"}/>
+            </div>
         )
     }
 }
@@ -145,14 +289,14 @@ export class FullForm extends Component {
         result: {}
     }
 
-    updateUser = e => {
-        this.setState({[e.target.name]:e.target.value})
+    updateUser = (_, name, value) => {
+        this.setState({result:{[name]:value}})
     }
 
     handleSubmit = () => {
-        axios.post('/user/update', this.state.user)
+        axios.post('/user/update', this.state.result)
             .then(response => {
-                if (response.data.success == true){
+                if (response.data.success === true){
 
         }})
     }

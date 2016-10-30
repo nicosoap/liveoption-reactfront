@@ -8,36 +8,47 @@ import {browserHistory} from 'react-router'
 import Fingerprint2 from 'fingerprintjs2'
 import './App.css'
 
+let my_jwt = localStorage.jwt
+
+axios.defaults.baseURL = 'http://localhost:3001'
+if (my_jwt) {axios.defaults.headers.common['Authorization'] = 'Bearer ' + my_jwt}
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 export class Login extends Component {
     state = {
-        login: '',
-        password: '',
-        fingerprint: ''
+        username: '',
+        password: ''
     }
 
+
     componentDidMount() {
-        new Fingerprint2().get(function(result, components){
-            // this will use all available fingerprinting sources
-            console.log(result);
-            this.setState({fingerprint: result})
-            // components is an array of all fingerprinting components used
-            console.log(components);
-        });
+        const fingerprint = new Fingerprint2().get((res, cmp) => {
+            sessionStorage.setItem('fingerprint', res)
+        })
+        this.setState({fingerprint: sessionStorage.fingerprint}, () => {
+            if (my_jwt && this.state.fingerprint) {
+                this.handleSubmit()
+            }
+        })
     }
-    updateUser = (e) => {
-        console.log(e.target.name, e.target.value)
-        this.setState({[e.target.name]: e.target.value})}
+
+    updateUser = (id, name, value) => {
+        this.setState({[name]: value})}
 
 
     handleSubmit = () => {
         axios.post('/login', {
-            login: this.state.login,
-            password: this.state.password
+            login: this.state.username,
+            password: this.state.password,
+            fingerprint: this.state.fingerprint
         }).then(response => {
-            if (response.data.success) {
-                localStorage.jwt = response.data.token
+            console.log(response)
+            if (response.data.auth && response.data.auth.success) {
+                localStorage.jwt = response.data.auth.token
+                console.log("JWT: ",localStorage.jwt)
                 browserHistory.push('/')
+            } else {
+                console.log("Authentication error:", response.data.auth.message)
             }
         })
     }

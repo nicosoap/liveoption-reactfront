@@ -7,6 +7,7 @@ import { Login } from './login'
 import './index.css'
 import {User, Users} from './user'
 import {FullForm, Subscribe} from './subscribe'
+import {Thankyou} from './thankyou'
 
 injectTapEventPlugin();
 
@@ -20,6 +21,7 @@ ReactDOM.render((
             </Route>
         </Route>
         <Route path="/sign-in" component={Login} />
+        <Route path="/thank-you" component={Thankyou} />
         <Route path="/sign-up" component={Subscribe} />
     </Router>
 ), document.getElementById('root'));

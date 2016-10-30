@@ -64,7 +64,7 @@ export class UserCard extends Component {
     })}
 
     componentWillReceiveProps = newProps => {
-        const {photo, bio, login, liked, chat, match, blocked, message} = newProps.user
+        const {photo, bio, login} = newProps.user
         this.setState({photo, login, bio})
     }
 
