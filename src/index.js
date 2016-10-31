@@ -6,8 +6,9 @@ import App from './App'
 import { Login } from './login'
 import './index.css'
 import {User, Users} from './user'
-import {FullForm, Subscribe} from './subscribe'
+import {Subscribe} from './subscribe'
 import {Thankyou} from './thankyou'
+import {FullForm} from './profile'
 
 injectTapEventPlugin();
 

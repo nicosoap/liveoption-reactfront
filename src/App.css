@@ -7,6 +7,8 @@
     --component-font-color: rgba(76, 76, 76, 1);
     --component-alt-bg-color: rgba(136, 136, 136, 1);
     --component-alt-2-bg-color: rgba(82, 97, 121, 1);
+    --component-alt-3-bg-color: rgba(255, 160, 15, 0.5);
+    --component-alt-4-bg-color: rgba(132, 147, 171, 0.6);
     --component-alt-font-color: rgba(204, 132, 47, 1);
     --component-alt-2-font-color: rgba(255, 160, 15, 1);
     --menu-bd-top: rgba(193, 196, 211, 1);
@@ -137,13 +139,30 @@ h3 {
 
 /* ------------ Photo Upload ------------ */
 
+.photoInput {
+    position: relative;
+    float: left;
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
 .photoInput .box {
-    width:500px;
+    width:100%;
     height: 500px;
     text-align: center;
     vertical-align: middle;
+    box-sizing: border-box;
 }
-
+.photoInput .box input,
+.photoInput .box button {
+    display:none;
+}
+.photoInput .box.has-advanced-upload .box__input {
+    position: relative;
+    top: 20%;
+    bottom: 30%;
+}
 .photoInput .box__dragndrop,
 .photoInput .box__uploading,
 .photoInput .box__success,
@@ -151,7 +170,7 @@ h3 {
     display: none;
 }
 .photoInput .box.has-advanced-upload {
-    background-color: white;
+    background-color: rgba(255,255,255,0);
     outline: 2px dashed black;
     outline-offset: -10px;
 }
@@ -159,9 +178,64 @@ h3 {
     display: inline;
 }
 .photoInput .box.is-dragover {
-    background-color: grey;
+    background: var(--component-alt-3-bg-color);
 }
+.photoInput .result-images {
+    width: calc(100% - 18px);
+    display: block;
+    position: relative;
+    float: left;
+    margin:0 9px 0 10px;
+    padding:0;
+}
+.photoInput .result-images .profile-picture {
+    width: 20%;
+    height: 120px;
+    overflow: hidden;
+    position: relative;
+    float: left;
+    display: inline-block;
+    background: no-repeat center;
+    background-size: cover;
+    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.photoInput .result-images .profile-picture:hover {
+    filter: saturate(110%) brightness(1.10);
+    content: "<i class='material-icons'>camera_enhance</i>";
+}
+.photoInput .result-images .profile-picture:nth-child(1){
+    box-sizing: content-box;
+    outline: 3px solid var(--component-alt-3-bg-color);
+}
+.photoInput .result-images .profile-picture .promote {
+    width: 50%;
+    height: 100%;
+    background: rgba(255,255,0,0) no-repeat center;
+    background-size: 50%;
+    display: inline-block;
+    float:left;
+    position: relative;
+}
+.photoInput .result-images .profile-picture .delete {
+    width: 50%;
+    height: 100%;
+    background: rgba(255,0,0,0) no-repeat center;
+    background-size: 50%;
+    display: inline-block;
+    float:left;
+    position: relative;
 
+}
+.photoInput .result-images .profile-picture:nth-child(n+2) .promote:hover {
+    background: rgba(255,255,0,0.3) url(http://localhost:3000/images/star.png) no-repeat center;
+    background-size: 50%;
+    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.photoInput .result-images .profile-picture .delete:hover {
+    background: rgba(255,0,0,0.3) url(http://localhost:3000/images/trash-can.png) no-repeat center;
+    background-size: 50%;
+    transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
 /* ----- SEARCH ----- */
 
 /*----- Search Form -----*/
@@ -228,6 +302,7 @@ h3 {
 
 .search-form input[type=submit]:hover,
 .search-form button:hover {
+    z-index: 500;
     transition: all 200ms;
     transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -409,6 +484,7 @@ h3 {
     overflow: hidden;
 }
 .input-tag {
+    position: relative;
     border: solid 1px rgba(120,120,120,0.5);
     vertical-align: center;
     margin: 0 4px 0 0;
@@ -434,10 +510,39 @@ h3 {
     font-size: 22px;
     color: inherit;
 }
+.input-tags-search:hover {
+    background: none !important;
+}
 .input-tags-search::-webkit-search-decoration,
 .input-tags-search::-webkit-search-cancel-button {
     display: none;
 }
+
+.tagTool ul {
+    z-index: 500;
+    visibility: visible;
+    position: relative;
+    width: 100%;
+    min-height: 0;
+    float: left;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+.tagTool ul li {
+    position: relative;
+    display: inline-flex;
+    float: left;
+    width: auto;
+    line-height: 22px;
+    height: 22px;
+    font-size: 20px;
+    margin: 5px 0 0 0;
+    text-align: left;
+    list-style: none;
+
+}
+
 .lower {
     position: relative;
     top: 4px !important;
@@ -683,13 +788,20 @@ h3 {
     background: var(--main-bg-color);
     display: inline-block;
     float: left;
-    position: absolute;
+    position: relative;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     top: 0;
+    bottom:-500px;
     width: 100%;
-    height: 100vh;
+    min-height: calc(100% + 250px);
 }
-
+/*.push-menu-main:after{*/
+    /*clear: both;*/
+    /*content: " ";*/
+    /*margin-bottom: 70px;*/
+    /*display: table;*/
+    /*z-index: 0;*/
+/*}*/
 .stored { /*this should be in device specific rule*/
     transform: translateX(-300px);
     transition: transform 200ms;
@@ -889,7 +1001,146 @@ h3 {
 /* ------------- FORMS --------------- */
 /* ----------------------------------- */
 
-/* -------  shortForm + login -------- */
+/* ----- error ----- */
+
+.section-1 .error{
+    animation: shake 400ms 1 cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* -------      Full form     -------- */
+.profile-handbar {
+    position: relative;
+    display: inline-block;
+    float: left;
+    width: calc(30% - 85px);
+    margin: 0 20px 0 0;
+    padding: 20px 45px 0 20px;
+    text-indent: each-line;
+    min-height: 1800px;
+    height: auto;
+    text-align: left;
+    font-size: 20px;
+    transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.profile-handbar div {
+    position: absolute;
+    bottom: 0;
+    transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.profile-handbar .content-1 {
+    top:20px;
+}
+.profile-handbar .content-2 {
+    top:190px;
+}
+.profile-handbar .content-3 {
+    top:400px;
+}
+.profile-handbar .content-4 {
+    top:1100px;
+}
+.profile-handbar .content-5 {
+    top:1450px;
+}
+
+.fullForm {
+    background: none;
+    position: relative;
+    display: inline-block;
+    float: left;
+    width: 70%;
+    height: auto;
+    transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.fullForm .spacer {
+    position: relative;
+    float: left;
+    width: 100%;
+    margin: 0;
+}
+.fullForm .section {
+    position: relative;
+    float: left;
+    width: 100%;
+    margin-top: 30px;
+    border-top: solid 1px var(--main-font-color);
+    padding-top: 10px;
+}
+.fullForm .input {
+    position: relative;
+    float: left;
+    width: 100%;
+    margin: 0;
+}
+.fullForm .input input:hover,
+.fullForm .input-tags input:hover,
+.fullForm .textarea textarea:hover {
+    background: var(--component-alt-3-bg-color);
+}
+
+.fullForm .input input {
+    position: relative;
+    width: inherit;
+    height: 24px;
+    padding: 8px;
+    font-size: 24px;
+    line-height: 42px;
+    float: left;
+    border: none;
+    background: none;
+    color: var(--main-font-color);
+}
+.fullForm .input label {
+    text-align: left;
+    position: relative;
+    float: left;
+    width: inherit;
+}
+.fullForm .textarea{
+    position: relative;
+    float: left;
+    width: 100%;
+    margin: 0;
+}
+.fullForm .textarea textarea {
+    min-height: 350px;
+    position: relative;
+    width: inherit;
+    padding: 8px;
+    font-size: 24px;
+    line-height: 42px;
+    float: left;
+    border: none;
+    background: none;
+    color: var(--main-font-color);
+}
+.fullForm .input .error-message {
+    position: relative;
+    float: left;
+    padding-left: 12px;
+    font-size: 15px;
+    color: rgba(255, 0, 0, 0.48);
+    text-align: left;
+    width: inherit;
+}
+
+.fullForm .button.input button {
+    width: 100%;
+    height: 50px !important;
+    color: var(--main-font-color);
+    font-size: 24px;
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.0), 0 3px 6px rgba(0, 0, 0, 0);
+    border: none;
+    background: none;
+    transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+
+}
+.fullForm .button.input button:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+    /* -------  shortForm + login -------- */
 
 .shortForm,
 .login {
@@ -1236,6 +1487,27 @@ h3 {
     }
     80% {
         transform: translateX(-3px);
+    }
+    100% {
+        transform: translateX(0px);
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0px);
+    }
+    20% {
+        transform: translateX(+9px);
+    }
+    40% {
+        transform: translateX(-9px);
+    }
+    60% {
+        transform: translateX(+9px);
+    }
+    80% {
+        transform: translateX(-9px);
     }
     100% {
         transform: translateX(0px);

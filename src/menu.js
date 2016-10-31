@@ -4,8 +4,9 @@
 import React, { Component } from 'react'
 import Search from './search'
 import cx from 'classnames'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { Notifications, MenuButton } from './notifications'
+import axios from 'axios'
 
 
 class MenuItem extends Component {
@@ -20,36 +21,18 @@ class MenuItem extends Component {
 
 
 class MenuContent extends Component {
-    state = {
-        menuItems: [
-            {
-                name: "Around me",
-                icon: "near_me",
-                rel: "#"
-            },
-            {
-                name: "Search",
-                icon: "search",
-                rel: "#"
-            },
-            {
-                name: "Live options",
-                icon: "bubble_chart",
-                rel: "#"
-            },
-            {
-                name: "Netflix & chill",
-                icon: "weekend",
-                rel: "#"
-            },
-            {
-                name: "My profile",
-                icon: "settings_applications",
-                rel: "#"
-            }
-        ]
+    state = {menuItems:[]}
 
-    }
+    componentDidMount() {
+        axios.get('/config?param=menuItems')
+            .then(response => {
+                if (!response.data) {
+                    browserHistory.push('/')
+                } else {
+                    this.setState({menuItems: response.data})
+                }
+            })
+}
 
     generateMenu = (arr) =>
         arr.map(({ rel, icon, name }, index) => (

@@ -18,40 +18,95 @@ export class PhotoInput extends Component {
         accept: '',
         isDragover: false,
         uploadSupport: true,
-        photo: {},
-        imageSource:''
+        photo: []
     }
 
+    componentDidMount() {
+        if (this.state.photo.length < 1 && this.props.defaultValues) {
+            this.setState({photo: this.props.defaultValues})
+        }
+    }
     componentWillReceiveProps = newProps => {
-        const {id, name, type, placeholder, value, autocomplete, required, accept} = newProps.params
-        this.setState({id, name, type, placeholder, value, autocomplete, required, accept})
+        const {id, name, type, placeholder, value, autocomplete, required, accept, defaultValues} = newProps.params
+        this.setState({id, name, type, placeholder, value, autocomplete, required, accept, defaultValues})
     }
 
     handleDragOver = e => {
         e.preventDefault();
         e.stopPropagation();
-        this.setState({isDragover: true})
-
+        if (!this.state.isDragover) {
+            this.setState({isDragover: true})
+        }
     }
+
     handleDragLeave = e => {
         e.preventDefault();
         e.stopPropagation();
-        this.setState({isDragover: false})
+        if (this.state.isDragover) {
+            this.setState({isDragover: false})
+        }
     }
+
     handleDrop = e => {
         e.preventDefault();
         e.stopPropagation();
         this.handleDragLeave(e)
         if (/^image\/.*$/i.test(e.dataTransfer.files[0].type)) {
-            this.setState({photo: e.dataTransfer.files[0], imageSource: URL.createObjectURL(e.dataTransfer.files[0])})
+            let photo = this.state.photo
+            photo.splice(4, 3)
+            this.setState({
+                photo: [...photo, e.dataTransfer.files[0]]
+            },
+                () => this.updateSelection
+            )
         } else {
             console.log('invalid image format')
         }
     }
 
+    handleChange = e => {
+        const file = e.target.files[0]
+        // e.preventDefault();
+        // e.stopPropagation();
+        if (/^image\/.*$/i.test(file.type)) {
+            this.setState({
+                photo: [...this.state.photo, file]
+            })
+        } else {
+            console.log('invalid image format')
+        }
+    }
+
+    setDefault = e => {
+        let id = e.target.attributes.id.value,
+            photo = this.state.photo
+        console.log(this.state.photo)
+        const image = photo.splice(id, 1)
+        this.setState({photo: [image[0], ...photo]}, () => this.updateSelection)
+    }
+
+    setDelete = e => {
+        console.log(e.target.attributes)
+        let id = e.target.attributes.classID.value,
+            photo = this.state.photo
+        photo.splice(id, 1)
+        this.setState({photo}, () => this.updateSelection)
+    }
+
+    updateSelection = () => {
+        ///// CETTE FONCTION DOIT UPLOAD SUR LE SERVEUR,
+        // RECUPERER LE FILENAME DU FICHIER ET LE STOCKER DANS LE STATE. C'EST LE TABLEAU DE FILENAMES
+        // QU'ON VEUT STOCKER, PAS LES FILES EUX-MEMES
+
+
+        let photo = this.state.photo
+        photo.splice(this.props.maxLength, 10)
+        this.setState({photo}, this.props.update((this.props.id, this.props.name, this.state.tags)))
+    }
+
 
     render() {
-        const {imageSource, accept, isDragover, uploadSupport} = this.state
+        const {photo, accept, isDragover, uploadSupport} = this.state
         return(
             <div className="photoInput">
             <form className={cx({
@@ -66,18 +121,67 @@ export class PhotoInput extends Component {
                   onDrop={this.handleDrop}
             >
                 <div className="box__input">
-                    <input className="box__file" type="file" name="files[]" id="file" accept={accept}  />
+                    <input className="box__file" type="file" name="files[]" id="file" accept={accept}  onChange={this.handleChange}/>
                     <label htmlFor="file"><i className="material-icons icon-huge">file_upload</i><br /><strong>Choose a file</strong>
                         <span className="box__dragndrop"> or drag it here</span>.</label>
-                    <button className="box__button" type="submit">Upload</button>
+                    <button className="box__button" >Upload</button>
                 </div>
                 <div className="box__uploading">Uploading&hellip;</div>
                 <div className="box__success">Done!</div>
                 <div className="box__error">Error!</div>
             </form>
 
-                <img src={imageSource} role="presentation"/>
+                <div className="result-images">
+                    { photo.map((e, i) => {
+                        return(
+                            <ProfilePicture key={i} file={e} id={i} setDefault={this.setDefault} setDelete={this.setDelete} />
+                        )})}
+                </div>
                 </div>
         )
     }
 }
+
+class ProfilePicture extends Component {
+    state = {}
+    render() {
+        return(
+            <div className="profile-picture"
+                 style={{backgroundImage: `url(${URL.createObjectURL(this.props.file)})`}}>
+                <div className="promote" id={this.props.id} onClick={this.props.setDefault}></div>
+                <div className="delete" classID={this.props.id} onClick={this.props.setDelete}></div>
+            </div>
+        )
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

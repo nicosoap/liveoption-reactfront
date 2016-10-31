@@ -2,10 +2,30 @@
  * Created by opichou on 10/19/16.
  */
 import React, { Component } from 'react'
+import axios from 'axios'
 
 export default class TagInput extends Component {
     state = {
-        tags:[]
+        tags:[],
+        suggestion: [],
+        id: ''
+    }
+
+    componentDidMount() {
+        this.setState({tags: this.state.tags || this.props.defaultValues || []})
+    }
+
+    addSuggestion = e => {
+        const tag = /^#{0,1}([A-Za-z0-9]*) {0,1}$/.exec(e.target.attributes.value.value)[1] || ''
+        if (this.state.tags.indexOf(tag) === -1 && tag !== ' ') {
+            this.setState({
+                tags: [...this.state.tags, tag],
+                suggestion: []
+            }, () => this.props.save(this.props.id, this.props.name, this.state.tags))
+        } else {
+            this.setState({suggestion: []})
+        }
+        e.target.value = ''
     }
 
     addTag = e => {
@@ -13,9 +33,19 @@ export default class TagInput extends Component {
         if ((e.keyCode === 32 || e.keyCode === 13) && /^#{0,1}([A-Za-z0-9]*) {0,1}$/.test(e.target.value)) {
             const tag = /^#{0,1}([A-Za-z0-9]*) {0,1}$/.exec(e.target.value)[1] || ''
             if (this.state.tags.indexOf(tag) === -1 && tag !== ' ') {
-                this.setState({tags: [...this.state.tags, tag]}, () => this.props.save(this.state.tags))
-            }
+                this.setState({tags: [...this.state.tags, tag], suggestion:[]},
+                    () => this.props.update(this.props.id, this.props.name, this.state.tags))
+            } else { this.setState({suggestion:[]})}
             e.target.value = ''
+        } else if (e.target.value.length > 1) {
+            axios.get('/tags?tag=' + e.target.value).then(res => {
+                let suggestion = res.data
+                if (suggestion.length > 0) {
+                    this.setState({suggestion})
+                }
+            })
+        } else {
+            this.setState({suggestion:[]})
         }
     }
 
@@ -23,20 +53,30 @@ export default class TagInput extends Component {
         const tmp = this.state.tags
         const targetted = e.target.attributes.value || e.target.parentNode.attributes.value
         tmp.splice(this.state.tags.indexOf(targetted.value), 1)
-        this.setState({tags: tmp}, this.props.save(this.state.tags))
+        this.setState({tags: tmp}, this.props.update(this.state.tags))
     }
 
     render() {
-        return(
-            <div className="input-tags" id="input-tags">
-                {this.state.tags.map((tag, i) => {
-                    return(
-                        <span className="input-tag" key={i} value={tag} onClick={this.removeTag}>
-                        {'#' + tag + ' '}<div className="material-icons icon-small lower card-1-level">remove_circle</div>
-                    </span>
+        return (
+            <div className="tagTool">
+                <div className="input-tags" id="input-tags">
+                    {this.state.tags.map((tag, i) => {
+                        return (
+                            <span className="input-tag" key={i} value={tag} onClick={this.removeTag}>
+                        {'#' + tag + ' '}
+                                <div className="material-icons icon-small lower card-1-level">remove_circle</div>
+
+                        </span>
+                        )
+                    })}
+                    <input className="input-tags-search" type="search" onKeyUp={this.addTag} placeholder="Tags"/>
+
+                </div>
+                <ul className="suggestions">{this.state.suggestion.map((tag, i) => {
+                    return (
+                        <li onClick={this.addSuggestion} key={i} value={tag.label}>{tag.label}</li>
                     )
-                })}
-                <input className="input-tags-search" type="search" onKeyUp={this.addTag} placeholder="Tags"/>
+                })}</ul>
             </div>
         )
     }

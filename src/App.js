@@ -5,14 +5,15 @@ import './App.css'
 import  Menu from './menu'
 import axios from 'axios'
 import {ExtendedSearch} from './search'
+import {browserHistory} from 'react-router'
 
 ReactGA.initialize('UA-85246703-1')
 
-localStorage.jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9waWNob3UiLCJpYXQiOjE0NzUxNTk3OTJ9.Lcu-GyJVfBxU4H4esKkWntQS55niL8qaGnWRJu2dPeI'
+// localStorage.jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9waWNob3UiLCJpYXQiOjE0NzUxNTk3OTJ9.Lcu-GyJVfBxU4H4esKkWntQS55niL8qaGnWRJu2dPeI'
 
 let my_jwt = localStorage.jwt
 if (!my_jwt) {
-    console.error("Navigator not supported")
+        browserHistory.push('/sign-in')
 }
 
 axios.defaults.baseURL = 'http://localhost:3001';
@@ -38,11 +39,13 @@ class App extends Component {
         },
         searchString: '',
         users: [{photo:[{filename:'anonymous.jpg', front: true}], bio: "Loading...", login: "Loading..."}],
-        appConfig: null
+        appConfig: null,
+        login: ''
     }
     
 
     componentDidMount = () => {
+        axios.get('/i').then(res => {this.setState({login: res.data.login})})
         this.search('')
         this.socket = io('localhost:3001/', {
             'query': 'token=' + my_jwt
@@ -211,10 +214,11 @@ class App extends Component {
     }
 
   render() {
-      const { notifications, messages, info, searchString, users } = this.state
+      const { notifications, messages, info, searchString, users, login } = this.state
       const childrenWithProps = React.Children.map(this.props.children,
           (child) => React.cloneElement(child, {
-              users
+              users,
+              login
           })
       );
     return (

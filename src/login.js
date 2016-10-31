@@ -17,12 +17,13 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 export class Login extends Component {
     state = {
         username: '',
-        password: ''
+        password: '',
+        error: false
     }
 
 
     componentDidMount() {
-        const fingerprint = new Fingerprint2().get((res, cmp) => {
+        new Fingerprint2().get((res, cmp) => {
             sessionStorage.setItem('fingerprint', res)
         })
         this.setState({fingerprint: sessionStorage.fingerprint}, () => {
@@ -49,15 +50,19 @@ export class Login extends Component {
                 browserHistory.push('/')
             } else {
                 console.log("Authentication error:", response.data.auth.message)
+                this.setState({error:true})
+                setTimeout(() => this.setState({error:false}), 600)
             }
         })
     }
 
     render() {
-        const before = ''
+        const {error, username, password} = this.state,
+            classes = error?'error':'',
+            before = ''
         return (
             <div className="Login">
-                <Form form={'login'} update={this.updateUser} submit={this.handleSubmit} before={before} submitName={"Sign-in"}/>
+                <Form classes={classes} form={'login'} update={this.updateUser} username={username} password={password} submit={this.handleSubmit} before={before} submitName={"Sign-in"}/>
             </div>
         )
     }

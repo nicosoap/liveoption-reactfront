@@ -39,14 +39,25 @@ export class Form extends Component {
         special: false
     }
 
-    componentDidMount() {
-        axios.get('/admin/userform', {
-            params: {
-                form: this.props.form
-            }
-        }).then(response => {
-        this.setState({userForm: response.data})
-    })
+    componentWillReceiveProps(newProps) {
+        if (newProps.defaultValues && !this.state.def) {
+            axios.get('/admin/userform', {
+                params: {
+                    form: this.props.form
+                }
+            }).then(response => {
+                let userForm = response.data,
+                    user = newProps.defaultValues
+                userForm.map((e, i) => {
+                        if (user[e.name]) {
+                            userForm[i].defaultValue = user[e.name]
+                        }
+                    return 0
+                    }
+                )
+                this.setState({userForm, user, def:true})
+            })
+        }
     }
 
 
@@ -59,7 +70,7 @@ export class Form extends Component {
             master_error = [0]
         master_error = userForm.map((e ,i ) => {
             if (e.required === "true" && (this.state.user[e.name] === ('' || undefined) || e.error !== "")) {
-                userForm[i].error = e.error === '' ? "This value must be provided" : e.error
+                e.error = e.error === '' ? "This value must be provided" : e.error
                 return (+1)
             } else return +0})
         this.setState({userForm: userForm})
@@ -150,9 +161,10 @@ export class Form extends Component {
     render() {
         return (
             <div className={this.props.form} onKeyUp={this.handleEnter}>
-                <div className="section-1">
+                <div className={"section-1 " + this.props.classes}>
                     <div className="before-form">{this.props.before}</div>
-                    {this.state.userForm.map((e, i) => {
+                    {
+                        this.state.userForm.map((e, i) => {
                         switch (e.type) {
                             case 'checkbox':
                                 return (
@@ -194,6 +206,15 @@ export class Form extends Component {
                                 return (
                                     <TagInput params={e} key={i} update={this.handleChange}/>
                                 )
+                            case 'spacer':
+                                return (
+                                    <div className="spacer" style={{height: e.value}} key={i}/>
+                                )
+
+                            case 'section':
+                                return (
+                                    <div className="section" key={i}>{e.value}</div>
+                                )
                             default:
                                 return (
                                     <div className="hidden">I'm always learning things the hardest way</div>
@@ -226,20 +247,17 @@ export class Subscribe extends Component {
     }
 
     handleSubmit = (user) => {
-        console.log(user)
         this.setState({result: user, special: true})
     }
 
     handleAgree = async () => {
         this.setState({validating: true})
-        console.log(this.state.result)
         axios.post('/user/new', {
             login: this.state.result.username,
             email: this.state.result.email,
             password: this.state.result.password,
             password2: this.state.result.password2
         }).then(response => {
-                console.log(response)
                 if (response.data.success){
                     sessionStorage.setItem('email' , this.state.result.email)
                     browserHistory.push('/thank-you')
@@ -283,28 +301,3 @@ export class Subscribe extends Component {
         )
     }
 }
-
-export class FullForm extends Component {
-    state = {
-        result: {}
-    }
-
-    updateUser = (_, name, value) => {
-        this.setState({result:{[name]:value}})
-    }
-
-    handleSubmit = () => {
-        axios.post('/user/update', this.state.result)
-            .then(response => {
-                if (response.data.success === true){
-
-        }})
-    }
-
-    render() {
-        return (
-            <Form form={'fullForm'} update={this.updateUser} submit={this.handleSubmit} submitName={"Update profile"}/>
-        )
-    }
-}
-
