@@ -9,16 +9,10 @@ import {browserHistory} from 'react-router'
 
 ReactGA.initialize('UA-85246703-1')
 
-// localStorage.jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9waWNob3UiLCJpYXQiOjE0NzUxNTk3OTJ9.Lcu-GyJVfBxU4H4esKkWntQS55niL8qaGnWRJu2dPeI'
+ //localStorage.jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9waWNob3UiLCJpYXQiOjE0NzUxNTk3OTJ9.Lcu-GyJVfBxU4H4esKkWntQS55niL8qaGnWRJu2dPeI'
 
-let my_jwt = localStorage.jwt
-if (!my_jwt) {
-        browserHistory.push('/sign-in')
-}
 
-axios.defaults.baseURL = 'http://localhost:3001';
-axios.defaults.headers.common['Authorization'] = 'Bearer ' + my_jwt;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 
 class App extends Component {
     state = {
@@ -42,13 +36,24 @@ class App extends Component {
         appConfig: null,
         login: ''
     }
-    
 
+
+    componentWillMount() {
+        this.setState({my_jwt:localStorage.jwt}, () =>{
+        if (!this.state.my_jwt) {
+            browserHistory.push('/sign-in')
+
+            axios.defaults.baseURL = 'http://localhost:3001';
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.state.my_jwt;
+            axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+        }})
+
+    }
     componentDidMount = () => {
         axios.get('/i').then(res => {this.setState({login: res.data.login})})
         this.search('')
         this.socket = io('localhost:3001/', {
-            'query': 'token=' + my_jwt
+            'query': 'token=' + this.state.my_jwt
         })
         this.setState({socket: this.socket})
         this.socket.on('message', message => {

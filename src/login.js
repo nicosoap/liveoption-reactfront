@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import {Form} from './subscribe'
 import axios from 'axios'
-import {browserHistory} from 'react-router'
+import {browserHistory, Link} from 'react-router'
 import Fingerprint2 from 'fingerprintjs2'
 import './App.css'
 
@@ -43,13 +43,11 @@ export class Login extends Component {
             password: this.state.password,
             fingerprint: this.state.fingerprint
         }).then(response => {
-            console.log(response)
             if (response.data.auth && response.data.auth.success) {
                 localStorage.jwt = response.data.auth.token
-                console.log("JWT: ",localStorage.jwt)
                 browserHistory.push('/')
             } else {
-                console.log("Authentication error:", response.data.auth.message)
+                console.error("Authentication error:", response.data.auth.message)
                 this.setState({error:true})
                 setTimeout(() => this.setState({error:false}), 600)
             }
@@ -63,6 +61,7 @@ export class Login extends Component {
         return (
             <div className="Login">
                 <Form classes={classes} form={'login'} update={this.updateUser} username={username} password={password} submit={this.handleSubmit} before={before} submitName={"Sign-in"}/>
+                <div className="sign-up"><Link to="/sign-up">Register</Link></div>
             </div>
         )
     }

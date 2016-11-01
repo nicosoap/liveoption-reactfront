@@ -39,26 +39,32 @@ export class Form extends Component {
         special: false
     }
 
-    componentWillReceiveProps(newProps) {
-        if (newProps.defaultValues && !this.state.def) {
-            axios.get('/admin/userform', {
-                params: {
-                    form: this.props.form
-                }
-            }).then(response => {
-                let userForm = response.data,
-                    user = newProps.defaultValues
-                userForm.map((e, i) => {
-                        if (user[e.name]) {
-                            userForm[i].defaultValue = user[e.name]
-                        }
-                    return 0
-                    }
-                )
-                this.setState({userForm, user, def:true})
+    componentWillMount() {
+        axios.get('/admin/userform?form=' + this.props.form)
+            .then(response => {
+                const userForm = response.data
+                console.log(userForm)
+                this.setState({userForm})
             })
-        }
     }
+
+    // componentWillReceiveProps(newProps) {
+    //     if (newProps.defaultValues && !this.state.def) {
+    //         axios.get('/admin/userform?form=' + newProps.form)
+    //             .then(response => {
+    //             let userForm = response.data,
+    //                 user = newProps.defaultValues
+    //             userForm.map((e, i) => {
+    //                     if (user[e.name]) {
+    //                         userForm[i].defaultValue = user[e.name]
+    //                     }
+    //                 return 0
+    //                 }
+    //             )
+    //             this.setState({userForm, user, def:true})
+    //         })
+    //     }
+    // }
 
 
     handleEnter = e => {
@@ -80,12 +86,15 @@ export class Form extends Component {
         }
     }
 
-    handleChange = async (id, name, value, e) => {
+    handleChange = async (id, name, value) => {
 
+        console.log( id, name, value)
         const userForm = this.state.userForm,
-            element = _.find(this.state.userForm, {'id': id}),
-            element_id = this.state.userForm.indexOf(element),
-            validator_type = element.validator_type,
+            element = _.find(userForm, {'id': id})
+        console.log(element)
+            let element_id = userForm.indexOf(element)
+        console.log("element id:", element_id)
+            let validator_type = element.validator_type,
             validator = element.validator,
             update = () => {
                 userForm.splice(element_id, 1, element)
@@ -155,16 +164,25 @@ export class Form extends Component {
 
         update()
 
-        this.props.update(id, name, value)
+        let result = userForm.filter(e => e.name !== 'id').map(e => {
+            return ({[e.name]: e.value})
+        })
+        return await this.props.update(id, name, value, result)
     }
 
     render() {
+        const userForm = this.state.userForm
+        // if (!this.props.defaultValues) return (<div></div>)
         return (
             <div className={this.props.form} onKeyUp={this.handleEnter}>
                 <div className={"section-1 " + this.props.classes}>
                     <div className="before-form">{this.props.before}</div>
                     {
-                        this.state.userForm.map((e, i) => {
+                        userForm.map((elem, i) => {
+                            let e = elem
+                            if (this.props.defaultValues) {
+                                e.defaultValue = this.props.defaultValues[e.name]
+                            }
                         switch (e.type) {
                             case 'checkbox':
                                 return (
@@ -222,10 +240,10 @@ export class Form extends Component {
                         }
                     })}
 
-                    <ButtonInput
+                    {(this.props.submit !== "none")?<ButtonInput
                                  submit={this.handleSubmit}
                                  submitName={this.props.submitName}
-                    />
+                    />:''}
                 </div>
             </div>
         )

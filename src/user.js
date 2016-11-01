@@ -41,7 +41,7 @@ export class User extends Component {
 
 export class UserCard extends Component {
     state = {
-        photo: [{filename: 'anonymous.jpg', front: true}],
+        photo: ['anonymous.jpg'],
         bio:"Loading...",
         login: 'Loading...',
         liked: false,
@@ -57,7 +57,7 @@ export class UserCard extends Component {
         appConfig: {}
     }
 
-    componentWillMount = () => {
+    componentWillMount() {
         axios.get('/admin/appConfig').then(response => {
             this.setState({appConfig: response.data})
 
@@ -132,18 +132,13 @@ export class UserCard extends Component {
         const {photo, bio, login, liked, match, blocked, message, Kg, M, weight, height, appConfig} = this.state
         const weight_formated = Kg?weight + ' Kg':this.kToLbs(weight).pounds + ' Lbs ' + this.kToLbs(weight).onces + ' oz'
         const height_formated = M?height + 'cm':this.cmToFeetInch(height).feet + 'ft. ' + this.cmToFeetInch(height).inches + 'in.'
-        let image = {filename: 'anonymous.jpg'}
-        if (!!photo && photo.filter(e => e.front).length > 0) {
-            image = photo.filter(e => e.front)[0]
-        } else if (!!photo) {
-            image = photo[0]
-        }
+        let image = photo[0] || 'anonymous.jpg'
         return (
             <div className={cx({
                 "user": true,
                 "hidden": blocked})}
                  id={login} >
-                <div className="profile-picture" style={{backgroundImage: `url('${appConfig.baseURL}/images/${image.filename}')`}}>
+                <div className="profile-picture" style={{backgroundImage: `url('${appConfig.baseURL}/images/${image}')`}}>
                 </div>
                 <div className="user-container-1">
                     <div className="user-interactions">

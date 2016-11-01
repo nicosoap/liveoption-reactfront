@@ -7,8 +7,9 @@ import { Login } from './login'
 import './index.css'
 import {User, Users} from './user'
 import {Subscribe} from './subscribe'
-import {Thankyou} from './thankyou'
+import {Thankyou, Validate} from './thankyou'
 import {FullForm} from './profile'
+import {Logout} from './logout'
 
 injectTapEventPlugin();
 
@@ -20,9 +21,11 @@ ReactDOM.render((
             <Route path="users" component={Users} >
                 <Route path="/user/:userId" component={User} />
             </Route>
+            <Route path="logout" component={Logout} />
         </Route>
         <Route path="/sign-in" component={Login} />
         <Route path="/thank-you" component={Thankyou} />
+        <Route path="/validate" component={Validate} />
         <Route path="/sign-up" component={Subscribe} />
     </Router>
 ), document.getElementById('root'));

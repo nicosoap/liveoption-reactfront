@@ -3,8 +3,8 @@ import cx from 'classnames'
 
 class Input extends Component {
     state = {
-        value:''
     }
+
     handleChange = (e) =>
     {
         this.setState({value: e.target.value})
@@ -143,13 +143,13 @@ export class PasswordInput extends Input {
 export class RadioInput extends Input {
 
     render() {
-        const {name, value, required, error, defaultValue} = this.props.params
+        const {name, radios, required, error, defaultValue} = this.props.params
         return (
             <div className="select">
                 <span className="error-message">{error !== '' ? error:null}</span>
             <radiogroup name={name} className="radiogroupInput" required={required}
                         defaultValue={defaultValue} >
-                {value.map((e, i) => {
+                {radios.map((e, i) => {
                 return(
                 <span className="radioInput" key={i}
                 ><radio
@@ -198,7 +198,7 @@ export class TextAreaInput extends Input {
                 rows="8"
                 maxLength="2500"
                 onChange={this.handleChange}
-            > </textarea>
+            ></textarea>
                 </div>
         )
     }
@@ -206,7 +206,7 @@ export class TextAreaInput extends Input {
 
 export class TextInput extends Input {
     render() {
-        const {id, name, type, placeholder, autocomplete, required, valid, validating, error, defaultValue} = this.props.params
+        const {id, name, type, placeholder, autocomplete, valid, required, defaultValue, validating, error} = this.props.params
         const value = this.state.value
         return(
             <div className="input">
