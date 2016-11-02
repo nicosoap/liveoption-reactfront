@@ -49,17 +49,18 @@ class App extends Component {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.state.my_jwt;
             axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         }})
+        axios.get('/i').then(res => {
+            axios.get('/user/' + res.data.login).then(reslt =>{
+                if (reslt.data.success) {
+                    this.setState({login: reslt.data.user.login, user: reslt.data.user})
+                } else { console.log("Backend is too busy to manage secondary requests right now")}
+            })
+        })
 
     }
 
     componentDidMount = () => {
-        axios.get('/i').then(res => {
-                    axios.get('/user/' + res.data.login).then(reslt =>{
-                        if (reslt.data.success) {
-                            this.setState({login: reslt.data.data.login, user: reslt.data.user})
-                        } else { console.log("Backend is too busy to manage secondary requests right now")}
-                    })
-                })
+
         axios.get('/admin/appConfig').then(response => {
             this.setState({appConfig: response.data})
         })

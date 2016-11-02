@@ -15,33 +15,111 @@ import {UserChart} from './chart'
 // I hope you never, I hope you never get to
 
 export class User extends Component {
-    state = {userForm: {},
-    login:'',
-    bio: '',
-    photo:[]}
+    state = {
+        user: {
+            Lat: 0,
+            Lng: 0,
+            bio: '',
+            login: '',
+            photo: []
+        },
+        liked: false,
+        likes_me: false,
+        popularity: 50,
+        visited: false,
+        enabled: false,
+        connected: false
+    }
 
-    componentDidMount() {
-        axios.get('/admin/userForm')
-            .then(response => this.setState({userForm: response.data}))
-        axios.get('/user/'+this.props.params.userId).then(res => {
-            const {login, bio, photo} = res.data.data
-            this.setState({login, bio, photo})
+    componentWillReceiveProps = newProps => {
+        if (newProps.user && newProps.photo && newProps.photo[0]) {
+            this.setState({enabled: true})
+        }
+    }
+
+    handleLike = () => {
+
+    }
+
+    handleDislike = () => {
+
+    }
+
+    handleChat = () => {
+
+    }
+
+    handleReport = () => {
+
+    }
+
+
+
+    componentWillMount() {
+        axios.get('/user/'+ this.props.params.userId).then(res => {
+            if (res.data.success) {
+                console.log(res.data)
+                const {connected, lastConnection, liked, likes_me, user, visited, popularity} = res.data
+                this.setState({connected, lastConnection, liked, likes_me, user, visited, popularity})
+            }
         })
     }
 
     render() {
-        const {login, bio, photo} = this.state
+        const {login, bio, photo} = this.state.user,
+            {connected, lastConnection, liked, likes_me, user, visited, popularity} = this.state
         return (
             <div className="profile">
                 <div className="profile-picture">
                     <PhotoViewer
                         photo={photo}
                         appConfig={this.props.appConfig}
-                        login={this.props.login}
-                    /></div>
+                        login={login}
+                    /></div><div className="content">
                 <div className="user-name">{login}</div>
-                <div className="user-description">< UserChart tags={this.props.user.tags} />{bio}</div>
-            </div>
+                <div className={cx({
+                    'interaction': true,
+                    'hidden': !this.state.enabled
+                })}>
+
+                    <div className={cx({
+                    "Like": true,
+                        'hidden': !!liked
+                    })} onClick={this.handleLike} >
+                    <i className="material-icons">thumb_up</i>
+                </div>
+
+                <div className={cx({
+                    'dislike': true,
+                    'hidden': !liked}
+                )
+                } onClick={this.handleDislike} ><i className="material-icons">thumb_down</i></div>
+
+                    <div className={cx({
+                    'chat': true,
+                        'hidden': !liked && !likes_me
+                    })} onClick={this.handleChat}><i className="material-icons">chat</i></div>
+
+                    <div className="report" onClick={this.handleReport}><i className="material-icons">report</i></div>
+
+                    <div className={cx({
+                    'visited': true,
+                        'active': visited
+                    })}><i className="material-icons">visibility</i></div>
+
+                    <div className={cx({
+                    'online': true,
+                    'hidden': !this.state.online})} ><i className="material-icons">nature_people</i></div>
+
+                    <div className={cx({
+                        'offline': true,
+                        'hidden': !!this.state.online})} ><i className="material-icons">nature</i></div>
+                    </div>
+                <div>{liked}</div>
+                <div>{likes_me}</div>
+                <div>{popularity}</div>
+                <div className="user-description">< UserChart tags={this.state.tags} />{bio}</div>
+            </div></div>
         )
     }
 }

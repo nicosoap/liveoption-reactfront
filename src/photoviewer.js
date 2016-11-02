@@ -2,8 +2,6 @@
  * Created by opichou on 10/15/16.
  */
 import React, {Component} from 'react'
-import { Link } from 'react-router'
-import axios from 'axios'
 import cx from 'classnames'
 
 export class PhotoViewer extends Component {
