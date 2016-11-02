@@ -12,7 +12,7 @@ if (!my_jwt) {
     console.log("Navigator not supported")
 }
 
-axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + my_jwt;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
@@ -186,7 +186,7 @@ export class PhotoInput extends Component {
                         return(
                             <ProfilePicture key={i}
                                             file={e.file}
-                                            url={ e.picture? ('http://localhost:3001/images/' + e.picture): URL.createObjectURL(e.file)}
+                                            url={ e.picture? ('http://localhost:8080/images/' + e.picture): URL.createObjectURL(e.file)}
                                             id={i}
                                             setDefault={this.setDefault}
                                             setDelete={this.setDelete} />

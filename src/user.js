@@ -5,35 +5,42 @@ import React, {Component} from 'react'
 import { Link } from 'react-router'
 import axios from 'axios'
 import cx from 'classnames'
+import {PhotoViewer} from './photoviewer'
+import {UserChart} from './chart'
 
-let my_jwt = localStorage.jwt
-if (!my_jwt) {
-    console.log("Navigator not supported")
-}
 
-axios.defaults.baseURL = 'http://localhost:3001';
-axios.defaults.headers.common['Authorization'] = 'Bearer ' + my_jwt;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 //Cause I was the one that you found
 // And if I know you, you'll find me someplace new
 // I hope you never, I hope you never get to
 
 export class User extends Component {
-    state = {userForm: {}}
+    state = {userForm: {},
+    login:'',
+    bio: '',
+    photo:[]}
 
     componentDidMount() {
         axios.get('/admin/userForm')
             .then(response => this.setState({userForm: response.data}))
+        axios.get('/user/'+this.props.params.userId).then(res => {
+            const {login, bio, photo} = res.data.data
+            this.setState({login, bio, photo})
+        })
     }
 
     render() {
+        const {login, bio, photo} = this.state
         return (
-            <div className="user">
+            <div className="profile">
                 <div className="profile-picture">
-                    <div className="user-name">Olivier</div>
-                    <div className="user-description">Salut c'est cool !</div>
-                </div>
+                    <PhotoViewer
+                        photo={photo}
+                        appConfig={this.props.appConfig}
+                        login={this.props.login}
+                    /></div>
+                <div className="user-name">{login}</div>
+                <div className="user-description">< UserChart tags={this.props.user.tags} />{bio}</div>
             </div>
         )
     }
@@ -54,7 +61,8 @@ export class UserCard extends Component {
         weight: 88,
         Kg: false,
         M: false,
-        appConfig: {}
+        appConfig: {},
+        enabled: true,
     }
 
     componentWillMount() {
@@ -64,29 +72,16 @@ export class UserCard extends Component {
     })}
 
     componentWillReceiveProps = newProps => {
-        const {photo, bio, login} = newProps.user
-        this.setState({photo, login, bio})
-    }
-
-    kToLbs = (pK) => {
-    const nearExact = pK/0.45359237
-    const lbs = Math.floor(nearExact)
-    const oz = (nearExact - lbs) * 16
-    return {
-        pounds: lbs,
-        ounces: oz
-    }
-}
-
-    cmToFeetInch = (hC) => {
-        const totalInches=Math.round(hC/2.54)
-        const inches=totalInches%12
-        const feet=(totalInches-inches)/12
-        return {
-            feet: feet,
-            inches: inches
+        if (newProps.user) {
+            const {photo, bio, login} = newProps.user
+            this.setState({photo, bio, login})
+        }
+        if (newProps.me) {
+            const enabled = newProps.me.enabled
+            this.setState({enabled})
         }
     }
+
 
     block = () => {
         console.log("block")
@@ -129,10 +124,10 @@ export class UserCard extends Component {
 
 
     render() {
-        const {photo, bio, login, liked, match, blocked, message, Kg, M, weight, height, appConfig} = this.state
-        const weight_formated = Kg?weight + ' Kg':this.kToLbs(weight).pounds + ' Lbs ' + this.kToLbs(weight).onces + ' oz'
-        const height_formated = M?height + 'cm':this.cmToFeetInch(height).feet + 'ft. ' + this.cmToFeetInch(height).inches + 'in.'
+        const {photo, bio, login, liked, match, blocked, message, appConfig} = this.state
         let image = photo[0] || 'anonymous.jpg'
+
+
         return (
             <div className={cx({
                 "user": true,
@@ -178,8 +173,6 @@ export class UserCard extends Component {
                     <Link to={`/user/${login}`}><div className="user-content-container">
                         <div className="user-details">{login}</div>
                         <div className="user-details user-description hidden">
-                            <p>height: {height_formated} &nbsp;
-                            weight: {weight_formated}</p>
                         </div>
                         <div className="user-details user-description">{bio}</div>
                     </div></Link>
@@ -192,19 +185,23 @@ export class UserCard extends Component {
 export class Users extends Component {
     state = {
         userForm: {},
-        users: []
+        users: [],
+        user: {},
+        login: ''
     }
 
     componentWillReceiveProps = newProps => {
-        const users = newProps.users
-        this.setState({users})
+        const {users, user, login } = newProps
+        this.setState({users, user, login})
     }
 
     render() {
         let users = ''
+        const {user, login} = this.state
+
         if (this.state.users.length > 0) {users = this.state.users.map((e, i) => {
             return (
-                <UserCard user={e} key={i}/>
+                <UserCard user={e} key={i} me={user} login={login} />
             )})}
         return (
             <div id="users">

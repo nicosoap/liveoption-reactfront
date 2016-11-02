@@ -10,7 +10,7 @@ import './App.css'
 
 let my_jwt = localStorage.jwt
 
-axios.defaults.baseURL = 'http://localhost:3001'
+axios.defaults.baseURL = 'http://localhost:8080'
 if (my_jwt) {axios.defaults.headers.common['Authorization'] = 'Bearer ' + my_jwt}
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 

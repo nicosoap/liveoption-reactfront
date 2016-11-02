@@ -27,7 +27,7 @@ import { browserHistory } from 'react-router'
 // You must have known I was never to doubt you boy
 
 
-axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 
@@ -181,7 +181,7 @@ export class Form extends Component {
                         userForm.map((elem, i) => {
                             let e = elem
                             if (this.props.defaultValues) {
-                                e.defaultValue = this.props.defaultValues[e.name]
+                                e.value = this.props.defaultValues[e.name]
                             }
                         switch (e.type) {
                             case 'checkbox':

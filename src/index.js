@@ -18,9 +18,8 @@ ReactDOM.render((
         <Route path="/" component={App} >
             <IndexRoute component={Users} />
             <Route path="profile" component={FullForm} />
-            <Route path="users" component={Users} >
-                <Route path="/user/:userId" component={User} />
-            </Route>
+            <Route path="users" component={Users} />
+            <Route path="/user/:userId" component={User} />
             <Route path="logout" component={Logout} />
         </Route>
         <Route path="/sign-in" component={Login} />

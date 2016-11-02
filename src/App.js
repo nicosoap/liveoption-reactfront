@@ -6,6 +6,7 @@ import  Menu from './menu'
 import axios from 'axios'
 import {ExtendedSearch} from './search'
 import {browserHistory} from 'react-router'
+import {Geoloc} from './geolocate'
 
 ReactGA.initialize('UA-85246703-1')
 
@@ -32,9 +33,10 @@ class App extends Component {
             messages: []
         },
         searchString: '',
-        users: [{photo:[{filename:'anonymous.jpg', front: true}], bio: "Loading...", login: "Loading..."}],
-        appConfig: null,
-        login: ''
+        users: [{photo:['anonymous.jpg'], bio: "Loading...", login: "Loading..."}],
+        appConfig: {},
+        login: '',
+        user: {}
     }
 
 
@@ -43,16 +45,26 @@ class App extends Component {
         if (!this.state.my_jwt) {
             browserHistory.push('/sign-in')
 
-            axios.defaults.baseURL = 'http://localhost:3001';
+            axios.defaults.baseURL = 'http://localhost:8080';
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.state.my_jwt;
             axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         }})
 
     }
+
     componentDidMount = () => {
-        axios.get('/i').then(res => {this.setState({login: res.data.login})})
+        axios.get('/i').then(res => {
+                    axios.get('/user/' + res.data.login).then(reslt =>{
+                        if (reslt.data.success) {
+                            this.setState({login: reslt.data.data.login, user: reslt.data.user})
+                        } else { console.log("Backend is too busy to manage secondary requests right now")}
+                    })
+                })
+        axios.get('/admin/appConfig').then(response => {
+            this.setState({appConfig: response.data})
+        })
         this.search('')
-        this.socket = io('localhost:3001/', {
+        this.socket = io((this.state.appConfig.baseURL || 'localhost:8080/'), {
             'query': 'token=' + this.state.my_jwt
         })
         this.setState({socket: this.socket})
@@ -219,11 +231,13 @@ class App extends Component {
     }
 
   render() {
-      const { notifications, messages, info, searchString, users, login } = this.state
+      const { notifications, messages, info, searchString, users, login, appConfig, user } = this.state
       const childrenWithProps = React.Children.map(this.props.children,
           (child) => React.cloneElement(child, {
               users,
-              login
+              login,
+              appConfig,
+              user
           })
       );
     return (
@@ -233,6 +247,7 @@ class App extends Component {
               searchString={searchString}
               simpleSearch={this.simpleSearch}
         >
+            < Geoloc />
             <div className="main-content">
                 <ExtendedSearch
                     updateSearch={this.updateSearch}
