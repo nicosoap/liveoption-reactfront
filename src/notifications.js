@@ -44,13 +44,14 @@ export class Notifications extends Component {
     render () {
 
         const { notifications, messages, info} = this.state
-        const infos = info.messages.map((notification, i) => < Notif notification={notification} key={i} /> )
+        //const infos = info.messages.map((notification, i) => < Notif notification={notification} key={i} /> )
 
         return (
             <div className="floating">
-                <Interactions notifications={notifications} messages={messages} />
-                <div className="notif-colon" id="notifications" >
-                    {infos}
+                <Interactions notifications={notifications} messages={messages} toggleChat={this.props.toggleChat}
+                              toggleNotification={this.props.toggleNotification}/>
+                <div className="notif-colon" id="notifications">
+                    {/*{infos}*/}
                 </div>
             </div>
         )

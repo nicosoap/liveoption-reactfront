@@ -36,7 +36,8 @@ class App extends Component {
         users: [],
         appConfig: {},
         login: '',
-        user: {}
+        user: {},
+        chats: []
     }
 
 
@@ -76,6 +77,12 @@ class App extends Component {
         axios.get('/admin/appConfig').then(response => {
             this.setState({appConfig: response.data}, () => {
             })
+        })
+
+        axios.get('/chat').then(res => {
+            if (res.data.success){
+                this.setState({chats: res.data.chats})
+            }
         })
 
 
@@ -251,6 +258,24 @@ class App extends Component {
             .catch(error => console.error(error))
     }
 
+    mergeChats = () => {
+        let chats = this.state.chats
+        let messages = chats.map(e => { return [...e.messages]})
+        console.log(messages)
+    }
+
+    updateChat = (otherId) => {
+        let chats = this.state.chats
+        const index = chats.findIndex(elem => { return elem.otherId === otherId})
+        let chat = chats[index]
+        chat.messages = chat.messages.map(e => {
+            return {read: true, body: e.body, from: e.from}
+        })
+        console.log("chat: ", chat)
+        chats.splice(index, 1, chat)
+        this.setState({chat , chats,  stored: !this.state.stored})
+    }
+
   render() {
       const {notifications, messages, info, searchString, users, login, appConfig, user} = this.state
       const childrenWithProps = React.Children.map(this.props.children,
@@ -267,6 +292,9 @@ class App extends Component {
                     info={info}
                     searchString={searchString}
                     simpleSearch={this.simpleSearch}
+                    socket={this.socket}
+                    updateChat={this.updateChat}
+                    updateNotification={this.updateNotification}
               >
                   < Geoloc hidden={true}/>
                   <div className="main-content">

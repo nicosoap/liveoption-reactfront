@@ -10,6 +10,7 @@ import {Subscribe} from './subscribe'
 import {Thankyou, Validate} from './thankyou'
 import {FullForm} from './profile'
 import {Logout} from './logout'
+import Chat from './chat'
 
 injectTapEventPlugin();
 
@@ -20,6 +21,7 @@ ReactDOM.render((
             <Route path="profile" component={FullForm} />
             <Route path="users" component={Users} />
             <Route path="/user/:userId" component={User} />
+            <Route path="chat" component={Chat} />
             <Route path="logout" component={Logout} />
         </Route>
         <Route path="/sign-in" component={Login} />

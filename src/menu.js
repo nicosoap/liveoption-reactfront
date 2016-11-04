@@ -7,6 +7,7 @@ import cx from 'classnames'
 import { Link, browserHistory } from 'react-router'
 import { Notifications, MenuButton } from './notifications'
 import axios from 'axios'
+import Chat from './chat'
 
 
 class MenuItem extends Component {
@@ -82,10 +83,21 @@ export default class Menu extends Component {
             messages: []
         },
         searchString: '',
-        simpleSearch: null
+        simpleSearch: null,
+        showChat: true,
+        showNotification: false
     }
 
     toggleMenu = () => this.setState({isShown: !this.state.isShown})
+
+    toggleChat = () => {
+        this.setState({showChat: !this.state.showChat})
+        return true
+    }
+
+    toggleNotification = () => {
+        this.setState({showNotification: !this.state.showNotification})
+    }
 
     componentWillReceiveProps = (newProps) => this.setState({
         notifications: newProps.notifications,
@@ -118,13 +130,16 @@ export default class Menu extends Component {
                     'pushed': !!this.state.isShown
                 })}>
                     <div className="top-bar">
-                        <MenuButton toggleMenu={ this.toggleMenu } />
-                        <Search searchString={this.state.searchString} simpleSearch={this.state.simpleSearch} />
-                        <Notifications notifications={notifications} messages={messages} info={info}/>
+                        <MenuButton toggleMenu={ this.toggleMenu }/>
+                        <Search searchString={this.state.searchString} simpleSearch={this.simpleSearch}/>
+                        <Notifications notifications={notifications} messages={messages} info={info}
+                                       toggleChat={this.toggleChat}
+                                       toggleNotification={this.toggleNotification}/>
                     </div >
                     <div className="App">
                         { this.props.children }
                     </div>
+                    <Chat socket={this.props.socket} messages={messages} userId={this.props.userId} toggleChat={this.toggleChat} showChat={this.state.showChat}/>
                 </div>
             </div>
         )

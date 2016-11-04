@@ -11,6 +11,10 @@ export class InfoNotice extends Component {
         this.setState(notifications)
     }
 
+    click = () => {
+        this.props.click()
+    }
+
     render() {
         const tmpBadge = this.state.badge > 9 ? "9+" : this.state.badge
 
@@ -18,8 +22,10 @@ export class InfoNotice extends Component {
             <div className={cx({
                 "floating": true,
                 'hidden': !this.state.visible,
-            })}>
-                <div className="notif">
+            })}
+                 onClick={this.click}
+            >
+                <div className="notif" >
                     <div className={cx({
                         'material-icons': true,
                         'icon-large': true,
@@ -63,6 +69,21 @@ export class Interactions extends Component {
         })
     }
 
+    toggleChat = () => {
+        if (this.props.toggleChat()) {
+            let messages = this.state.messages.messages.map(e => {
+                return (
+                {from: e.from, body: e.body, read: true}
+                )
+            })
+            this.setState({messages: {messages, unread: false, newMessage: false}})
+        }
+    }
+
+    toggleNotification = () => {
+
+    }
+
     render() {
 
         let isUR = (unit) => (unit.read === true) ? '' : unit
@@ -88,8 +109,8 @@ export class Interactions extends Component {
         }
         return (
             <div>
-                <InfoNotice notification={notifications}/>
-                <InfoNotice notification={messages}/>
+                <InfoNotice notification={notifications} click={this.toggleNotification}/>
+                <InfoNotice notification={messages} click={this.toggleChat}/>
             </div>
         )
     }
