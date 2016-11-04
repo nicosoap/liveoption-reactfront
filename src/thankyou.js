@@ -7,11 +7,8 @@ import axios from 'axios'
 import {browserHistory} from 'react-router'
 
 export class Thankyou extends Component {
-    state={email: ''}
+    state={}
 
-    componentDidMount() {
-        this.setState({email: sessionStorage.email})
-    }
     render() {
         return (
             <div className="ty">
@@ -19,7 +16,7 @@ export class Thankyou extends Component {
                 <div className="section-1">
                     <div className="before-form">{''} </div>
                     <h3>Thank you!</h3>
-                    <p>You have successfully registered to liveoption.io <br/> Please check {this.state.email} to activate your account.</p>
+                    <p>You have successfully registered to liveoption.io <br/> Please check {sessionStorage.email} to activate your account.</p>
                     </div>
                 </div>
                 </div>
@@ -44,7 +41,7 @@ export class Validate extends Component {
                 if (res.data.success) {
                     console.log("JWT: ", res.data.user.token)
                     localStorage.jwt = res.data.user.token
-                    browserHistory.push('/')
+                    browserHistory.push('/profile')
                 } else {
                     console.log(res.data)
                     browserHistory.push('/sign-up')

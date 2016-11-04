@@ -33,7 +33,7 @@ class App extends Component {
             messages: []
         },
         searchString: '',
-        users: [{photo:['anonymous.jpg'], bio: "Loading...", login: "Loading..."}],
+        users: [],
         appConfig: {},
         login: '',
         user: {}
@@ -41,32 +41,47 @@ class App extends Component {
 
 
     componentWillMount() {
-        this.setState({my_jwt:localStorage.jwt}, () =>{
-        if (!this.state.my_jwt) {
-            browserHistory.push('/sign-in')
 
-            axios.defaults.baseURL = 'http://localhost:8080';
-            axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.state.my_jwt;
-            axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-        }})
-        axios.get('/i').then(res => {
-            axios.get('/user/' + res.data.login).then(reslt =>{
-                if (reslt.data.success) {
-                    this.setState({login: reslt.data.user.login, user: reslt.data.user})
-                } else { console.log("Backend is too busy to manage secondary requests right now")}
-            })
-        })
+    }
 
+    componentWillReceiveProps() {
     }
 
     componentDidMount = () => {
 
-        axios.get('/admin/appConfig').then(response => {
-            this.setState({appConfig: response.data})
+
+        this.setState({my_jwt:localStorage.jwt}, () =>{
+            if (!this.state.my_jwt) {
+                browserHistory.push('/sign-in')
+            }})
+
+        axios.defaults.baseURL = 'http://localhost:8080';
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.jwt;
+        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+        axios.get('/i').then(res => {
+            if (res.data.success) {
+                axios.get('/user/' + res.data.login).then(reslt => {
+                    if (reslt.data.success) {
+                        this.setState({login: reslt.data.user.login, user: reslt.data.user})
+                    } else {
+                        console.log("Backend is too busy to manage secondary requests right now")
+                    }
+                })
+            }else {
+                browserHistory.push('/sign-in')
+            }
         })
-        this.search('')
-        this.socket = io((this.state.appConfig.baseURL || 'localhost:8080/'), {
-            'query': 'token=' + this.state.my_jwt
+
+        axios.get('/admin/appConfig').then(response => {
+            this.setState({appConfig: response.data}, () => {
+            })
+        })
+
+
+
+        this.socket = io('http://localhost:8080' || window.location.origin, {
+            'query': 'token=' + localStorage.jwt
         })
         this.setState({socket: this.socket})
         this.socket.on('message', message => {
@@ -173,6 +188,10 @@ class App extends Component {
             }), 250)
         })
 
+
+        // initialize state with suggestion. Suggestions are search without option.
+        this.search('')
+
     }
 
     updateSearch = (payload) => {
@@ -227,12 +246,13 @@ class App extends Component {
             }
         })
             .then((response) => {
-                this.setState({users: response.data.users})})
+                this.setState({users: response.data.users})
+            })
             .catch(error => console.error(error))
     }
 
   render() {
-      const { notifications, messages, info, searchString, users, login, appConfig, user } = this.state
+      const {notifications, messages, info, searchString, users, login, appConfig, user} = this.state
       const childrenWithProps = React.Children.map(this.props.children,
           (child) => React.cloneElement(child, {
               users,
@@ -240,26 +260,28 @@ class App extends Component {
               appConfig,
               user
           })
-      );
-    return (
-        <Menu notifications={ notifications }
-              messages={ messages }
-              info={info}
-              searchString={searchString}
-              simpleSearch={this.simpleSearch}
-        >
-            < Geoloc />
-            <div className="main-content">
-                <ExtendedSearch
-                    updateSearch={this.updateSearch}
-                    extendedSearch={this.extendedSearch}
-                />
-                {childrenWithProps}
-            </div>
-        </Menu>
+      )
+          return (
+              <Menu notifications={ notifications }
+                    messages={ messages }
+                    info={info}
+                    searchString={searchString}
+                    simpleSearch={this.simpleSearch}
+              >
+                  < Geoloc hidden={true}/>
+                  <div className="main-content">
+                      <ExtendedSearch
+                          updateSearch={this.updateSearch}
+                          extendedSearch={this.extendedSearch}
+                      />
+                      {childrenWithProps}
+                  </div>
+              </Menu>
 
-    )
+          )
+
   }
+
 }
 
 export default App;

@@ -34,6 +34,7 @@ export class Login extends Component {
     }
 
     updateUser = (id, name, value) => {
+        console.log('!')
         this.setState({[name]: value})}
 
 
@@ -43,6 +44,7 @@ export class Login extends Component {
             password: this.state.password,
             fingerprint: this.state.fingerprint
         }).then(response => {
+            console.log(response.data)
             if (response.data.auth && response.data.auth.success) {
                 localStorage.jwt = response.data.auth.token
                 browserHistory.push('/')
@@ -50,6 +52,9 @@ export class Login extends Component {
                 console.error("Authentication error:", response.data.auth.message)
                 this.setState({error:true})
                 setTimeout(() => this.setState({error:false}), 600)
+                if (this.state.username === '') {
+                    localStorage.removeItem('jwt')
+                }
             }
         })
     }

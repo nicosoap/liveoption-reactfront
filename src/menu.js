@@ -10,10 +10,15 @@ import axios from 'axios'
 
 
 class MenuItem extends Component {
+
+
     render() {
+
         return (
             <div className="menu-div">
-                <Link to={ this.props.rel }><li><i className="material-icons">{ this.props.icon }</i>{ this.props.name }</li></Link>
+                <Link to={ '/' + this.props.rel } >
+                    <li><i className="material-icons">{ this.props.icon }</i>{ this.props.name }</li>
+                </Link>
             </div>
         )
     }
@@ -93,6 +98,10 @@ export default class Menu extends Component {
 
     render() {
         const {notifications, messages, info } = this.state
+        const childrenWithProps = React.Children.map(this.props.children,
+            (child) => React.cloneElement(child, {
+            })
+        )
         return (
             <div>
                 <div className={cx({
@@ -110,7 +119,7 @@ export default class Menu extends Component {
                 })}>
                     <div className="top-bar">
                         <MenuButton toggleMenu={ this.toggleMenu } />
-                        <Search socket={this.socket} searchString={this.state.searchString} simpleSearch={this.state.simpleSearch} />
+                        <Search searchString={this.state.searchString} simpleSearch={this.state.simpleSearch} />
                         <Notifications notifications={notifications} messages={messages} info={info}/>
                     </div >
                     <div className="App">

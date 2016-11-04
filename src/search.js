@@ -175,7 +175,7 @@ export class ExtendedSearch extends Component {
                                 <label
                                     htmlFor="netflix"
                                 >
-                                    Who owns a Netflix account
+                                   Has Netflix
                                 </label>
                                 </span>
                             < br/>

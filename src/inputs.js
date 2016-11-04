@@ -216,7 +216,6 @@ export class TextInput extends Input {
                 type={type}
                 name={name}
                 defaultValue={defaultValue}
-                value={value}
                 placeholder={placeholder}
                 autoComplete={autocomplete}
                 required={required}

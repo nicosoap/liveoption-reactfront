@@ -7,14 +7,7 @@ import axios from 'axios'
 // It felt so good, the world don't know, now they'll never find out
 // All these years she must've been beside you boy
 
-let my_jwt = localStorage.jwt
-if (!my_jwt) {
-    console.log("Navigator not supported")
-}
 
-axios.defaults.baseURL = 'http://localhost:8080';
-axios.defaults.headers.common['Authorization'] = 'Bearer ' + my_jwt;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 export class PhotoInput extends Component {
     state = {
@@ -31,23 +24,29 @@ export class PhotoInput extends Component {
         photo: []
     }
 
-    componentDidMount() {
-        // if (this.state.photo.length < 1 && this.props.defaultValues) {
-        //     let photo = this.props.defaultValues.map(e => {
-        //         return ({file: null, picture: e})
-        //     })
-        //     this.setState({photo})
+    componentWillMount() {
+        let my_jwt = localStorage.jwt
+        if (!my_jwt) {
+            console.log("Navigator not supported")
+        }
+
+        axios.defaults.baseURL = 'http://localhost:8080';
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + my_jwt;
+        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         // }
     }
 
     componentWillReceiveProps = newProps => {
-        const {id, name, type, placeholder, defaultValue, autocomplete, required, accept} = newProps.params
-        let photo = defaultValue.map(e => {
-            return (
-            {picture: e}
-            )
-        })
-        this.setState({id, name, type, placeholder, value: defaultValue, autocomplete, required, accept, photo})
+        const {id, name, type, placeholder, value, autocomplete, required, accept} = newProps.params
+        let photo = []
+        if (value) {
+            photo = value.map(e => {
+                return (
+                {picture: e}
+                )
+            })
+        }
+        this.setState({id, name, type, placeholder, autocomplete, required, accept, photo})
     }
 
     handleDragOver = e => {
@@ -76,7 +75,6 @@ export class PhotoInput extends Component {
             let photo = this.state.photo
             photo.splice(4, 3)
             let picture = await this.uploadPicture(file)
-            console.log("DROPPICTURE: ", picture)
             if (picture) {this.setState({
                     photo: [...photo, {file: e.dataTransfer.files[0], picture}]
                 },
@@ -139,7 +137,6 @@ export class PhotoInput extends Component {
     }
 
     updateSelection = async () => {
-        console.log(this.state.photo)
         let photo = this.state.photo
         if (photo.length > this.props.params.maxLength) {
             photo.splice(this.props.paramsmaxLength, this.props.params.maxLength - photo.length)
@@ -147,16 +144,14 @@ export class PhotoInput extends Component {
         let picture = photo.map(e => {
             return e.picture
         })
-        console.log("photo: ", photo, "picture: ", picture, "id: ", this.props.params.id, "name: ", this.props.params.name)
         this.setState({photo})
-        console.log (await this.props.update(this.props.params.id, this.props.params.name, picture))
+        await this.props.update(this.props.params.id, this.props.params.name, picture)
     }
 
 
     render() {
         const {photo, accept, isDragover, uploadSupport} = this.state
 
-        console.log("PHOTO id: ", this.state.id)
         return(
             <div className="photoInput">
             <form className={cx({

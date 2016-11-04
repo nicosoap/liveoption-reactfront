@@ -6,11 +6,13 @@ import cx from 'classnames'
 
 export class PhotoViewer extends Component {
     render() {
+        const photo = this.props.photo || []
         return(
             <div>
-        { this.props.photo.map((e, i) => {
+        { photo.map((e, i) => {
             const url = this.props.appConfig.baseURL + '/images/' + e
-            return (<PhotoViewerItem url={url} login={this.props.login} key={i} hover={this.handleHover} click={this.handleClick} /> )
+            return (<PhotoViewerItem url={url} login={this.props.login} key={i} hover={this.handleHover}
+                                     click={this.handleClick}/> )
         })}
         </div>
         )

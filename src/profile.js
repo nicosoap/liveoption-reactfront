@@ -4,19 +4,22 @@ import React, {Component} from 'react'
 
 export class FullForm extends Component {
     state = {
-        result: {}
+        result: {},
+        user: {}
     }
 
     componentWillMount() {
         axios.get('/i').then(res => {
             axios.get('/user/'+ res.data.login)
                 .then(response => {
-                    this.setState({user: response.data.data, result: response.data.data},
+                    console.log("TEST: ",response.data)
+                    this.setState({user: response.data.user, result: response.data.user},
                         () => console.log("Recieved state: ", this.state))
                 })
         })
 
     }
+
 
     updateUser = async (_, name, value, result) => {
         console.log("name: ", name, "value: ", value, "result: ", {result: {[name]: value}})
@@ -60,7 +63,7 @@ export class FullForm extends Component {
                     <div className="content-4">{content4}</div>
                     <div className="content-5">{content5}</div>
                 </div>
-            <Form form={'fullForm'} defaultValues={this.state.user} before={"Modify Profile"} update={this.updateUser} submit={this.handleSubmit} submitName={"Update Profile"}/></div>
+            <Form form={'fullForm'} defaultValues={this.state.user} user={this.state.user} before={"Modify Profile"} update={this.updateUser} submit={this.handleSubmit} submitName={"Update Profile"}/></div>
         )
     }
 }

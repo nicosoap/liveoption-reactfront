@@ -3,6 +3,7 @@
  */
 import React, { Component } from 'react'
 import axios from 'axios'
+import cx from 'classnames'
 
 export class Geoloc extends Component {
     state = {
@@ -57,7 +58,11 @@ export class Geoloc extends Component {
     render() {
         const icon = this.state.active?'location_on':'location_off'
         return(
-            <div className="geolocation" onClick={this.handleClick}><i className="material-icons" >{icon}</i></div>
+            <div className={cx({
+                "geolocation": true,
+                "hidden": this.props.hidden})}
+                 onClick={this.handleClick
+            }><i className="material-icons" >{icon}</i></div>
         )
     }
 }

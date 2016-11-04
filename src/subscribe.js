@@ -20,15 +20,12 @@ import {
     ButtonInput
 } from './inputs'
 import { browserHistory } from 'react-router'
+import Fingerprint2 from 'fingerprintjs2'
 
 // Clever lier, fooling us all, never thought I'd work it out
 // How could I have known it was ever about you boy?
 // Now there's nothing to say, there's no words and we're not talking anyhow
 // You must have known I was never to doubt you boy
-
-
-axios.defaults.baseURL = 'http://localhost:8080';
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 
 
@@ -40,12 +37,19 @@ export class Form extends Component {
     }
 
     componentWillMount() {
-        axios.get('/admin/userform?form=' + this.props.form)
+        axios.defaults.baseURL = 'http://localhost:8080';
+        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+        axios.get('/admin/userform?form=' + this.props.form || 'shortForm')
             .then(response => {
-                const userForm = response.data
-                console.log(userForm)
-                this.setState({userForm})
+                if (response.status === 200) {
+                    const userForm = response.data
+                    this.setState({userForm})
+                } else {
+                    console.log("ERROR")
+                }
             })
+
     }
 
     // componentWillReceiveProps(newProps) {
@@ -87,13 +91,9 @@ export class Form extends Component {
     }
 
     handleChange = async (id, name, value) => {
-
-        console.log( id, name, value)
         const userForm = this.state.userForm,
             element = _.find(userForm, {'id': id})
-        console.log(element)
             let element_id = userForm.indexOf(element)
-        console.log("element id:", element_id)
             let validator_type = element.validator_type,
             validator = element.validator,
             update = () => {
@@ -172,7 +172,6 @@ export class Form extends Component {
 
     render() {
         const userForm = this.state.userForm
-        // if (!this.props.defaultValues) return (<div></div>)
         return (
             <div className={this.props.form} onKeyUp={this.handleEnter}>
                 <div className={"section-1 " + this.props.classes}>
@@ -259,6 +258,13 @@ export class Subscribe extends Component {
         error: false
         }
 
+    componentDidMount() {
+        new Fingerprint2().get((res, cmp) => {
+            sessionStorage.setItem('fingerprint', res)
+        })
+        this.setState({fingerprint: sessionStorage.fingerprint})
+    }
+
 
     updateUser = (_, name, value) => {
         this.setState({result:{[name]:value}})
@@ -274,7 +280,8 @@ export class Subscribe extends Component {
             login: this.state.result.username,
             email: this.state.result.email,
             password: this.state.result.password,
-            password2: this.state.result.password2
+            password2: this.state.result.password2,
+            fingerprint: this.state.fingerprint
         }).then(response => {
                 if (response.data.success){
                     sessionStorage.setItem('email' , this.state.result.email)
