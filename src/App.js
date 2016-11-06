@@ -42,24 +42,6 @@ class App extends Component {
 
 
     componentWillMount() {
-
-    }
-
-    componentWillReceiveProps() {
-    }
-
-    componentDidMount = () => {
-
-
-        this.setState({my_jwt:localStorage.jwt}, () =>{
-            if (!this.state.my_jwt) {
-                browserHistory.push('/sign-in')
-            }})
-
-        axios.defaults.baseURL = 'http://localhost:8080';
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.jwt;
-        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-
         axios.get('/i').then(res => {
             if (res.data.success) {
                 axios.get('/user/' + res.data.login).then(reslt => {
@@ -73,16 +55,39 @@ class App extends Component {
                 browserHistory.push('/sign-in')
             }
         })
-
-        axios.get('/admin/appConfig').then(response => {
-            this.setState({appConfig: response.data}, () => {
-            })
-        })
-
-        axios.get('/chat').then(res => {
-            if (res.data.success){
+        axios.get('/chats').then(res => {
+            if (res.data.success) {
                 this.setState({chats: res.data.chats})
             }
+        })
+    }
+
+    componentWillReceiveProps() {
+    }
+
+    componentDidMount() {
+
+
+        axios.defaults.baseURL = 'http://localhost:8080';
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.jwt;
+        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+
+        this.setState({my_jwt:localStorage.jwt}, () =>{
+            if (!this.state.my_jwt) {
+                browserHistory.push('/sign-in')
+            }})
+
+        axios.get('/chats').then(res => {
+            if (res.data.success) {
+                this.setState({chats: res.data.chats})
+            } else {
+            }
+        })
+
+
+        axios.get('/admin/appConfig').then(response => {
+            this.setState({appConfig: response.data})
         })
 
 
@@ -92,6 +97,18 @@ class App extends Component {
         })
         this.setState({socket: this.socket})
         this.socket.on('message', message => {
+            console.log(message)
+            const user1 = message.from,
+                user2 = message.to,
+                chats = this.state.chats,
+                index = chats.findIndex(e => {
+                        if ((e.userId === user1 && e.otherId === user2) || (e.userId === user2 && e.otherId === user1)){
+                            return true
+                        }
+                    })
+                chats[index].messages = chats[index].messages || []
+                chats[index].messages.push(message)
+
             this.setState({
                 notifications: {
                     matches: this.state.notifications.matches,
@@ -107,7 +124,8 @@ class App extends Component {
                 },
                 info: {
                     messages: [...this.state.info.messages, message]
-                }
+                },
+                chats
             })
 
 
@@ -194,6 +212,9 @@ class App extends Component {
                 }
             }), 250)
         })
+        this.socket.on('chatroom', chatroom => {
+            this.setState({chats: [chatroom, ...this.state.chats]})
+        })
 
 
         // initialize state with suggestion. Suggestions are search without option.
@@ -261,7 +282,6 @@ class App extends Component {
     mergeChats = () => {
         let chats = this.state.chats
         let messages = chats.map(e => { return [...e.messages]})
-        console.log(messages)
     }
 
     updateChat = (otherId) => {
@@ -271,13 +291,12 @@ class App extends Component {
         chat.messages = chat.messages.map(e => {
             return {read: true, body: e.body, from: e.from}
         })
-        console.log("chat: ", chat)
         chats.splice(index, 1, chat)
         this.setState({chat , chats,  stored: !this.state.stored})
     }
 
   render() {
-      const {notifications, messages, info, searchString, users, login, appConfig, user} = this.state
+      const {notifications, messages, info, searchString, users, login, appConfig, user, chats} = this.state
       const childrenWithProps = React.Children.map(this.props.children,
           (child) => React.cloneElement(child, {
               users,
@@ -295,6 +314,8 @@ class App extends Component {
                     socket={this.socket}
                     updateChat={this.updateChat}
                     updateNotification={this.updateNotification}
+                    chats={chats}
+                    userId={user.login}
               >
                   < Geoloc hidden={true}/>
                   <div className="main-content">

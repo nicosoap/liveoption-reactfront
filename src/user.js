@@ -155,6 +155,7 @@ export class User extends Component {
 
 export class UserCard extends Component {
     state = {
+        loaded: false,
         users: [],
         photo: ['anonymous.jpg'],
         bio: "Loading...",
@@ -171,7 +172,7 @@ export class UserCard extends Component {
         Kg: false,
         M: false,
         appConfig: {},
-        enabled: true,
+        enabled: false,
     }
 
     componentWillMount() {
@@ -182,24 +183,31 @@ export class UserCard extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        console.log("NEW PROPS")
+
+        const enabled = (!!newProps.me.photo && !!newProps.me.photo[0])
+        this.setState({enabled})
     }
 
     componentDidMount() {
-        console.log("USER: ", this.props.user)
-        const {photo, bio, login, liked, likes_me} = this.props.user,
-            enabled = (!!this.props.me.photo && !!this.props.me.photo[0])
-        this.setState({photo, bio, login, liked, likes_me, match: (liked && likes_me), enabled},
-        console.log("COMPONENT: ", this.state))
-
+        let {photo, bio, login, liked, likes_me} = this.props.user
+        this.setState({photo, bio, login, liked, likes_me, match: (liked && likes_me)})
     }
 
     handleLike = () => {
-        console.log("LIKE", this.state.enabled, this.state.liked, this.state.likes_me)
         if (this.state.enabled) {
-            axios.get('/like/' + this.state.login).then(res =>{
+            axios.get('/like/' + this.state.login).then(res => {
                 if (res.data.success) {
-                    this.setState({liked: true})
+                    this.setState({liked: true, match: res.data.match})
+                }
+            })
+        }
+    }
+
+    handleDislike = () => {
+        if (this.state.enabled) {
+            axios.get('/dislike/' + this.state.login).then(res =>{
+                if (res.data.success) {
+                    this.setState({liked: false, match: false})
                 }
             })}
 
@@ -207,7 +215,6 @@ export class UserCard extends Component {
 
 
     handleChat = () => {
-        console.log("CHAT", this.state.enabled, this.state.liked, this.state.likes_me)
         if (this.state.enabled && this.state.liked && this.state.likes_me) {
             this.props.chat(this.state.login)
         }
@@ -226,7 +233,7 @@ export class UserCard extends Component {
 
 
     render() {
-        let {photo, bio, login, liked, match, blocked, message, appConfig} = this.state
+        let {photo, bio, login, liked, match, blocked, message, appConfig, enabled} = this.state
         let image = 'anonymous.jpg'
         if (photo && photo[0])
         {
@@ -236,7 +243,6 @@ export class UserCard extends Component {
             bio = "this user hasn't written his bio yet."
         }
 
-        console.log("LIKED", liked,  "MATCH", match)
 
 
         return (
@@ -251,37 +257,34 @@ export class UserCard extends Component {
                 <div className="user-container-1">
                     <div className="user-interactions">
                         <div className="small-container">
-                            {match ? <div onClick={this.dislike}>
-                                <i className={
-                                    cx({
-                                        'fa fa-heart-o': true,
-                                        'user-unlike': true,
-                                        'icon-active': liked,
-                                        'icon-match': match
-                                    })
-                                }/></div> : ''}
-
-                            <div className="user-block" onClick={this.handleBlock}><i className={
+                           <div className="user-block" onClick={this.handleBlock}><i className={
                                 cx({
                                     'material-icons': true,
                                     'icon-alarm': blocked
                                 })
                             }>do_not_disturb</i></div>
                         </div>
-                        {match ? <div className="user_pop_messenger" onClick={this.handleChat}><i className={
+                        {enabled ? (match ? <div className="user_pop_messenger" onClick={this.handleChat}><i className={
                             cx({
                                 'material-icons': true,
                                 'icon-middle': true,
                                 'icon-active': message
                             })
-                        }>message</i></div> : <div className="user_pop_messenger" onClick={this.handleLike}><i className={
+                        }>message</i></div> : (liked ?<div className="user_pop_messenger" onClick={this.handleDislike}><i className={
                             cx({
                                 'material-icons': true,
                                 'icon-middle': true,
                                 'higher': true,
                                 'icon-active': liked
                             })
-                        }>thumb_up</i></div>}
+                        }>thumb_down</i></div>:<div className="user_pop_messenger" onClick={this.handleLike}><i className={
+                            cx({
+                                'material-icons': true,
+                                'icon-middle': true,
+                                'higher': true,
+                                'icon-active': liked
+                            })
+                        }>thumb_up</i></div>)):<div></div>}
                     </div>
                     <Link to={`/user/${login}`}>
                         <div className="user-content-container">
@@ -311,6 +314,7 @@ export class Users extends Component {
     }
 
     render() {
+
         let users = ''
         const {user, login} = this.state
         if (this.state.users.length > 0) {

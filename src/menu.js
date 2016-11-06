@@ -110,10 +110,6 @@ export default class Menu extends Component {
 
     render() {
         const {notifications, messages, info } = this.state
-        const childrenWithProps = React.Children.map(this.props.children,
-            (child) => React.cloneElement(child, {
-            })
-        )
         return (
             <div>
                 <div className={cx({
@@ -139,7 +135,7 @@ export default class Menu extends Component {
                     <div className="App">
                         { this.props.children }
                     </div>
-                    <Chat socket={this.props.socket} messages={messages} userId={this.props.userId} toggleChat={this.toggleChat} showChat={this.state.showChat}/>
+                    <Chat socket={this.props.socket} messages={messages} userId={this.props.userId} toggleChat={this.toggleChat} showChat={this.state.showChat} chats={this.props.chats} />
                 </div>
             </div>
         )

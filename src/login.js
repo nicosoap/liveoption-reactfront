@@ -42,9 +42,9 @@ export class Login extends Component {
         axios.post('/login', {
             login: this.state.username,
             password: this.state.password,
-            fingerprint: this.state.fingerprint
+            fingerprint: this.state.fingerprint,
+            token: localStorage.jwt
         }).then(response => {
-            console.log(response.data)
             if (response.data.auth && response.data.auth.success) {
                 localStorage.jwt = response.data.auth.token
                 browserHistory.push('/')

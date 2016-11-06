@@ -1006,15 +1006,11 @@ h3 {
     top: 0;
     bottom:-500px;
     width: 100%;
+    height: 100vh;
     min-height: calc(100% + 250px);
 }
-/*.push-menu-main:after{*/
-    /*clear: both;*/
-    /*content: " ";*/
-    /*margin-bottom: 70px;*/
-    /*display: table;*/
-    /*z-index: 0;*/
-/*}*/
+
+
 .stored { /*this should be in device specific rule*/
     transform: translateX(-300px);
     transition: transform 200ms;
@@ -1336,7 +1332,7 @@ canvas {
 
 }
 
-.interactionItems
+.interactionItems{}
 
 /* ----------------------------------- */
 /* ------------- FORMS --------------- */
@@ -1344,7 +1340,7 @@ canvas {
 
 /* ----- error ----- */
 
-.section-1 .error{
+.section-1.error {
     animation: shake 400ms 1 cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 

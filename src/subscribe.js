@@ -52,6 +52,11 @@ export class Form extends Component {
 
     }
 
+    componentWillReceiveProps(newProps) {
+        const classes = newProps.classes
+        this.setState({classes})
+    }
+
     // componentWillReceiveProps(newProps) {
     //     if (newProps.defaultValues && !this.state.def) {
     //         axios.get('/admin/userform?form=' + newProps.form)
@@ -174,7 +179,7 @@ export class Form extends Component {
         const userForm = this.state.userForm
         return (
             <div className={this.props.form} onKeyUp={this.handleEnter}>
-                <div className={"section-1 " + this.props.classes}>
+                <div className={"section-1 " + this.state.classes}>
                     <div className="before-form">{this.props.before}</div>
                     {
                         userForm.map((elem, i) => {
