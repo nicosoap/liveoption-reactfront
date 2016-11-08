@@ -312,6 +312,9 @@ export class Users extends Component {
         const {users, user, login} = newProps
         this.setState({users, user, login})
     }
+    componentWillMount() {
+        this.props.search('')
+    }
 
     render() {
 
@@ -320,7 +323,7 @@ export class Users extends Component {
         if (this.state.users.length > 0) {
             users = this.state.users.map((e, i) => {
                 return (
-                    <UserCard user={e} key={i} me={user} login={login}/>
+                    <UserCard user={e} key={i} me={user} login={login} chat={this.props.toggleChat}/>
                 )
             })
         }

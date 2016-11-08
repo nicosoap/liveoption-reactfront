@@ -17,7 +17,7 @@ class MenuItem extends Component {
 
         return (
             <div className="menu-div">
-                <Link to={ '/' + this.props.rel } >
+                <Link to={ this.props.rel } >
                     <li><i className="material-icons">{ this.props.icon }</i>{ this.props.name }</li>
                 </Link>
             </div>
@@ -84,7 +84,7 @@ export default class Menu extends Component {
         },
         searchString: '',
         simpleSearch: null,
-        showChat: true,
+        showChat: false,
         showNotification: false
     }
 
@@ -127,7 +127,7 @@ export default class Menu extends Component {
                 })}>
                     <div className="top-bar">
                         <MenuButton toggleMenu={ this.toggleMenu }/>
-                        <Search searchString={this.state.searchString} simpleSearch={this.simpleSearch}/>
+                        <Search searchString={this.state.searchString} simpleSearch={this.props.simpleSearch}/>
                         <Notifications notifications={notifications} messages={messages} info={info}
                                        toggleChat={this.toggleChat}
                                        toggleNotification={this.toggleNotification}/>
@@ -135,7 +135,7 @@ export default class Menu extends Component {
                     <div className="App">
                         { this.props.children }
                     </div>
-                    <Chat socket={this.props.socket} messages={messages} userId={this.props.userId} toggleChat={this.toggleChat} showChat={this.state.showChat} chats={this.props.chats} />
+                    <Chat socket={this.props.socket} messages={messages} userId={this.props.userId} toggleChat={this.toggleChat} showChat={this.state.showChat} chats={this.props.chats} updateChat={this.props.updateChat}/>
                 </div>
             </div>
         )

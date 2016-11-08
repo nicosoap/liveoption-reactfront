@@ -19,14 +19,13 @@ import {
     TextInput,
     ButtonInput
 } from './inputs'
-import { browserHistory } from 'react-router'
+import {browserHistory} from 'react-router'
 import Fingerprint2 from 'fingerprintjs2'
 
 // Clever lier, fooling us all, never thought I'd work it out
 // How could I have known it was ever about you boy?
 // Now there's nothing to say, there's no words and we're not talking anyhow
 // You must have known I was never to doubt you boy
-
 
 
 export class Form extends Component {
@@ -52,42 +51,22 @@ export class Form extends Component {
 
     }
 
-    componentWillReceiveProps(newProps) {
-        const classes = newProps.classes
-        this.setState({classes})
-    }
-
-    // componentWillReceiveProps(newProps) {
-    //     if (newProps.defaultValues && !this.state.def) {
-    //         axios.get('/admin/userform?form=' + newProps.form)
-    //             .then(response => {
-    //             let userForm = response.data,
-    //                 user = newProps.defaultValues
-    //             userForm.map((e, i) => {
-    //                     if (user[e.name]) {
-    //                         userForm[i].defaultValue = user[e.name]
-    //                     }
-    //                 return 0
-    //                 }
-    //             )
-    //             this.setState({userForm, user, def:true})
-    //         })
-    //     }
-    // }
-
 
     handleEnter = e => {
-        if (e.keyCode === 13) {this.handleSubmit()}
+        if (e.keyCode === 13) {
+            this.handleSubmit()
+        }
     }
 
     handleSubmit = () => {
         let userForm = this.state.userForm,
             master_error = [0]
-        master_error = userForm.map((e ,i ) => {
+        master_error = userForm.map(e => {
             if (e.required === "true" && (this.state.user[e.name] === ('' || undefined) || e.error !== "")) {
                 e.error = e.error === '' ? "This value must be provided" : e.error
                 return (+1)
-            } else return +0})
+            } else return +0
+        })
         this.setState({userForm: userForm})
         master_error = master_error.reduce((a, b) => (parseInt(a, 10) + parseInt(b, 10)), 0)
         if (master_error === 0) {
@@ -95,26 +74,44 @@ export class Form extends Component {
         }
     }
 
-    handleChange = async (id, name, value) => {
+    handleBlur = (event) => {
+        console.log("save ?")
+        if (this.props.blur) {
+            console.log("saving")
+            let userForm = this.state.userForm,
+                user = {}
+            userForm.map((e, i) => {
+                if (e.required === "true" && (this.state.user[e.name] === ('' || undefined) || e.error !== "")) {
+                    console.log(e.name, this.state.user[e.name])
+                } else {
+                    user[e.name] = this.state.user[e.name]
+                }
+            })
+            this.props.submit(user)
+        }
+    }
+
+    handleChange = async(id, name, value) => {
         const userForm = this.state.userForm,
             element = _.find(userForm, {'id': id})
-            let element_id = userForm.indexOf(element)
-            let validator_type = element.validator_type,
+        let element_id = userForm.indexOf(element)
+        let validator_type = element.validator_type,
             validator = element.validator,
             update = () => {
                 userForm.splice(element_id, 1, element)
                 this.setState({userForm})
             },
             regex_val = {
-            _1 : /^.{8,48}$/,
-            __1 : "Password must be 8 characters long.",
-            _2 : /^(?=.*[a-z])(?=.*[A-Z][0-9]).{8,48}$/,
-            __2 : "Password must be 8 characters min with CAPS or numbers.",
-            _3 : /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,48}$/,
-            __3 : "Password must be 8 characters min with CAPS and numbers."},
+                _1: /^.{8,48}$/,
+                __1: "Password must be 8 characters long.",
+                _2: /^(?=.*[a-z])(?=.*[A-Z][0-9]).{8,48}$/,
+                __2: "Password must be 8 characters min with CAPS or numbers.",
+                _3: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,48}$/,
+                __3: "Password must be 8 characters min with CAPS and numbers."
+            },
             user = this.state.user
-        user[name]=value
-        this.setState({user:user})
+        user[name] = value
+        this.setState({user: user})
 
         if (value === '') {
             element.validating = false
@@ -177,77 +174,88 @@ export class Form extends Component {
 
     render() {
         const userForm = this.state.userForm
+        console.log(this.props.user, userForm)
         return (
             <div className={this.props.form} onKeyUp={this.handleEnter}>
-                <div className={"section-1 " + this.state.classes}>
+                <div className={"section-1 " + this.props.classes}>
                     <div className="before-form">{this.props.before}</div>
                     {
                         userForm.map((elem, i) => {
                             let e = elem
-                            if (this.props.defaultValues) {
-                                e.value = this.props.defaultValues[e.name]
+                            if (this.props.user && !e.value){
+                                e.value = this.props.user[e.name]
                             }
-                        switch (e.type) {
-                            case 'checkbox':
-                                return (
-                                    <CheckboxInput params={e} key={i} update={this.handleChange}/>
-                                )
-                            case 'date':
-                                return (
-                                    <DateInput params={e} key={i} update={this.handleChange}/>
-                                )
-                            case 'email':
-                                return (
-                                    <EmailInput params={e} key={i} update={this.handleChange}/>
-                                )
-                            case 'hidden':
-                                return (
-                                    <HiddenInput params={e} key={i} update={this.handleChange}/>
-                                )
-                            case 'password':
-                                return (
-                                    <PasswordInput params={e} key={i} update={this.handleChange}/>
-                                )
-                            case 'radio':
-                                return (
-                                    <RadioInput params={e} key={i} update={this.handleChange}/>
-                                )
-                            case 'textArea':
-                                return (
-                                    <TextAreaInput params={e} key={i} update={this.handleChange}/>
-                                )
-                            case 'text':
-                                return (
-                                    <TextInput params={e} key={i} update={this.handleChange}/>
-                                )
-                            case 'photo':
-                                return (
-                                    <PhotoInput params={e} key={i} update={this.handleChange}/>
-                                )
-                            case 'tagInput':
-                                return (
-                                    <TagInput params={e} key={i} update={this.handleChange}/>
-                                )
-                            case 'spacer':
-                                return (
-                                    <div className="spacer" style={{height: e.value}} key={i}/>
-                                )
+                            switch (e.type) {
+                                case 'checkbox':
+                                    return (
+                                        <CheckboxInput params={e} key={i} update={this.handleChange}
+                                                       myBlur={this.handleBlur}/>
+                                    )
+                                case 'date':
+                                    return (
+                                        <DateInput params={e} key={i} update={this.handleChange}
+                                                   myBlur={this.handleBlur}/>
+                                    )
+                                case 'email':
+                                    return (
+                                        <EmailInput params={e} key={i} update={this.handleChange}
+                                                    myBlur={this.handleBlur}/>
+                                    )
+                                case 'hidden':
+                                    return (
+                                        <HiddenInput params={e} key={i} update={this.handleChange}
+                                                     myBlur={this.handleBlur}/>
+                                    )
+                                case 'password':
+                                    return (
+                                        <PasswordInput params={e} key={i} update={this.handleChange}
+                                                       myBlur={this.handleBlur}/>
+                                    )
+                                case 'radio':
+                                    return (
+                                        <RadioInput params={e} key={i} update={this.handleChange}
+                                                    myBlur={this.handleBlur}/>
+                                    )
+                                case 'textArea':
+                                    return (
+                                        <TextAreaInput params={e} key={i} update={this.handleChange}
+                                                       myBlur={this.handleBlur}/>
+                                    )
+                                case 'text':
+                                    return (
+                                        <TextInput params={e} key={i} update={this.handleChange}
+                                                   myBlur={this.handleBlur}/>
+                                    )
+                                case 'photo':
+                                    return (
+                                        <PhotoInput params={e} key={i} update={this.handleChange}
+                                                    myBlur={this.handleBlur}/>
+                                    )
+                                case 'tagInput':
+                                    return (
+                                        <TagInput params={e} key={i} update={this.handleChange} save={this.handleChange}
+                                                  myBlur={this.handleBlur}/>
+                                    )
+                                case 'spacer':
+                                    return (
+                                        <div className="spacer" style={{height: e.value}} key={i}/>
+                                    )
 
-                            case 'section':
-                                return (
-                                    <div className="section" key={i}>{e.value}</div>
-                                )
-                            default:
-                                return (
-                                    <div className="hidden">I'm always learning things the hardest way</div>
-                                )
-                        }
-                    })}
+                                case 'section':
+                                    return (
+                                        <div className="section" key={i}>{e.value}</div>
+                                    )
+                                default:
+                                    return (
+                                        <div className="hidden">I'm always learning things the hardest way</div>
+                                    )
+                            }
+                        })}
 
-                    {(this.props.submit !== "none")?<ButtonInput
-                                 submit={this.handleSubmit}
-                                 submitName={this.props.submitName}
-                    />:''}
+                    {(this.props.submit !== "none") ? <ButtonInput
+                        submit={this.handleSubmit}
+                        submitName={this.props.submitName}
+                    /> : ''}
                 </div>
             </div>
         )
@@ -261,7 +269,7 @@ export class Subscribe extends Component {
         special: false,
         validating: false,
         error: false
-        }
+    }
 
     componentDidMount() {
         new Fingerprint2().get((res, cmp) => {
@@ -272,14 +280,14 @@ export class Subscribe extends Component {
 
 
     updateUser = (_, name, value) => {
-        this.setState({result:{[name]:value}})
+        this.setState({result: {[name]: value}})
     }
 
     handleSubmit = (user) => {
         this.setState({result: user, special: true})
     }
 
-    handleAgree = async () => {
+    handleAgree = async() => {
         this.setState({validating: true})
         axios.post('/user/new', {
             login: this.state.result.username,
@@ -288,24 +296,23 @@ export class Subscribe extends Component {
             password2: this.state.result.password2,
             fingerprint: this.state.fingerprint
         }).then(response => {
-                if (response.data.success){
-                    sessionStorage.setItem('email' , this.state.result.email)
-                    browserHistory.push('/thank-you')
+            if (response.data.success) {
+                sessionStorage.setItem('email', this.state.result.email)
+                browserHistory.push('/thank-you')
                 this.setState({validating: false, error: false})
             } else {
                 this.setState({validating: false, error: true, special: false})
             }
-            })
+        })
     }
 
     handleClear = () => this.setState({special: false})
 
 
-
     render() {
         const before = ''
         const {validating, error, special} = this.state
-        return(
+        return (
             <div>
                 <div className={cx({
                     'md-modal': true,
@@ -315,11 +322,11 @@ export class Subscribe extends Component {
                     <div className="md-content">
                         <h3>Terms & Conditions</h3>
                         <div className="terms-conditions">
-                                <Terms />
+                            <Terms />
                             <ButtonInput validating={validating}
                                          error={error}
                                          submit={this.handleAgree}
-                                            submitName={"I Accept the Terms and Conditions"}
+                                         submitName={"I Accept the Terms and Conditions"}
                             />
                         </div>
                     </div>

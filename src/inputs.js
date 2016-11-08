@@ -15,7 +15,8 @@ class Input extends Component {
 export class CheckboxInput extends Input {
 
     render() {
-        const {id, name, type, placeholder, value, autocomplete, required, error, defaultValue} = this.props.params
+        const {id, name, type, placeholder, autocomplete, required, error, defaultValue} = this.props.params,
+            value = this.state.value
         return(
             <div className="input">
                 <span className="error-message">{error}</span>
@@ -30,6 +31,7 @@ export class CheckboxInput extends Input {
                 autoComplete={autocomplete}
                 required={required}
                 onChange={this.handleChange}
+                onBlur={this.props.myBlur}
                 />
                 <label htmlFor={id}>
                     {placeholder}
@@ -58,6 +60,7 @@ export class DateInput extends Input {
                 required={required}
                 className="textInput"
                 onChange={this.handleChange}
+                onBlur={this.props.myBlur}
             />
                 </div>
         )
@@ -86,7 +89,8 @@ export class EmailInput extends Input {
                         'validating': validating,
                         'valid': valid,
                         'error': error !== ''})
-                    } onChange={this.handleChange} />
+                    } onChange={this.handleChange}
+                onBlur={this.props.myBlur} />
                 </div>
         )
     }
@@ -106,6 +110,7 @@ export class HiddenInput extends Input {
                     value={value}
                     required={required}
                     onChange={this.handleChange}
+                    onBlur={this.props.myBlur}
                 />
             </div>
         )
@@ -134,7 +139,8 @@ export class PasswordInput extends Input {
                     'validating': validating,
                     'valid': valid,
                     'error': error !== ''})
-                } onChange={this.handleChange} />
+                } onChange={this.handleChange}
+                onBlur={this.props.myBlur} />
                 </div>
         )
     }
@@ -157,6 +163,7 @@ export class RadioInput extends Input {
                 label={e.label}
                 selected={e.default}
                 onChange={this.handleChange}
+                onBlur={this.props.myBlur}
                 />
                 <label
                     htmlFor={e.value}
@@ -198,6 +205,7 @@ export class TextAreaInput extends Input {
                 rows="8"
                 maxLength="2500"
                 onChange={this.handleChange}
+                onBlur={this.props.myBlur}
             ></textarea>
                 </div>
         )
@@ -215,6 +223,7 @@ export class TextInput extends Input {
                 id={id}
                 type={type}
                 name={name}
+                value={value}
                 defaultValue={defaultValue}
                 placeholder={placeholder}
                 autoComplete={autocomplete}
@@ -224,7 +233,8 @@ export class TextInput extends Input {
                         'validating': validating,
                         'valid': valid,
                         'error': error !== ''})
-                    } onChange={this.handleChange}/>
+                    } onChange={this.handleChange}
+                onBlur={this.props.myBlur}/>
                 <div className={cx({
                     "loading": true,
                     "validating" : validating,

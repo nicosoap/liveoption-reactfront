@@ -32,6 +32,7 @@
 }
 
 body {
+    background: var(--main-bg-color);
     color: var(--main-font-color);
     font-family: var(--main-alt-1-font-family);
     font-size: 24px;
@@ -155,7 +156,7 @@ h3 {
     overflow: hidden;
     z-index: 400;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-    transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: opacity 250ms cubic-bezier(0.4, 0.0, 0.2, 1), visibility 300ms, display 300ms;
 }
 
 .chat.hidding {
@@ -172,7 +173,7 @@ h3 {
     text-align: left;
     padding: 0;
     margin: 0;
-    transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: opacity 250ms cubic-bezier(0.4, 0.0, 0.2, 1) , visibility 300ms, display 300ms;
 }
 .chat .chatlist ul {
     width: 100%;
@@ -241,7 +242,6 @@ h3 {
     overflow: hidden;
     font-size: 18px;
     transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
-    overflow-x: hidden;
 }
 .chat .chatlist.store {
     width: 0;
@@ -761,6 +761,13 @@ h3 {
     top: 4px !important;
 }
 /*-- notifications --*/
+
+.close-modal {
+    cursor: pointer;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+}
 .floating {
     z-index: 500;
     margin: 12px 5px 10px 15px;
@@ -828,6 +835,7 @@ h3 {
     transition-delay: 200ms;
     transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
     transform: scale(1);
+    -webkit-transform: scale(1);
     animation: pulse 200ms;
     -webkit-animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1); /* Chrome, Safari, Opera */
     animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
@@ -843,6 +851,7 @@ h3 {
     z-index: 200;
     text-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     transform: scale(1.05);
+    -webkit-transform: scale(1.05);
     transition: all 200ms;
 }
 
@@ -850,6 +859,7 @@ h3 {
     z-index: 200;
     text-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     transform: scale(1.05);
+    -webkit-transform: scale(1.05);
     transition: all 200ms;
 }
 
@@ -864,38 +874,38 @@ h3 {
 }
 
 /* Notification content cards */
+
 .notif-colon {
     position:fixed;
     top: 0;
     right: 0;
     height: 1px;
     overflow: visible;
-    margin: 68px 42px;
-    min-width: 312px;
+    margin: 68px 30px;
+    min-width: 375px;
     width: 15vw;
 }
 
-
-
 .notif-card {
     background-color: var(--component-bg-color);
-    display: flex;
+    display: inline-block;
     clear: both;
     position: relative;
-    min-width: 312px;
+    min-width: 375px;
     width: 15vw;
     height: 120px;
     margin: 10px 0;
     border-radius: 4px;
+    flex-direction: row;
 }
 .notif-card .notification-image.visible {
     height: 100%;
-    width:25%;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     display: inline-block;
     float: left;
+    width: 25%;
 }
 
 .notif-card .notification-image.hidden {
@@ -904,17 +914,15 @@ h3 {
      background-size: cover;
      background-repeat: no-repeat;
      background-position: center;
-     display: inline-block;
      float: left;
  }
 
 .notif-card .body.illustrated {
-    width: 75%;
+    width: calc(75% - 28px);
     font-size: 16px;
-    display: inline-block;
     float: left;
     padding: 14px;
-    vertical-align: bottom;
+    display: inline-block;
 }
 
 .notif-card .body.full {
@@ -935,6 +943,45 @@ h3 {
     animation: disappear 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
+
+.notificationMenu {
+    position: fixed;
+    top: 80px;
+    right: 30px;
+    flex-direction: column;
+    min-height: 50px;
+    height: auto;
+    max-height: 700px;
+    min-width: 320px;
+    width: 30%;
+    max-width: 420px;
+    padding: 0;
+    margin: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 400;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    transition: opacity 250ms cubic-bezier(0.4, 0.0, 0.2, 1), visibility 300ms, display 300ms;
+    opacity: 0;
+}
+
+.notificationMenu.visible {
+    opacity: 1;
+    display: flex;
+}
+
+.notificationMenu .notificationItem {
+    height: auto;
+    color: var(--component-font-color);
+    background: var(--component-alt-4-bg-color);
+    font-size: 16px;
+    padding: 8px;
+    line-height: 18px;
+    border-bottom:1px solid rgba(0,0,0,0.4);
+    border-top:1px solid rgba(255,255,255,0.4);
+    margin: -1px 0;
+
+}
 /*----- Menu        -----*/
 
 .push-menu-menu {
@@ -950,6 +997,18 @@ h3 {
     width: 300px; /*this should be in device specific rule*/
     margin: 0;
     word-wrap: break-word;
+}
+
+.push-menu-main {
+    background: var(--main-bg-color);
+    display: inline-block;
+    float: left;
+    top: 0;
+    bottom:-500px;
+    width: 100%;
+    height: 100%;
+    margin-bottom: -20px;
+    position: absolute;
 }
 
 .push-menu-menu ul {
@@ -997,18 +1056,6 @@ h3 {
     /*padding-left: 60px;*/
 }
 
-.push-menu-main {
-    background: var(--main-bg-color);
-    display: inline-block;
-    float: left;
-    position: relative;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    top: 0;
-    bottom:-500px;
-    width: 100%;
-    height: 100vh;
-    min-height: calc(100% + 250px);
-}
 
 
 .stored { /*this should be in device specific rule*/
@@ -1502,19 +1549,42 @@ canvas {
     top: 50%;
     left: 50%;
 }
-.shortForm .section-1 .before-form,
-.login .section-1 .before-form,
-.thankyou .section-1 .before-form {
+@-moz-document url-prefix() {
+    .shortForm .section-1 .before-form,
+    .login .section-1 .before-form,
+    .thankyou .section-1 .before-form {
 
-    background: rgba(255,255,255, 0.24);
-    mask: url(http://localhost:3000/images/lo.svg) center / contain no-repeat !important;
-    text-align: center;
-    height: 300px;
-    font-size: 200px;
-    line-height: 200px;
-    animation: heartbeat ease-in-out 3500ms 0s infinite normal;
-    transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
+        background: url(http://localhost:3000/images/lo.svg#mask) center no-repeat;
+        background-size: contain;
+        text-align: center;
+        height: 300px;
+        font-size: 200px;
+        line-height: 200px;
+        transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
 }
+@media screen and (-webkit-min-device-pixel-ratio:0)
+and (min-resolution:.001dpcm) {
+    .shortForm .section-1 .before-form,
+    .login .section-1 .before-form,
+    .thankyou .section-1 .before-form {
+
+    clip-path: url(http://localhost:3000/images/lo.svg);
+        background: rgba(255,255,255, 0.24);
+        mask-image: url(http://localhost:3000/images/lo.svg) !important;
+        mask-position: center !important;
+        mask-size: contain !important;
+        mask-repeat: no-repeat !important;
+        text-align: center;
+        height: 300px;
+        font-size: 200px;
+        line-height: 200px;
+        animation: heartbeat ease-in-out 3500ms 0s infinite normal;
+        transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+}
+
+
 .shortForm .section-1 div,
 .login .section-1 div {
     position: relative;
@@ -1601,39 +1671,46 @@ canvas {
 }
 
 .shortForm .section-1 input.valid,
-.login .section-1 input.valid {
+.login .section-1 input.valid,
+.fullForm .section-1 input.valid {
     background: url(http://localhost:3000/images/checkmark.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:hover.valid,
-.login .section-1 input:hover.valid {
+.login .section-1 input:hover.valid,
+.fullForm .section-1 input:hover.valid {
     background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:active .valid,
-.login .section-1 input:active .valid {
+.login .section-1 input:active .valid,
+.fullForm .section-1 input:active .valid{
     background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .shortForm .section-1 input.error,
-.login .section-1 input.error {
+.login .section-1 input.error,
+.fullForm .section-1 input.error {
     background: url(http://localhost:3000/images/error.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:hover.error,
-.login .section-1 input:hover.error {
+.login .section-1 input:hover.error,
+.fullForm .section-1 input:hover.error {
     background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/error.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:active.error,
-.login .section-1 input:active.error{
+.login .section-1 input:active.error,
+.fullForm.section-1 input:active.error {
     background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/error.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .shortForm .section-1 .error-message,
-.login .section-1 .error-message {
+.login .section-1 .error-message,
+.fullForm .section-1 .error-message {
     z-index: 0;
     height: 12px;
     margin:0;
@@ -1655,7 +1732,7 @@ canvas {
     top: 50%;
     left: 50%;
     width: 630px;
-    height: 50vh;
+    height: 60vh;
     z-index: 2000;
     visibility: hidden;
     backface-visibility: hidden;
@@ -1686,7 +1763,11 @@ canvas {
 
 .md-content {
     background: rgba(255,255,255,0.52);
-    padding: 15px 0 0 15px;
+    padding: 20px 40px 50px 50px;
+    border-radius: 50px;
+}
+.md-content .button {
+    padding: 20px 0 0 0;
 }
 
 .terms-conditions {
@@ -1836,42 +1917,54 @@ canvas {
 @keyframes pulse {
     0% {
         transform: translateX(0px);
+        -webkit--transform: translateX(0px);
     }
     20% {
         transform: translateX(+3px);
+        -webkit-transform: translateX(+3px);
     }
     40% {
         transform: translateX(-3px);
+        -webkit-transform: translateX(-3px);
     }
     60% {
         transform: translateX(+3px);
+        -webkit-transform: translateX(+3px);
     }
     80% {
         transform: translateX(-3px);
+        -webkit-transform: translateX(-3px);
     }
     100% {
         transform: translateX(0px);
+        -webkit-transform: translateX(0px);
     }
 }
 
 @keyframes shake {
     0% {
         transform: translateX(0px);
+        -webkit-transform: translateX(0px);
     }
     20% {
         transform: translateX(+9px);
+        -webkit-transform: translateX(+9px);
     }
     40% {
         transform: translateX(-9px);
+        -webkit-transform: translateX(-9px);
     }
     60% {
         transform: translateX(+9px);
+        -webkit-transform: translateX(+9px);
     }
     80% {
         transform: translateX(-9px);
+        -webkit-transform: translateX(-9px);
     }
     100% {
         transform: translateX(0px);
+        -webkit-transform: translateX(0px);
     }
 }
 

@@ -9,16 +9,14 @@ import axios from 'axios'
 
 
 
-export class PhotoInput extends Component {
+export default class PhotoInput extends Component {
     state = {
         id:'',
         name:'',
         type:'date',
-        placeholder:'',
+        placeholder:'Profile picture',
         value:'',
-        autocomplete:'',
-        required:'',
-        accept: '',
+        accept: "image/x-png, image/jpeg, image/gif",
         isDragover: false,
         uploadSupport: true,
         photo: []
@@ -37,7 +35,7 @@ export class PhotoInput extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        const {id, name, type, placeholder, value, autocomplete, required, accept} = newProps.params
+        const {name, type,  value} = newProps.params
         let photo = []
         if (value) {
             photo = value.map(e => {
@@ -46,7 +44,7 @@ export class PhotoInput extends Component {
                 )
             })
         }
-        this.setState({id, name, type, placeholder, autocomplete, required, accept, photo})
+        this.setState({name, type, photo})
     }
 
     handleDragOver = e => {
@@ -141,11 +139,11 @@ export class PhotoInput extends Component {
         if (photo.length > this.props.params.maxLength) {
             photo.splice(this.props.paramsmaxLength, this.props.params.maxLength - photo.length)
         }
-        let picture = photo.map(e => {
+        let value = photo.map(e => {
             return e.picture
         })
         this.setState({photo})
-        await this.props.update(this.props.params.id, this.props.params.name, picture)
+        await this.props.update('photo', value)
     }
 
 

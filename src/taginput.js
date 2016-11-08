@@ -8,11 +8,19 @@ export default class TagInput extends Component {
     state = {
         tags:[],
         suggestion: [],
-        id: ''
+        id: '',
+        inputValue: ''
     }
 
-    componentDidMount() {
-        this.setState({tags: this.state.tags || this.props.defaultValues || []})
+    componentWillReceiveProps = newProps => {
+        if (newProps.params && newProps.params.value) {
+            console.log(newProps.params.value)
+            this.setState({tags: newProps.params.value})
+        }
+    }
+
+    onChange= e => {
+        this.setState({inputValue: e.target.value})
     }
 
     addSuggestion = e => {
@@ -20,23 +28,22 @@ export default class TagInput extends Component {
         if (this.state.tags.indexOf(tag) === -1 && tag !== ' ') {
             this.setState({
                 tags: [...this.state.tags, tag],
-                suggestion: []
-            }, () => this.props.save(this.props.id, this.props.name, this.state.tags))
+                suggestion: [],
+                inputValue: ''
+            }, () => this.updateTags())
         } else {
-            this.setState({suggestion: []})
+            this.setState({suggestion: [], inputValue: ''})
         }
-        e.target.value = ''
     }
 
     addTag = e => {
         e.preventDefault()
         if ((e.keyCode === 32 || e.keyCode === 13) && /^#{0,1}([A-Za-z0-9]*) {0,1}$/.test(e.target.value)) {
             const tag = /^#{0,1}([A-Za-z0-9]*) {0,1}$/.exec(e.target.value)[1] || ''
-            if (this.state.tags.indexOf(tag) === -1 && tag !== ' ') {
-                this.setState({tags: [...this.state.tags, tag], suggestion:[]},
-                    () => this.props.update(this.props.id, this.props.name, this.state.tags))
-            } else { this.setState({suggestion:[]})}
-            e.target.value = ''
+            if (this.state.tags.indexOf(tag) === -1 && tag !== ' ' && tag !== '') {
+                this.setState({tags: [...this.state.tags, tag], suggestion:[], inputValue: ''},
+                    this.updateTags())
+            } else { this.setState({suggestion:[], inputValue:''})}
         } else if (e.target.value.length > 1) {
             axios.get('/tags?tag=' + e.target.value).then(res => {
                 let suggestion = res.data
@@ -53,7 +60,27 @@ export default class TagInput extends Component {
         const tmp = this.state.tags
         const targetted = e.target.attributes.value || e.target.parentNode.attributes.value
         tmp.splice(this.state.tags.indexOf(targetted.value), 1)
-        this.setState({tags: tmp}, this.props.update(this.state.tags))
+        this.setState({tags: tmp}, this.updateTags())
+    }
+
+    updateTags = () => {
+        let tags = this.state.tags.length
+        setTimeout(() => {
+            if (this.state.tags.length === tags) {
+                this.props.update('tags', this.state.tags)
+                console.log("cookies n cream")
+            } else {
+                let tags = this.state.tags.length
+                setTimeout(() => {
+                    if (this.state.tags.length === tags) {
+                        this.props.update('tags', this.state.tags)
+                        console.log("cookies n cream")
+                    } else {
+                        console.log("go fudge yourself")
+                    }
+                }, 2000)
+            }
+        }, 2000)
     }
 
     render() {
@@ -69,7 +96,7 @@ export default class TagInput extends Component {
                         </span>
                         )
                     })}
-                    <input className="input-tags-search" type="search" onKeyUp={this.addTag} placeholder="Tags"/>
+                    <input className="input-tags-search" type="search" onKeyUp={this.addTag} onChange={this.onChange} placeholder="Tags" value={this.state.inputValue} />
 
                 </div>
                 <ul className="suggestions">{this.state.suggestion.map((tag, i) => {

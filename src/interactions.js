@@ -5,7 +5,16 @@ import React, {Component} from 'react'
 import cx from 'classnames'
 
 export class InfoNotice extends Component {
-    state = {icon: 'not interested', visible: false, badge: 0, newMessage: false, isNarrow: false}
+    state = {
+        icon: 'not interested',
+        visible: false,
+        badge: 0,
+        newMessage: false,
+        isNarrow: false,
+        showNotifications: false,
+        notifications: []
+    }
+
     componentWillReceiveProps = (newProps) => {
         const notifications = newProps.notification
         this.setState(notifications)
@@ -25,7 +34,7 @@ export class InfoNotice extends Component {
             })}
                  onClick={this.click}
             >
-                <div className="notif" >
+                <div className="notif">
                     <div className={cx({
                         'material-icons': true,
                         'icon-large': true,
@@ -40,6 +49,15 @@ export class InfoNotice extends Component {
                     "closer": !!this.state.isNarrow,
                     "hidden": this.state.badge === 0
                 })}> { tmpBadge } </div>
+                <div className={cx({
+                    'notificationMenu': true,
+                    'visible': this.state.showNotifications,
+                    'hidden': this.state.hideNotifs
+                })}>{this.state.notifications.map((e, i) =>
+                    <div className="notificationItem" key={i}>
+                        {e.body}
+                    </div>)}
+                </div>
             </div>
         )
     }
@@ -59,7 +77,9 @@ export class Interactions extends Component {
             newMessage: false,
             unread: false,
             messages: [],
-        }
+        },
+        showNotification: false,
+        hideNotifs: true
     } ///This requires the Interactions API
 
     componentWillReceiveProps = (newProps) => {
@@ -81,37 +101,61 @@ export class Interactions extends Component {
     }
 
     toggleNotification = () => {
-
-    }
-
-    render() {
-
-        let isUR = (unit) => (unit.read === true) ? '' : unit
-        const notifsNb = this.state.notifications.matches.length
-            + this.state.notifications.likes.length
-            + this.state.notifications.visits.length
-        const notifsUR = this.state.notifications.matches.concat(this.state.notifications.likes, this.state.notifications.visits).map(isUR).filter(p => p !== '')
-        const notifications = {
-            'icon': 'notifications',
-            'visible': notifsNb > 0,
-            'badge': notifsUR.length,
-            'newMessage': this.state.notifications.newMessage,
-            'isNarrow': true
+        const {visits, matches, likes } = this.state.notifications
+        visits.map(e => {
+            e.read = true
+            return e
+        })
+        matches.map(e => {
+            e.read = true
+            return e
+        })
+        likes.map(e => {
+            e.read = true
+            return e
+        })
+        const notifications = this.state.notifications
+        notifications.likes = likes
+        notifications.visits = visits
+        notifications.matches = matches
+        this.setState({
+            notifications,
+                showNotifications: !this.state.showNotifications,
+                hideNotifs: !this.state.hideNotifs
+            })
         }
-        const messagesNb = this.state.messages.messages.length
-        const messagesUR = this.state.messages.messages.map(isUR).filter(p => p !== '')
-        const messages = {
-            'icon': 'chat',
-            'visible': messagesNb > 0,
-            'badge': messagesUR.length,
-            'newMessage': this.state.messages.newMessage,
-            'isNarrow': true
+
+        render()
+        {
+
+            let isUR = (unit) => (unit.read === true) ? '' : unit,
+                notificationsRedux = this.state.notifications.likes.concat(this.state.notifications.matches.concat(this.state.notifications.visits || []) || []) || []
+            const notifsUR = notificationsRedux.map(isUR).filter(p => p !== '')
+            const notifications = {
+                'icon': 'notifications',
+                'visible': true,
+                'badge': notifsUR.length,
+                'newMessage': this.state.notifications.newMessage,
+                'isNarrow': true,
+                'notifications': notificationsRedux,
+                'showNotifications': this.state.showNotifications,
+                'hideNotifs': this.state.hideNotifs
+            }
+            const messagesUR = this.state.messages.messages.map(isUR).filter(p => p !== '')
+            const messages = {
+                'icon': 'chat',
+                'visible': true,
+                'badge': messagesUR.length,
+                'newMessage': this.state.messages.newMessage,
+                'isNarrow': true,
+                'notifications': [],
+                'hideNotifs': true
+            }
+            return (
+                <div>
+                    <InfoNotice notification={notifications} click={this.toggleNotification}/>
+                    <InfoNotice notification={messages} click={this.toggleChat}/>
+                </div>
+            )
         }
-        return (
-            <div>
-                <InfoNotice notification={notifications} click={this.toggleNotification}/>
-                <InfoNotice notification={messages} click={this.toggleChat}/>
-            </div>
-        )
     }
-}

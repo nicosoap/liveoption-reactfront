@@ -14,28 +14,40 @@ export default class Notif extends Component {
         appConfig: {}
     }
 
-    // componentDidMount = () => {
-    //     setTimeout(this.dismiss, 5000)
-    // }
-
     dismiss = (e) => {
-        this.setState({isClosed: !this.state.isClosed})
-        //setTimeout(() => this.props.removeNotif(this.state.notification.id), 250)
+        this.setState({isClosed: true})
+        setTimeout(() => this.setState({hidden: true}), 300)
     }
 
-    componentWillMount = () => {
+    componentWillMount() {
         axios.get('/admin/appConfig').then(response => {
             this.setState({appConfig: response.data})
+        })
 
-        })}
+    }
 
     componentWillReceiveProps = (newProps) => {
+        if (newProps.notification.from && !newProps.notification.image) {
+        axios.get('/user/' + newProps.notification.from).then(res => {
+            if (res.data.success) {
+                const {from, to, body, image} = newProps.notification
+                this.setState({
+                    notification: {
+                        body,
+                        from,
+                        to,
+                        image: image || (res.data.user.photo ? res.data.user.photo[0] : false)
+                    }
+                })
+            }
+        })}
         this.setState({notification: newProps.notification})
     }
 
     componentDidMount() {
-        setTimeout(() => this.setState({isClosed: true}), 8000)
-        setTimeout(() => this.setState({hidden: true}), 8300)
+
+        setTimeout(() => this.setState({isClosed: true}), 5000)
+        setTimeout(() => this.setState({hidden: true}), 5300)
     }
 
     render() {
@@ -47,7 +59,9 @@ export default class Notif extends Component {
             'on-screen': true
         })}>Loading...</div>)
 
-        const {body, image, link} = notification
+        let {from, body, image, link} = notification
+        from = from === undefined? '' : from + ': '
+            body = from + this.state.notification.body
 
         return (
             <div className={cx({
@@ -74,7 +88,7 @@ export default class Notif extends Component {
                         { body }
                     </div>
                 </Link>
-                <div onClick={this.dismiss}>
+                <div onClick={this.dismiss} className="close-modal">
                     <i className="material-icons">close</i>
                 </div>
             </div>

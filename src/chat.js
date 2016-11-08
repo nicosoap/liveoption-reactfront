@@ -47,7 +47,7 @@ class Chatroom extends Component {
                 from: this.state.myId
             },
                 pseudo = {
-                    body: '<b>...</b>',
+                    body: '...',
                     to,
                     from: this.state.myId
                 }
@@ -109,7 +109,7 @@ class Chat extends Component {
         }],
         chat: {},
         stored: false,
-        showChat: true
+        showChat: false
     }
 
     componentWillMount() {
@@ -117,7 +117,6 @@ class Chat extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        console.log("CHATS: " + newProps.chats)
         this.setState({showChat: newProps.showChat, chats: newProps.chats})
     }
 
@@ -125,24 +124,29 @@ class Chat extends Component {
 
     }
 
+
+
     handleClick = (e) => {
         e.preventDefault()
-        const chats = this.state.chats
         const otherId = e.target.attributes.id.value
+        this.openChat(otherId)
+    }
+
+    openChat = otherId => {
+        const chats = this.state.chats
         const index = chats.findIndex(elem => {
             return ((elem.otherId === otherId) || (elem.userId === otherId))
         })
         let chat = chats[index]
         chat.messages = chat.messages || []
-        chat.messages = chat.messages.map(e => {
-            return {read: true, body: e.body, from: e.from}
-        })
+
         chat.userId = this.props.userId
         chat.otherId = otherId
         chats.splice(index, 1, chat)
-        console.log("newChat : ", chat)
         this.setState({chat, chats, stored: !this.state.stored})
+        this.props.updateChat(otherId)
     }
+
 
     toggle = () => {
         this.setState({stored: !this.state.stored})
