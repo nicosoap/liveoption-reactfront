@@ -5,7 +5,7 @@ export class Like extends Component {
 
     render() {
         return(
-            <div className="Like" onClick={this.props.click} >
+            <div className="Like clickable" onClick={this.props.click} >
                 <i className="material-icons">thumb_up</i>
             </div>
         )
@@ -17,7 +17,7 @@ export class Dislike extends Component {
 
     render() {
         return(
-            <div className="Like" onClick={this.props.click} >
+            <div className="Like clickable" onClick={this.props.click} >
                 <i className="material-icons">thumb_down</i>
             </div>
         )
@@ -29,7 +29,7 @@ export class Chat extends Component {
 
     render() {
         return(
-            <div className='chat' onClick={this.props.click}>
+            <div className='chat clickable' onClick={this.props.click}>
                 <i className="material-icons">chat</i>
             </div>
         )
@@ -77,7 +77,7 @@ export class Report extends Component {
 
     render() {
         return(
-            <div className='report' onClick={this.props.click} title="Report user">
+            <div className='report clickable' onClick={this.props.click} title="Report user">
                 <i className="material-icons">report</i>
             </div>
         )
@@ -89,7 +89,7 @@ export class Block extends Component {
 
     render() {
         return(
-            <div className='block' onClick={this.props.click} title="Block user">
+            <div className='block clickable' onClick={this.props.click} title="Block user">
                 <i className="material-icons">block</i>
             </div>
         )

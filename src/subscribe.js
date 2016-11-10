@@ -44,8 +44,6 @@ export class Form extends Component {
                 if (response.status === 200) {
                     const userForm = response.data
                     this.setState({userForm})
-                } else {
-                    console.log("ERROR")
                 }
             })
 
@@ -75,7 +73,6 @@ export class Form extends Component {
     }
 
     handleBlur = (event) => {
-        console.log("save ?")
         if (this.props.blur) {
             console.log("saving")
             let userForm = this.state.userForm,
@@ -174,7 +171,6 @@ export class Form extends Component {
 
     render() {
         const userForm = this.state.userForm
-        console.log(this.props.user, userForm)
         return (
             <div className={this.props.form} onKeyUp={this.handleEnter}>
                 <div className={"section-1 " + this.props.classes}>

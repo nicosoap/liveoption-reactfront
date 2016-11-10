@@ -13,12 +13,10 @@ export default class Search extends Component {
         searchString: ''
     }
 
-    componentWillReceiveProps = (newProps) => this.setState({searchString: newProps.searchString})
 
     simpleSearch = e => {
-        const body = e.target.value
-        if (e.keyCode === 13 && body) {
-            this.props.simpleSearch(body)
+        if (e.keyCode === 13 && e.target.value) {
+            this.props.simpleSearch(e.target.value + ' ' + this.props.searchString)
         }
     }
 
@@ -26,7 +24,7 @@ export default class Search extends Component {
 
     searchSubmit = e => {
         e.preventDefault()
-        const body = this.state.searchString
+        const body = this.state.searchString + this.props.searchString
         if (body) {
             this.props.simpleSearch(body)
         }

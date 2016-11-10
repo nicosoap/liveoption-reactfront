@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import { browserHistory } from 'react-router'
+import axios from 'axios'
 
 
 // localStorage.jwt = ''
@@ -9,12 +10,17 @@ export class Logout extends Component {
     state = {}
 
     componentWillMount() {
-        localStorage.jwt = ''
-        browserHistory.push('/sign-in')
+        axios.get('/sign-out').then(res => {
+            if (!res.data.success){
+            } else {
+                localStorage.jwt = ''
+                browserHistory.push('/sign-in')
+            }
+        })
     }
     render() {
         return(
-            <div>Error !</div>
+            <div>signing-out...</div>
         )
     }
 }

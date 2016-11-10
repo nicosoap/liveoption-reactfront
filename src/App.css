@@ -1095,13 +1095,11 @@ h3 {
 .user {
     color: var(--component-alt-2-font-color);
     margin: 0 20px 20px 0;
-    min-width: 550px;
     width: calc(50% - 10px);
     max-width: 550px;
     height: 320px;
     position: relative;
     display: inline-flex;
-    /*flex-direction: column;*/
     text-align: right;
     z-index: calc(var(--user-z));
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -1262,7 +1260,6 @@ h3 {
 
 .profile{
     width: 100%;
-    min-width: 1200px;
     display: flex;
     min-height: 100%;
     height: auto;
@@ -1381,7 +1378,10 @@ canvas {
 
 .interactionItems{}
 
-/* ----------------------------------- */
+.profile .interactionItems .clickable {
+    cursor: pointer;
+}
+    /* ----------------------------------- */
 /* ------------- FORMS --------------- */
 /* ----------------------------------- */
 
@@ -1527,13 +1527,16 @@ canvas {
     /* -------  shortForm + login -------- */
 
 .shortForm,
-.login {
+.login,
+.Password-form,
+.passform {
     width: 100vw;
     height: 100vh;
     background: var(--component-alt-2-bg-color);
     transition: all 2500ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
-.shortForm .section-1 {
+.shortForm .section-1,
+.passform .section-1 {
     width: 400px;
     height: 550px;
     margin: -300px -200px;
@@ -1541,7 +1544,8 @@ canvas {
     top: 50%;
     left: 50%;
 }
-.login .section-1 {
+.login .section-1,
+.Password-form .Password {
     width: 400px;
     height: 450px;
     margin: -250px -200px;
@@ -1552,7 +1556,8 @@ canvas {
 @-moz-document url-prefix() {
     .shortForm .section-1 .before-form,
     .login .section-1 .before-form,
-    .thankyou .section-1 .before-form {
+    .thankyou .section-1 .before-form,
+    .passform .section-1 .before-form {
 
         background: url(http://localhost:3000/images/lo.svg#mask) center no-repeat;
         background-size: contain;
@@ -1566,6 +1571,7 @@ canvas {
 @media screen and (-webkit-min-device-pixel-ratio:0)
 and (min-resolution:.001dpcm) {
     .shortForm .section-1 .before-form,
+    .passform .section-1 .before-form,
     .login .section-1 .before-form,
     .thankyou .section-1 .before-form {
 
@@ -1586,7 +1592,9 @@ and (min-resolution:.001dpcm) {
 
 
 .shortForm .section-1 div,
-.login .section-1 div {
+.passform .section-1 div,
+.login .section-1 div,
+.Password-form .Password div {
     position: relative;
     height: 50px;
     margin: 0;
@@ -1595,7 +1603,9 @@ and (min-resolution:.001dpcm) {
     width: 400px;
 }
 .shortForm .section-1 input,
-.login .section-1 input {
+.passform .section-1 input,
+.login .section-1 input,
+.Password-form .Password input {
     position: absolute;
     top: 0;
     left: 0;
@@ -1613,33 +1623,55 @@ and (min-resolution:.001dpcm) {
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
     animation: appear 1300ms;
 }
+.Password-form .Password-button {
+    text-align: center;
+    line-height: 50px;
+    Position: relative;
+    top: 0;
+}
+
+.Password-form .Password-text {
+    height: auto !important;
+    width: 100%;
+    padding: 0;
+    font-size: smaller;
+    margin-bottom: 20px !important;
+    text-align: center;
+}
 
 .sign-up{
     position: absolute;
-    left: 50%;
+    left: calc(50% - 200px);
     top: calc(50% + 200px);
+    height: 50px;
     width: 400px;
     z-index: 100;
+}
+.sign-up div {
+    display: inline-block;
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.42);
+    color: rgba(255, 255, 255, 0.38);
     height:50px;
-    background: none no-repeat right;
+    background: none  no-repeat right;
     border: none;
     font-size: 20px;
+    padding: 0 32px;
     border-radius: 25px;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
-    animation: appear 1400ms;
-    align-items: center;
-    transform: translateX(-50%);
-    text-align: center;
+    animation: appear 1300ms;
     line-height: 50px;
+    text-align: center;
+    width: auto;
+
 }
-.sign-up:hover {
+.sign-up div:hover {
     background: var(--component-alt-3-bg-color)  no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 button,
-.login .section-1 button {
+.login .section-1 button,
+.Password-button,
+.passform .section-1 button {
     z-index: 100;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.38);
@@ -1656,33 +1688,42 @@ and (min-resolution:.001dpcm) {
 }
 
 .shortForm .section-1 input:hover,
+.passform .section-1 input:hover,
 .login .section-1 input:hover,
+.passform .section-1 button:hover,
 .shortForm .section-1 button:hover,
-.login .section-1 button:hover{
+.login .section-1 button:hover,
+.Password-form input:hover,
+.Password-form .Password-button:hover {
     background: rgba(255, 255, 255, 0.24)  no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:active,
+.passform .section-1 input:active,
 .login .section-1 input:active,
 .shortForm .section-1 button:active,
+.passform.section-1 button:active,
 .login .section-1 button:active {
     background: rgba(255, 255, 255, 0.14)  no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .shortForm .section-1 input.valid,
+.passform .section-1 input.valid,
 .login .section-1 input.valid,
 .fullForm .section-1 input.valid {
     background: url(http://localhost:3000/images/checkmark.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:hover.valid,
+.passform .section-1 input:hover.valid,
 .login .section-1 input:hover.valid,
 .fullForm .section-1 input:hover.valid {
     background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:active .valid,
+.passform .section-1 input:active .valid,
 .login .section-1 input:active .valid,
 .fullForm .section-1 input:active .valid{
     background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
@@ -1690,18 +1731,21 @@ and (min-resolution:.001dpcm) {
 }
 
 .shortForm .section-1 input.error,
+.passform .section-1 input.error,
 .login .section-1 input.error,
 .fullForm .section-1 input.error {
     background: url(http://localhost:3000/images/error.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:hover.error,
+.passform .section-1 input:hover.error,
 .login .section-1 input:hover.error,
 .fullForm .section-1 input:hover.error {
     background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/error.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:active.error,
+.passform .section-1 input:active.error,
 .login .section-1 input:active.error,
 .fullForm.section-1 input:active.error {
     background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/error.svg) no-repeat right;
@@ -1709,6 +1753,7 @@ and (min-resolution:.001dpcm) {
 }
 
 .shortForm .section-1 .error-message,
+.passform .section-1 .error-message,
 .login .section-1 .error-message,
 .fullForm .section-1 .error-message {
     z-index: 0;

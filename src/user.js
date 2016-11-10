@@ -29,11 +29,12 @@ export class User extends Component {
         popularity: 50,
         visited: false,
         enabled: false,
-        connected: false
+        connected: false,
+        match: false
     }
 
     componentWillReceiveProps = newProps => {
-        if (newProps.user && newProps.photo && newProps.photo[0]) {
+        if (newProps.user && newProps.user.photo && newProps.user.photo[0]) {
             this.setState({enabled: true})
         }
     }
@@ -42,9 +43,13 @@ export class User extends Component {
 
     componentWillMount() {
         axios.get('/user/' + this.props.params.userId).then(res => {
+            console.log(res.data)
             if (res.data.success) {
+                console.log("user: ", res.data)
                 const {connected, lastConnection, liked, likes_me, user, visited, popularity} = res.data
                 this.setState({connected, lastConnection, liked, likes_me, user, visited, popularity})
+            } else if (res.data.blocked) {
+                browserHistory.push('/')
             }
         })
     }
@@ -54,7 +59,7 @@ export class User extends Component {
         if (this.state.enabled) {
             axios.get('/like/' + this.state.user.login).then(res =>{
                 if (res.data.success) {
-                    this.setState({liked: true})
+                    this.setState({liked: true, match: res.data.match})
                 }
             })}
 
@@ -84,7 +89,7 @@ export class User extends Component {
 
     handleBlock = () => {
         if (this.state.enabled) {
-            axios.get('/block' + this.state.user.login).then(res => {
+            axios.get('/block/' + this.state.user.login).then(res => {
                 if (res.data.success) {
                     browserHistory.push('/')
                 }
@@ -93,7 +98,7 @@ export class User extends Component {
 
     render() {
         const {login, bio, photo} = this.state.user,
-            {connected, lastConnection, liked, likes_me, user, visited, popularity} = this.state
+            {connected, lastConnection, liked, likes_me, user, visited, popularity, match} = this.state
         let interactions = []
         let he = "he"
         if (user.gender === 'female') {
@@ -118,7 +123,7 @@ export class User extends Component {
                 interactions.push(<Disconnected key={106}
                                                 info={"last connection: " + dateFormat(lastConnection, "dddd, mmmm, dS, h:MM:ss TT")}/>)
             }
-            if (likes_me && liked) {
+            if (match) {
                 interactions.push(
                     <Match />)
             }
@@ -233,7 +238,7 @@ export class UserCard extends Component {
 
 
     render() {
-        let {photo, bio, login, liked, match, blocked, message, appConfig, enabled} = this.state
+        let {photo, bio, login, liked, match, blocked, message, enabled} = this.state
         let image = 'anonymous.jpg'
         if (photo && photo[0])
         {
@@ -252,7 +257,7 @@ export class UserCard extends Component {
             })}
                  id={login}>
                 <div className="profile-picture"
-                     style={{backgroundImage: `url('${appConfig.baseURL}/images/${image}')`}}>
+                     style={{backgroundImage: `url('${this.props.appConfig.baseURL}/images/${image}')`}}>
                 </div>
                 <div className="user-container-1">
                     <div className="user-interactions">
@@ -309,8 +314,11 @@ export class Users extends Component {
     }
 
     componentWillReceiveProps = newProps => {
+        console.log(newProps.users)
+        console.log(newProps.user)
         const {users, user, login} = newProps
-        this.setState({users, user, login})
+        const enabled = (newProps.user && newProps.user.photo && newProps.user.photo[0])
+        this.setState({users, user, login, enabled})
     }
     componentWillMount() {
         this.props.search('')
@@ -323,7 +331,7 @@ export class Users extends Component {
         if (this.state.users.length > 0) {
             users = this.state.users.map((e, i) => {
                 return (
-                    <UserCard user={e} key={i} me={user} login={login} chat={this.props.toggleChat}/>
+                    <UserCard user={e} key={i} me={user} login={login} appConfig={this.props.appConfig} chat={this.props.toggleChat}/>
                 )
             })
         }
@@ -334,5 +342,3 @@ export class Users extends Component {
         )
     }
 }
-
-

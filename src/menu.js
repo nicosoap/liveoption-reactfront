@@ -84,16 +84,10 @@ export default class Menu extends Component {
         },
         searchString: '',
         simpleSearch: null,
-        showChat: false,
         showNotification: false
     }
 
     toggleMenu = () => this.setState({isShown: !this.state.isShown})
-
-    toggleChat = () => {
-        this.setState({showChat: !this.state.showChat})
-        return true
-    }
 
     toggleNotification = () => {
         this.setState({showNotification: !this.state.showNotification})
@@ -129,13 +123,13 @@ export default class Menu extends Component {
                         <MenuButton toggleMenu={ this.toggleMenu }/>
                         <Search searchString={this.state.searchString} simpleSearch={this.props.simpleSearch}/>
                         <Notifications notifications={notifications} messages={messages} info={info}
-                                       toggleChat={this.toggleChat}
+                                       toggleChat={this.props.toggleChat}
                                        toggleNotification={this.toggleNotification}/>
                     </div >
                     <div className="App">
                         { this.props.children }
                     </div>
-                    <Chat socket={this.props.socket} messages={messages} userId={this.props.userId} toggleChat={this.toggleChat} showChat={this.state.showChat} chats={this.props.chats} updateChat={this.props.updateChat}/>
+                    <Chat socket={this.props.socket} messages={messages} userId={this.props.userId} toggleChat={this.props.toggleChat} showChat={this.props.showChat} chats={this.props.chats} updateChat={this.props.updateChat}/>
                 </div>
             </div>
         )

@@ -11,6 +11,7 @@ import {Thankyou, Validate} from './thankyou'
 import {FullForm} from './profile'
 import {Logout} from './logout'
 import Chat from './chat'
+import {Password, Password3} from './password'
 
 injectTapEventPlugin();
 
@@ -22,11 +23,13 @@ ReactDOM.render((
             <Route path="users" component={Users} />
             <Route path="/user/:userId" component={User} />
             <Route path="chat" component={Chat} />
-            <Route path="logout" component={Logout} />
         </Route>
         <Route path="/sign-in" component={Login} />
         <Route path="/thank-you" component={Thankyou} />
         <Route path="/validate" component={Validate} />
         <Route path="/sign-up" component={Subscribe} />
+        <Route path="/logout" component={Logout} />
+        <Route path="/retrieve-password" component={Password} />
+        <Route path="/change-password" component={Password3} />
     </Router>
 ), document.getElementById('root'));

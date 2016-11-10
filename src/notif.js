@@ -27,20 +27,6 @@ export default class Notif extends Component {
     }
 
     componentWillReceiveProps = (newProps) => {
-        if (newProps.notification.from && !newProps.notification.image) {
-        axios.get('/user/' + newProps.notification.from).then(res => {
-            if (res.data.success) {
-                const {from, to, body, image} = newProps.notification
-                this.setState({
-                    notification: {
-                        body,
-                        from,
-                        to,
-                        image: image || (res.data.user.photo ? res.data.user.photo[0] : false)
-                    }
-                })
-            }
-        })}
         this.setState({notification: newProps.notification})
     }
 
@@ -60,6 +46,7 @@ export default class Notif extends Component {
         })}>Loading...</div>)
 
         let {from, body, image, link} = notification
+        console.log(from, body)
         from = from === undefined? '' : from + ': '
             body = from + this.state.notification.body
 

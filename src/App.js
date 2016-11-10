@@ -35,7 +35,8 @@ class App extends Component {
         appConfig: {},
         login: '',
         user: {},
-        chats: []
+        chats: [],
+        showChat: false
     }
 
 
@@ -64,11 +65,6 @@ class App extends Component {
                 this.setState({chats: res.data.chats})
             }
         })
-        // initialize state with suggestion. Suggestions are search without option.
-        this.search('')
-    }
-
-    componentWillReceiveProps() {
     }
 
     componentDidMount() {
@@ -293,6 +289,11 @@ class App extends Component {
             .catch(error => console.error(error))
     }
 
+    toggleChat = () => {
+        this.setState({showChat: !this.state.showChat})
+        return true
+    }
+
     updateChat = (otherId) => {
         let chats = this.state.chats
         const index = chats.findIndex(elem => {
@@ -306,9 +307,6 @@ class App extends Component {
         this.setState({chat, chats, stored: !this.state.stored})
     }
 
-    componentWillUpdate() {
-    }
-
     render() {
         const {notifications, messages, info, searchString, users, login, appConfig, user, chats} = this.state
 
@@ -318,7 +316,7 @@ class App extends Component {
                 login,
                 appConfig,
                 user,
-                toggleChat: this.props.toggleChat,
+                toggleChat: this.toggleChat,
                 search: this.search
             })
         )
@@ -331,8 +329,10 @@ class App extends Component {
                   socket={this.socket}
                   updateChat={this.updateChat}
                   updateNotification={this.updateNotification}
+                  toggleChat={this.toggleChat}
                   chats={chats}
                   userId={user.login}
+                  showChat={this.state.showChat}
             >
                 < Geoloc hidden={true}/>
                 <div className="main-content">
