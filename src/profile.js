@@ -4,6 +4,7 @@ import PhotoInput from './photo'
 import TagInput from './taginput'
 import cx from 'classnames'
 import * as _ from 'lodash-node'
+import {Geoloc} from './geolocate'
 
 export class FullForm extends Component {
     state = {
@@ -83,7 +84,9 @@ export class FullForm extends Component {
                     if (response.data.success) {
                         let user = this.state.user
                         _.forOwn(response.data.user, (e, i) => {
-                            user[i].value = e
+                            if (user[i]) {
+                                user[i].value = e
+                            }
                         })
 
                         this.setState({user})
@@ -319,6 +322,11 @@ export class FullForm extends Component {
                                 "error": lastName.error
                             })}>
                             </div>
+                        </div>
+
+
+                        <div className="geoloc-form">
+                            < Geoloc hidden={false}/>
                         </div>
                         <div className="select">
                             <span className="error-message">{gender.error !== '' ? gender.error : null}</span>

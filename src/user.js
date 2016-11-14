@@ -22,7 +22,8 @@ export class User extends Component {
             Lng: 0,
             bio: '',
             login: '',
-            photo: []
+            photo: [],
+            tags: []
         },
         liked: false,
         likes_me: false,
@@ -34,6 +35,9 @@ export class User extends Component {
     }
 
     componentWillReceiveProps = newProps => {
+        if (newProps.user && this.state.user && newProps.user.login === this.state.user.login) {
+            browserHistory.push('/')
+        }
         if (newProps.user && newProps.user.photo && newProps.user.photo[0]) {
             this.setState({enabled: true})
         }
@@ -43,19 +47,16 @@ export class User extends Component {
 
     componentWillMount() {
         axios.get('/user/' + this.props.params.userId).then(res => {
-            console.log(res.data)
             if (res.data.success) {
-                console.log("user: ", res.data)
                 const {connected, lastConnection, liked, likes_me, user, visited, popularity} = res.data
                 this.setState({connected, lastConnection, liked, likes_me, user, visited, popularity})
-            } else if (res.data.blocked) {
+            } else if (res.data.blocked || (res.data.user && this.props.user && res.data.user.login === this.props.user.login)) {
                 browserHistory.push('/')
             }
         })
     }
 
     handleLike = () => {
-        console.log("LIKE", this.state.enabled, this.state.liked, this.state.likes_me)
         if (this.state.enabled) {
             axios.get('/like/' + this.state.user.login).then(res =>{
                 if (res.data.success) {
@@ -66,7 +67,6 @@ export class User extends Component {
     }
 
     handleDislike = () => {
-        console.log("DISLIKE")
         if (this.state.enabled) {
             axios.get('/dislike/' + this.state.user.login).then(res =>{
                 if (res.data.success) {
@@ -76,7 +76,6 @@ export class User extends Component {
     }
 
     handleChat = () => {
-        console.log("CHAT", this.state.enabled, this.state.liked, this.state.likes_me)
         if (this.state.enabled && this.state.liked && this.state.likes_me) {
             this.props.chat(this.state.user.login)
         }
@@ -96,15 +95,25 @@ export class User extends Component {
             })}
     }
 
+    calculateAge = (birthday) => { // birthday is a date
+        const ageDifMs = Date.now() - new Date(birthday).getTime();
+        const ageDate = new Date(ageDifMs); // miliseconds from epoch
+        return Math.abs(ageDate.getUTCFullYear() - 1970);
+    }
+
     render() {
-        const {login, bio, photo} = this.state.user,
+        let {login, bio, photo, birthDate, gender, tags } = this.state.user,
             {connected, lastConnection, liked, likes_me, user, visited, popularity, match} = this.state
         let interactions = []
+        birthDate = birthDate || '2000-01-01'
+        const age =  this.calculateAge(birthDate)
+        tags = tags || []
+        const tagList = tags.reduce((a, b) => { return a + ' #' + b}, '')
         let he = "he"
         if (user.gender === 'female') {
             he = 'she'
         }
-        if (this.state.enabled) {
+        if (this.props.user && this.props.user.photo && this.props.user.photo[0]) {
             if (liked) {
                 if (likes_me) {
                     interactions.push(<Chat click={this.handleChat} key={101}/>)
@@ -125,7 +134,7 @@ export class User extends Component {
             }
             if (match) {
                 interactions.push(
-                    <Match />)
+                    <Match key={1002}/>)
             }
         }
         return (
@@ -149,8 +158,14 @@ export class User extends Component {
                         </div>
 
 
-                        <div className="user-description">
-                            {bio}
+                        <div key={602} className="user-description">
+                            <p key={601}>{bio}</p>
+                            <ul>
+                                <li key={501} >Age : {age}</li>
+                                <li key={502} >Gender: {gender}</li>
+                                <li key={503} >Tags: {tagList}</li>
+                            </ul>
+
                         </div>
                     </div>
                 </div>
@@ -180,17 +195,10 @@ export class UserCard extends Component {
         enabled: false,
     }
 
-    componentWillMount() {
-        axios.get('/admin/appConfig').then(response => {
-            this.setState({appConfig: response.data})
-
-        })
-    }
-
     componentWillReceiveProps = newProps => {
 
         const enabled = (!!newProps.me.photo && !!newProps.me.photo[0])
-        this.setState({enabled})
+        this.setState({enabled, appConfig: newProps.appConfig})
     }
 
     componentDidMount() {
@@ -199,7 +207,7 @@ export class UserCard extends Component {
     }
 
     handleLike = () => {
-        if (this.state.enabled) {
+        if (this.props.me && this.props.me.photo && this.props.me.photo[0]) {
             axios.get('/like/' + this.state.login).then(res => {
                 if (res.data.success) {
                     this.setState({liked: true, match: res.data.match})
@@ -209,7 +217,7 @@ export class UserCard extends Component {
     }
 
     handleDislike = () => {
-        if (this.state.enabled) {
+        if (this.props.me && this.props.me.photo && this.props.me.photo[0]) {
             axios.get('/dislike/' + this.state.login).then(res =>{
                 if (res.data.success) {
                     this.setState({liked: false, match: false})
@@ -220,7 +228,7 @@ export class UserCard extends Component {
 
 
     handleChat = () => {
-        if (this.state.enabled && this.state.liked && this.state.likes_me) {
+        if ((this.props.me && this.props.me.photo && this.props.me.photo[0]) && this.state.liked && this.state.likes_me) {
             this.props.chat(this.state.login)
         }
 
@@ -228,7 +236,7 @@ export class UserCard extends Component {
 
 
     handleBlock = () => {
-        if (this.state.enabled) {
+        if (this.props.me && this.props.me.photo && this.props.me.photo[0]) {
             axios.get('/block' + this.state.login).then(res => {
                 if (res.data.success) {
                     this.setState({blocked: true})
@@ -238,7 +246,8 @@ export class UserCard extends Component {
 
 
     render() {
-        let {photo, bio, login, liked, match, blocked, message, enabled} = this.state
+        let {photo, bio, login, liked, match, blocked, message} = this.state
+        const enabled = (this.props.me && this.props.me.photo && this.props.me.photo[0])
         let image = 'anonymous.jpg'
         if (photo && photo[0])
         {
@@ -314,8 +323,6 @@ export class Users extends Component {
     }
 
     componentWillReceiveProps = newProps => {
-        console.log(newProps.users)
-        console.log(newProps.user)
         const {users, user, login} = newProps
         const enabled = (newProps.user && newProps.user.photo && newProps.user.photo[0])
         this.setState({users, user, login, enabled})
@@ -329,9 +336,9 @@ export class Users extends Component {
         let users = ''
         const {user, login} = this.state
         if (this.state.users.length > 0) {
-            users = this.state.users.map((e, i) => {
+            users = this.state.users.map(e => {
                 return (
-                    <UserCard user={e} key={i} me={user} login={login} appConfig={this.props.appConfig} chat={this.props.toggleChat}/>
+                    <UserCard user={e} key={e.key_id} me={user} login={login} appConfig={this.props.appConfig} chat={this.props.toggleChat}/>
                 )
             })
         }

@@ -12,6 +12,8 @@ import {FullForm} from './profile'
 import {Logout} from './logout'
 import Chat from './chat'
 import {Password, Password3} from './password'
+import {Sujet42} from './42'
+import Map from './map'
 
 injectTapEventPlugin();
 
@@ -21,8 +23,10 @@ ReactDOM.render((
             <IndexRoute component={Users} />
             <Route path="profile" component={FullForm} />
             <Route path="users" component={Users} />
+            <Route path="map" component={Map} />
             <Route path="/user/:userId" component={User} />
             <Route path="chat" component={Chat} />
+            <Route path="stalk" component={Sujet42} />
         </Route>
         <Route path="/sign-in" component={Login} />
         <Route path="/thank-you" component={Thankyou} />

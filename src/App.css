@@ -440,18 +440,21 @@ h3 {
 
 }
 .photoInput .result-images .profile-picture:nth-child(n+2) .promote:hover {
-    background: var(--component-alt-3-bg-color) url(http://localhost:3000/images/star.png) no-repeat center;
+    background: var(--component-alt-3-bg-color) url(../public/images/star.png) no-repeat center;
     background-size: 50%;
     transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .photoInput .result-images .profile-picture .delete:hover {
-    background: rgba(255,0,0,0.3) url(http://localhost:3000/images/trash-can.png) no-repeat center;
+    background: rgba(255,0,0,0.3) url(../public/images/trash-can.png) no-repeat center;
     background-size: 50%;
     transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 /* ----- SEARCH ----- */
 
 /*----- Search Form -----*/
+
+
+
 .search-form {
     top: -5px;
     box-sizing: border-box;
@@ -583,7 +586,38 @@ h3 {
     position: relative;
     float: left;
     display: flex;
+    flex-direction: column;
 }
+
+
+.extended-search .sort {
+    width: 100%;
+    flex: 1 1 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.extended-search .sort .ageSort,
+.extended-search .sort .locationSort,
+.extended-search .sort .popularitySort,
+.extended-search .sort .tagsSort{
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    border: solid 1px rgba(82, 97, 121, 0);
+    transition:all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.extended-search .sort .ageSort:hover,
+.extended-search .sort .locationSort:hover,
+.extended-search .sort .popularitySort:hover,
+.extended-search .sort .tagsSort:hover {
+    color: rgba(82, 97, 121, 1);
+
+}
+.extended-search .sort .sortSelected {
+    border: solid 1px rgba(82, 97, 121, 1);
+    border-radius: 24px;
+}
+
 .extended-search form {
     width:calc(100%);
 }
@@ -1105,7 +1139,8 @@ h3 {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     box-sizing: content-box;
     transition: all 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
-    background: var(--component-alt-2-bg-color)
+    background: var(--component-alt-2-bg-color);
+    overflow: hidden;
 }
 @media (max-width: 1764px) {
     .user:nth-child(even) {
@@ -1510,6 +1545,31 @@ canvas {
     width: inherit;
 }
 
+.geolocation {
+    float: left;
+    font-size: 42px;
+    cursor: pointer;
+    margin: 12px 12px;
+    width: auto;
+}
+
+.fullForm .geoloc-form {
+    text-align: left;
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    line-height: 42px;
+}
+
+.fullForm .geoloc-form input {
+    float: left;
+    background: none;
+    border: none;
+    margin: 24px 0;
+    font-size: 22px;
+    width: 90%;
+    color: var(--main-font-color)
+}
 .fullForm .button.input button {
     width: 100%;
     height: 50px !important;
@@ -1559,7 +1619,7 @@ canvas {
     .thankyou .section-1 .before-form,
     .passform .section-1 .before-form {
 
-        background: url(http://localhost:3000/images/lo.svg#mask) center no-repeat;
+        background: url(../public/images/lo.svg#mask) center no-repeat;
         background-size: contain;
         text-align: center;
         height: 300px;
@@ -1575,9 +1635,9 @@ and (min-resolution:.001dpcm) {
     .login .section-1 .before-form,
     .thankyou .section-1 .before-form {
 
-    clip-path: url(http://localhost:3000/images/lo.svg);
+    clip-path: url(../public/images/lo.svg);
         background: rgba(255,255,255, 0.24);
-        mask-image: url(http://localhost:3000/images/lo.svg) !important;
+        mask-image: url(../public/images/lo.svg) !important;
         mask-position: center !important;
         mask-size: contain !important;
         mask-repeat: no-repeat !important;
@@ -1712,21 +1772,21 @@ and (min-resolution:.001dpcm) {
 .passform .section-1 input.valid,
 .login .section-1 input.valid,
 .fullForm .section-1 input.valid {
-    background: url(http://localhost:3000/images/checkmark.svg) no-repeat right;
+    background: url(../public/images/checkmark.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:hover.valid,
 .passform .section-1 input:hover.valid,
 .login .section-1 input:hover.valid,
 .fullForm .section-1 input:hover.valid {
-    background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
+    background: rgba(255, 255, 255, 0.24) url(../public/images/checkmark.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:active .valid,
 .passform .section-1 input:active .valid,
 .login .section-1 input:active .valid,
 .fullForm .section-1 input:active .valid{
-    background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
+    background: rgba(255, 255, 255, 0.14) url(../public/images/checkmark.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
@@ -1734,21 +1794,21 @@ and (min-resolution:.001dpcm) {
 .passform .section-1 input.error,
 .login .section-1 input.error,
 .fullForm .section-1 input.error {
-    background: url(http://localhost:3000/images/error.svg) no-repeat right;
+    background: url(../public/images/error.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:hover.error,
 .passform .section-1 input:hover.error,
 .login .section-1 input:hover.error,
 .fullForm .section-1 input:hover.error {
-    background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/error.svg) no-repeat right;
+    background: rgba(255, 255, 255, 0.24) url(../public/images/error.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 .shortForm .section-1 input:active.error,
 .passform .section-1 input:active.error,
 .login .section-1 input:active.error,
 .fullForm.section-1 input:active.error {
-    background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/error.svg) no-repeat right;
+    background: rgba(255, 255, 255, 0.14) url(../public/images/error.svg) no-repeat right;
     transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
@@ -1842,11 +1902,11 @@ and (min-resolution:.001dpcm) {
     background: rgba(255,255,255,1) no-repeat right;
 }
 .terms-conditions .error {
-    background: rgba(255, 255, 255, 0.14) url(http://localhost:3000/images/error.svg) no-repeat right;
+    background: rgba(255, 255, 255, 0.14) url(../public/images/error.svg) no-repeat right;
 }
 
 .terms-conditions .valid {
-    background: rgba(255, 255, 255, 0.24) url(http://localhost:3000/images/checkmark.svg) no-repeat right;
+    background: rgba(255, 255, 255, 0.24) url(../public/images/checkmark.svg) no-repeat right;
 }
 
 .ty {

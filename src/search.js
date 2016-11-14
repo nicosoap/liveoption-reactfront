@@ -63,14 +63,22 @@ export class ExtendedSearch extends Component {
             min: 0,
             max: 100,
         },
+        distanceRange: {
+            min: 0,
+            max: 250,
+        },
         address: "",
         geocode: {
-            lat: 0,
-            lng: 0,
+            Lat: 0,
+            Lng: 0,
         },
-        tags: "",
+        tags: [],
         netflix: false,
-        rightNow: false
+        rightNow: false,
+        ageSort: false,
+        popularitySort: false,
+        locationSort: false,
+        tagsSort: false
     }
     extendedSearch = e => {
         e.preventDefault()
@@ -96,19 +104,63 @@ export class ExtendedSearch extends Component {
             popularRange: values,
         },
         this.props.updateSearch(this.state))
+    handleDistanceChange = (component, values) =>
+        this.setState({
+                distanceRange: values,
+            },
+            this.props.updateSearch(this.state))
     handleAddressChange = address => {
-        this.setState({address})
         geocodeByAddress(address, (err, {lat, lng}) => {
-            if (err) {
-                console.error(err)
-            }
-            this.setState({geocode: {lat, lng}}, () =>
+            this.setState({address, geocode: {Lat:lat, Lng:lng}}, () =>
                 this.props.updateSearch(this.state))
         })
+    }
+    saveTags = (_, tags) => {
+        this.updateTags(tags)
     }
     updateTags = tags => this.setState({tags}, () => this.props.updateSearch(this.state))
 
     openMenu = () => this.setState({menuOpen: !this.state.menuOpen})
+
+    handleSortAge = () => {
+        if (this.state.ageSort) {
+            this.setState({ageSort: false, locationSort: false, popularitySort: false, tagsSort: false},
+                () => this.props.updateSearch(this.state))
+        } else {
+            this.setState({ageSort: true, locationSort: false, popularitySort: false, tagsSort: false},
+                () => this.props.updateSearch(this.state))
+        }
+    }
+
+    handleSortPopularity = () => {
+        if (this.state.popularitySort) {
+            this.setState({ageSort: false, locationSort: false, popularitySort: false, tagsSort: false},
+                () => this.props.updateSearch(this.state))
+        } else {
+            this.setState({ageSort: false, locationSort: false, popularitySort: true, tagsSort: false},
+                () => this.props.updateSearch(this.state))
+        }
+    }
+
+    handleSortDistance = () => {
+        if (this.state.locationSort) {
+            this.setState({ageSort: false, locationSort: false, popularitySort: false, tagsSort: false},
+                () => this.props.updateSearch(this.state))
+        } else {
+            this.setState({ageSort: false, locationSort: true, popularitySort: false, tagsSort: false},
+                () => this.props.updateSearch(this.state))
+        }
+    }
+
+    handleSortTags = () => {
+        if (this.state.tagsSort) {
+            this.setState({ageSort: false, locationSort: false, popularitySort: false, tagsSort: false},
+                () => this.props.updateSearch(this.state))
+        } else {
+            this.setState({ageSort: false, locationSort: false, popularitySort: false, tagsSort: true},
+                () => this.props.updateSearch(this.state))
+        }
+    }
 
     render() {
         return (
@@ -119,7 +171,7 @@ export class ExtendedSearch extends Component {
                 })} onClick={this.openMenu}
                 >
                     <i className="material-icons">{this.state.menuOpen ? 'expand_less' : 'expand_more' }</i>
-                    <span>Advanced search</span>
+                    <span>Filters</span>
                 </div>
                 <div className={cx({
                     "card-2": this.state.menuOpen,
@@ -127,6 +179,31 @@ export class ExtendedSearch extends Component {
                     'extended-search-open': this.state.menuOpen,
                     'extended-search': true
                 })} id="extended-search">
+                    <div className="sort">
+                        sort by :
+                        <div className={cx({
+                            'ageSort': true,
+                            'sortSelected':this.state.ageSort
+                        })}
+                        onClick={this.handleSortAge}>Age</div>
+                        <div className={cx({
+                            'locationSort': true,
+                            'sortSelected':this.state.locationSort
+                        })}
+                             onClick={this.handleSortDistance}>Distance</div>
+                        <div className={cx({
+                            'popularitySort': true,
+                            'sortSelected':this.state.popularitySort
+                        })}
+                             onClick={this.handleSortPopularity}>Popularity</div>
+                        <div className={cx({
+                            'tagsSort': true,
+                            'sortSelected':this.state.tagsSort
+                        })}
+                             onClick={this.handleSortTags}>Tags</div>
+                    </div>
+
+
                     <form
                         name="extended-search"
                         onSubmit={this.extendedSearch}
@@ -141,6 +218,13 @@ export class ExtendedSearch extends Component {
                             hideLabel
                             value={this.state.address}
                             onChange={this.handleAddressChange}
+                        />
+                        <label>from {this.state.distanceRange.min}km to {this.state.distanceRange.max}km </label>
+                        <InputRange
+                            maxValue={250}
+                            minValue={0}
+                            value={this.state.distanceRange}
+                            onChange={this.handleDistanceChange.bind(this)}
                         />
                         <label>Older than {this.state.ageRange.min} and younger than {this.state.ageRange.max}</label>
                         <InputRange
@@ -158,7 +242,7 @@ export class ExtendedSearch extends Component {
                             onChange={this.handlePopularChange.bind(this)}
                         />
 
-                        <TagInput id="tags" save={this.updateTags} />
+                        <TagInput id="tags" save={this.updateTags} update={this.saveTags} />
 
 
                             <div className="extended-search-checkboxes">
@@ -173,7 +257,7 @@ export class ExtendedSearch extends Component {
                                 <label
                                     htmlFor="netflix"
                                 >
-                                   Has Netflix
+                                   Search these tags AND my tags
                                 </label>
                                 </span>
                             < br/>
@@ -188,7 +272,7 @@ export class ExtendedSearch extends Component {
                                 <label
                                     htmlFor="right-now"
                                 >
-                                    Looking for right now
+                                    Exclusively with these tags
                                 </label>
                             </span></div>
                         <div className="extended-search-submit">

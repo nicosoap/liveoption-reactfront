@@ -24,11 +24,8 @@ export default class PhotoInput extends Component {
 
     componentWillMount() {
         let my_jwt = localStorage.jwt
-        if (!my_jwt) {
-            console.log("Navigator not supported")
-        }
 
-        axios.defaults.baseURL = 'http://localhost:8080';
+        axios.defaults.baseURL = 'http://' + window.location.host + '/api'
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + my_jwt;
         axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         // }
@@ -79,8 +76,6 @@ export default class PhotoInput extends Component {
                 this.updateSelection
             )}
 
-        } else {
-            console.log('invalid image format')
         }
     }
 
@@ -99,10 +94,8 @@ export default class PhotoInput extends Component {
                     )
                 }
             } catch (err) {
-                console.error(err)
+                throw err
             }
-        } else {
-            console.error('invalid image format')
         }
     }
 
@@ -128,7 +121,6 @@ export default class PhotoInput extends Component {
             if (res.data.success) {
                 return (res.data.name)
             } else {
-                console.error("Image upload failed: " + res.data.message)
                 return false
             }
         })
@@ -179,7 +171,7 @@ export default class PhotoInput extends Component {
                         return(
                             <ProfilePicture key={i}
                                             file={e.file}
-                                            url={ e.picture? ('http://localhost:8080/images/' + e.picture): URL.createObjectURL(e.file)}
+                                            url={ e.picture? ('http://' + window.location.hostname + '/images/' + e.picture): URL.createObjectURL(e.file)}
                                             id={i}
                                             setDefault={this.setDefault}
                                             setDelete={this.setDelete} />

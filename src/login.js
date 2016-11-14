@@ -8,9 +8,10 @@ import {browserHistory, Link} from 'react-router'
 import Fingerprint2 from 'fingerprintjs2'
 import './App.css'
 
+
 let my_jwt = localStorage.jwt
 
-axios.defaults.baseURL = 'http://localhost:8080'
+axios.defaults.baseURL = 'http://' + window.location.hostname + ':8080'+ '/api'
 if (my_jwt) {axios.defaults.headers.common['Authorization'] = 'Bearer ' + my_jwt}
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 

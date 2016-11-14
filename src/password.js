@@ -2,10 +2,9 @@ import React, {Component} from 'react'
 import axios from 'axios'
 import {browserHistory} from 'react-router'
 import {Form} from './subscribe'
-import {cx} from 'classnames'
 
-axios.defaults.baseURL = 'http://localhost:8080';
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.baseURL = 'http://' + window.location.hostname + ':8080'+ '/api'
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 export class Password extends Component {
     state = {
@@ -16,7 +15,6 @@ export class Password extends Component {
     handleClick = () => {
         sessionStorage.setItem('email', this.state.email)
         axios.post('/retrieve-password', {email: this.state.email}).then(res => {
-                console.log(res.data)
                 if (res.data.success) {
                     browserHistory.push('/thank-you')
                 } else {
@@ -65,14 +63,12 @@ export class Password3 extends Component {
     }
 
     handleSubmit = (user) => {
-        console.log("submit", user.password, user.password2)
         this.setState({validating: true, result: user})
         axios.post('/change-password', {
             token: this.props.location.query.token,
             password: user.password,
             password2: user.password2
         }).then(response => {
-            console.log(response)
             if (response.data.success) {
                 this.setState({validating: false, error: false})
                 browserHistory.push('/sign-in')

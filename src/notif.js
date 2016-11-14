@@ -46,7 +46,6 @@ export default class Notif extends Component {
         })}>Loading...</div>)
 
         let {from, body, image, link} = notification
-        console.log(from, body)
         from = from === undefined? '' : from + ': '
             body = from + this.state.notification.body
 

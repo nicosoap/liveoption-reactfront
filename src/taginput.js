@@ -14,7 +14,6 @@ export default class TagInput extends Component {
 
     componentWillReceiveProps = newProps => {
         if (newProps.params && newProps.params.value) {
-            console.log(newProps.params.value)
             this.setState({tags: newProps.params.value})
         }
     }
@@ -68,15 +67,11 @@ export default class TagInput extends Component {
         setTimeout(() => {
             if (this.state.tags.length === tags) {
                 this.props.update('tags', this.state.tags)
-                console.log("cookies n cream")
             } else {
                 let tags = this.state.tags.length
                 setTimeout(() => {
                     if (this.state.tags.length === tags) {
                         this.props.update('tags', this.state.tags)
-                        console.log("cookies n cream")
-                    } else {
-                        console.log("go fudge yourself")
                     }
                 }, 2000)
             }

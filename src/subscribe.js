@@ -36,7 +36,7 @@ export class Form extends Component {
     }
 
     componentWillMount() {
-        axios.defaults.baseURL = 'http://localhost:8080';
+        axios.defaults.baseURL = 'http://' + window.location.host + '/api'
         axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
         axios.get('/admin/userform?form=' + this.props.form || 'shortForm')
@@ -74,15 +74,14 @@ export class Form extends Component {
 
     handleBlur = (event) => {
         if (this.props.blur) {
-            console.log("saving")
             let userForm = this.state.userForm,
                 user = {}
             userForm.map((e, i) => {
                 if (e.required === "true" && (this.state.user[e.name] === ('' || undefined) || e.error !== "")) {
-                    console.log(e.name, this.state.user[e.name])
                 } else {
                     user[e.name] = this.state.user[e.name]
                 }
+                return 0
             })
             this.props.submit(user)
         }
@@ -261,7 +260,14 @@ export class Form extends Component {
 
 export class Subscribe extends Component {
     state = {
-        result: {},
+        result: {
+            login: '',
+            email: '',
+            password: '',
+            password2: '',
+            fingerprint: '',
+            firstName: '',
+            lastName: '',
         special: false,
         validating: false,
         error: false
@@ -290,7 +296,9 @@ export class Subscribe extends Component {
             email: this.state.result.email,
             password: this.state.result.password,
             password2: this.state.result.password2,
-            fingerprint: this.state.fingerprint
+            fingerprint: this.state.fingerprint,
+            firstName: this.state.result.firstName,
+            lastName: this.state.result.lastName
         }).then(response => {
             if (response.data.success) {
                 sessionStorage.setItem('email', this.state.result.email)

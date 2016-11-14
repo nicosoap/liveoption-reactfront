@@ -29,21 +29,17 @@ export class Validate extends Component {
     state={token: ''}
 
     componentDidMount() {
-        console.log(this.props.location.query.token)
         this.setState({token: this.props.location.query.token}, () => {
 
-            axios.defaults.baseURL = 'http://localhost:8080';
-            console.log("Token exists: ", !!this.state.token)
+            axios.defaults.baseURL = 'http://' + window.location.host + '/api'
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.state.token;
 
 
             axios.get('/activate_account').then(res => {
                 if (res.data.success) {
-                    console.log("JWT: ", res.data.user.token)
                     localStorage.jwt = res.data.user.token
                     browserHistory.push('/profile')
                 } else {
-                    console.log(res.data)
                     browserHistory.push('/sign-up')
                 }
             })
